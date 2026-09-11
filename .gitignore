@@ -1,0 +1,21 @@
+# Build artifacts (regenerate via node build/generate.mjs)
+releases/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Data pasang surut mentah — diunduh via scripts/download_ioc.py
+# Sample kecil tetap di-commit agar notebook jalan out-of-the-box.
+manuscripts/*/data/raw/
+manuscripts/*/data/sample/.gitkeep
+!manuscripts/*/data/sample/*.csv
+!manuscripts/*/data/sample/*.md

@@ -1,0 +1,176 @@
+import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
+const manuscriptsDir = join(root, 'manuscripts');
+const notebooksRoot = join(root, 'notebooks');
+
+function resolveBlogPostsDir() {
+	// Lokal: books/<book>/ dan site/ bersaudara di dalam Elements-of-Marketing.
+	const sibling = join(dirname(dirname(root)), 'site', 'src', 'content', 'book');
+	if (existsSync(sibling)) return sibling;
+	// CI: repo buku di-checkout ke dalam repo site (root = <site>/<book-checkout>)
+	const inside = join(root, '..', 'src', 'content', 'book');
+	if (existsSync(inside)) return inside;
+	// Fallback: gunakan sibling (akan dibuat recursive)
+	return sibling;
+}
+
+const blogPostsDir = resolveBlogPostsDir();
+mkdirSync(blogPostsDir, { recursive: true });
+
+function copyRecursive(src, dest) {
+	if (!existsSync(src)) return;
+	const entries = readdirSync(src, { withFileTypes: true });
+	mkdirSync(dest, { recursive: true });
+	for (const entry of entries) {
+		const s = join(src, entry.name);
+		const d = join(dest, entry.name);
+		if (entry.isDirectory()) copyRecursive(s, d);
+		else copyFileSync(s, d);
+	}
+}
+
+function parseFrontmatter(text) {
+	const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+	if (!m) return null;
+	const out = {};
+	for (const line of m[1].split(/\r?\n/)) {
+		const i = line.indexOf(':');
+		if (i < 0) continue;
+		const key = line.slice(0, i).trim();
+		const value = line.slice(i + 1).trim();
+		out[key] = value;
+	}
+	return { frontmatter: out, rest: text.slice(m[0].length) };
+}
+
+function parseChapter(value) {
+	if (!value) return undefined;
+	const n = Number.parseInt(unquote(value), 10);
+	return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+function unquote(value) {
+	const v = value?.trim() ?? '';
+	if (v.length >= 2 && ((v[0] === '"' && v[v.length - 1] === '"') || (v[0] === "'" && v[v.length - 1] === "'"))) {
+		return v.slice(1, -1);
+	}
+	return v;
+}
+
+function q(s) {
+	return JSON.stringify(s);
+}
+
+function slugifyBookId(s) {
+	return s
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+function rewriteFigurePaths(body, ch) {
+	// Manuscript merujuk "figures/..." relatif ke master.md.
+	// Di blog, post flat berada di book/<bookId>/<ch>.md, sedangkan figure disalin ke
+	// book/<bookId>/<ch>/figures/... -> tulis ulang agar path benar.
+	return body.replace(/!\[([^\]]*)\]\(figures\/([^)]+)\)/g, `![$1](${ch}/figures/$2)`);
+}
+
+function rewriteDisplayMath(body) {
+	// remark-math v6 interprenten `$$...$$` satu baris sebagai inline math, sehingga
+	// `\tag{}` gaagal render di web (KaTeX: "\tag works only in display equations").
+	// Pandoc menghandles dua-dua bentuk, jadi nomalisasi hanya di output blog:
+	// converti blok satu-baris menjadi blok multi-baris -> display math proper.
+	return body.replace(/^[ \t]*\$\$([^\n]+?)\$\$[ \t]*\r?$/gm, (m, content) => `$$\n${content.trim()}\n$$`);
+}
+
+export function syncAll() {
+	const chapterDirs = readdirSync(manuscriptsDir, { withFileTypes: true })
+		.filter((d) => d.isDirectory() && d.name.startsWith('ch-'))
+		.map((d) => d.name)
+		.sort();
+
+	if (chapterDirs.length === 0) {
+		console.log('Tidak ada bab untuk disinkronkan.');
+		return 0;
+	}
+
+	// bookId: prioritaskan frontmatter `book`, fallback ke nama folder manuscript
+	// (di-slugify: "ch-01-pengantar-deep-learning-meteorologi" -> "pengantar-deep-learning-meteorologi").
+	const resolveBookId = (fm, ch) => {
+		if (fm.book) {
+			const b = unquote(fm.book);
+			if (b) return slugifyBookId(b);
+		}
+		return ch.replace(/^ch-\d+-/, '').replace(/-/g, '-');
+	};
+
+	let count = 0;
+	for (const ch of chapterDirs) {
+		const master = join(manuscriptsDir, ch, 'master.md');
+		if (!existsSync(master)) continue;
+		const raw = readFileSync(master, 'utf8');
+		const parsed = parseFrontmatter(raw);
+		if (!parsed) {
+			console.warn(`SKIP ${ch}: frontmatter YAML tidak ditemukan`);
+			continue;
+		}
+		const fm = parsed.frontmatter;
+		const draft = fm.status === 'draft';
+		const title = unquote(fm.title);
+		const description = unquote(fm.description);
+		const categories = (fm.categories || '[]').replace(/^\[/, '').replace(/\]$/, '').split(',').map((s) => unquote(s.trim())).filter(Boolean);
+		const tags = (fm.tags || '[]').replace(/^\[/, '').replace(/\]$/, '').split(',').map((s) => unquote(s.trim())).filter(Boolean);
+		const allTags = [...new Set([...categories, ...tags])];
+		const chapter = parseChapter(fm.chapter);
+		const bookId = resolveBookId(fm, ch);
+
+		const synced = [
+			'---',
+			`title: ${q(title)}`,
+			`description: ${q(description)}`,
+			`pubDatetime: ${fm.pubDate || '2026-01-01'}`,
+			`tags: [${allTags.map((t) => q(t)).join(', ')}]`,
+			`draft: ${draft}`,
+			...(chapter ? [`chapter: ${chapter}`] : []),
+			`bookId: ${q(bookId)}`,
+			'---',
+			rewriteDisplayMath(rewriteFigurePaths(parsed.rest, ch)),
+		].join('\n');
+
+		const bookDir = join(blogPostsDir, bookId);
+		mkdirSync(bookDir, { recursive: true });
+		const target = join(bookDir, `${ch}.md`);
+		writeFileSync(target, synced);
+		console.log(`  SYNC ${ch}.md -> site/src/content/book/${bookId}/${ch}.md ${draft ? '(draft)' : ''}`);
+		count++;
+
+		const figuresSrc = join(manuscriptsDir, ch, 'figures');
+		const figuresDest = join(bookDir, ch, 'figures');
+		if (existsSync(figuresSrc)) {
+			copyRecursive(figuresSrc, figuresDest);
+			console.log(`  SYNC figures/${ch}/ -> site/src/content/book/${bookId}/${ch}/figures/`);
+		}
+
+		if (existsSync(notebooksRoot)) {
+			const prefix = (ch.match(/^ch-\d+/) || [ch])[0] + '-';
+			const files = readdirSync(notebooksRoot).filter((f) => f.startsWith(prefix));
+			if (files.length > 0) {
+				const notebooksDest = join(bookDir, ch, 'notebooks');
+				mkdirSync(notebooksDest, { recursive: true });
+				for (const f of files) copyFileSync(join(notebooksRoot, f), join(notebooksDest, f));
+				console.log(`  SYNC notebooks/${ch}/ -> site/src/content/book/${bookId}/${ch}/notebooks/`);
+			}
+		}
+	}
+	return count;
+}
+
+// Run langsung saat dieksekusi (bukan di-import oleh watch)
+if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
+	console.log('Menjalankan sync buku -> blog...');
+	const n = syncAll();
+	console.log(`Selesai. ${n} bab disinkronkan.`);
+}
