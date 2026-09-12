@@ -9,7 +9,6 @@ Sumber yang didukung:
 
 Penggunaan dasar:
   python download_ioc.py --source ioc --code cili --days 30 --output out.csv
-  python download_ioc.py --source ioc --code cili --start 2024-01-01 --end 2024-12-31 --output out.csv
   python download_ioc.py --source uhslc --station_id <ID> --start 2023-01-01 --end 2024-12-31 --output out.csv
   python download_ioc.py --source psmsl --station_id 2199 --output out.csv
 
@@ -19,8 +18,7 @@ from __future__ import annotations
 
 import argparse
 import sys
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -38,6 +36,40 @@ def _log(msg: str) -> None:
     print(f"[{datetime.utcnow().isoformat(timespec='seconds')}Z] {msg}", file=sys.stderr)
 
 
+def _parse_ioc_html(text: str) -> pd.DataFrame:
+    """Parse tabel HTML yang dikembalikan endpoint IOC (format sejak ~2024).
+
+    Endpoint mengabaikan `output=tab` dan mengembalikan <table> HTML. Buat parser
+    minimal: ambil baris <tr>, sel <th>/<td>, bersihkan tag & entity.
+    """
+    import html as _html
+    import re
+
+    rows = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", text, flags=re.S | re.I):
+        cells = re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, flags=re.S | re.I)
+        if not cells:
+            continue
+        clean = []
+        for c in cells:
+            c = re.sub(r"<[^>]+>", "", c)
+            c = _html.unescape(c).replace("\xa0", " ").strip()
+            clean.append(c)
+        rows.append(clean)
+
+    if len(rows) < 2:
+        raise RuntimeError("Tidak dapat membaca tabel HTML dari IOC.")
+
+    header = [c.strip() for c in rows[0]]
+    # buang entri kosong pada header tapi pertahankan posisi sensor
+    df = pd.DataFrame(rows[1:])
+    if len(df.columns) < len(header):
+        df = df.reindex(columns=range(len(header)))
+    df.columns = header
+    df.columns = [f"col_{i}" if c == "" else c for i, c in enumerate(df.columns)]
+    return df
+
+
 def fetch_ioc_block(code: str, end: datetime, days: int) -> pd.DataFrame:
     """Ambil satu blok (<=30 hari) dari IOC bgraph.php endpoint."""
     url = f"{IOC_BASE}/bgraph.php"
@@ -45,44 +77,59 @@ def fetch_ioc_block(code: str, end: datetime, days: int) -> pd.DataFrame:
     _log(f"GET IOC code={code} days={days} ending~{end.date()}")
     r = requests.get(url, params=params, headers={"User-Agent": USER_AGENT}, timeout=TIMEOUT)
     r.raise_for_status()
-    lines = [ln for ln in r.text.splitlines() if ln.strip()]
-    if len(lines) < 2:
-        raise RuntimeError(f"Tidak ada data dari IOC untuk code={code} (cek station aktif).")
-    header = lines[0].split("\t")
-    rows = [ln.split("\t") for ln in lines[1:]]
-    df = pd.DataFrame(rows, columns=header)
+
+    text = r.text
+    try:
+        df = _parse_ioc_html(text)
+    except Exception as e:  # fallback: format TSV lama
+        _log(f"HTML parse gagal ({e}), coba format TSV lama")
+        lines = [ln for ln in text.splitlines() if ln.strip()]
+        if len(lines) < 2:
+            raise RuntimeError(f"Tidak ada data dari IOC untuk code={code} (cek station aktif).")
+        header = lines[0].split("\t")
+        df = pd.DataFrame([ln.split("\t") for ln in lines[1:]], columns=header)
+
     time_col = next((c for c in df.columns if c.lower().startswith("time") or "utc" in c.lower()), None)
     if time_col is None:
-        raise RuntimeError(f"Kolom waktu tidak ditemukan. Header: {list(df.columns)}")
+        raise RuntimeError(f"Kolom waktu tidak ditemukan. Kolom: {list(df.columns)}")
     df[time_col] = pd.to_datetime(df[time_col], utc=True, errors="coerce")
     df = df.dropna(subset=[time_col]).rename(columns={time_col: "time"})
     sensor_cols = [c for c in df.columns if c != "time"]
     for c in sensor_cols:
         df[c] = pd.to_numeric(df[c], errors="coerce")
-    df["tinggi"] = df[sensor_cols].mean(axis=1, skipna=True)
+    # Tinggi muka air = rata-rata sensor keluaran *meter* (misal ra2(m), ra3(m),
+    # rad(m), ras(m)); JANGAN ikutkan kolom lain (misal bat(V) tegangan baterai,
+    # sw1/2(min), depth(m) di kolom kasar station tertentu) supaya tinggi fisis.
+    water_cols = [c for c in sensor_cols if c.rstrip().endswith("(m)")]
+    if not water_cols:
+        raise RuntimeError(
+            f"Tidak ada kolom tinggi (berakhiran '(m)') dari IOC untuk code. Kolom: {list(df.columns)}"
+        )
+    df["tinggi"] = df[water_cols].mean(axis=1, skipna=True)
     return df[["time", "tinggi"] + sensor_cols].sort_values("time").reset_index(drop=True)
 
 
 def download_ioc(code: str, output: Path, days: int = 30,
                  start: str | None = None, end: str | None = None) -> None:
-    """Unduh IOC real-time. Jika start/end diberikan, lakukan loop blok 30 hari."""
+    """Unduh IOC real-time (~30 hari terakhir, sampling 1-3 menit atau hourly).
+
+    Catatan: endpoint IOC TIDAK menyediakan arsip historis lebih dari ~30 hari;
+    parameter `period` selalu mengembalikan data terbaru. Untuk arsip panjang
+    (berbulan-bertahun), gunakan --source uhslc (UHSLC ERDDAP research quality).
+    Argumen --start/--end diterima demi kompatibilitas antarmuka, tapi hanya
+    memfilter hasil dari jendela ~30 hari terakhir.
+    """
     if start or end:
-        start_dt = datetime.fromisoformat(start) if start else datetime.utcnow() - timedelta(days=365)
-        end_dt = datetime.fromisoformat(end) if end else datetime.utcnow()
-        cur_end = end_dt
-        frames = []
-        while cur_end > start_dt:
-            block_end = cur_end
-            block_start = max(block_end - timedelta(days=days), start_dt)
-            actual_days = max(1, (block_end - block_start).days)
-            df = fetch_ioc_block(code, end=block_end, days=actual_days)
-            df = df[df["time"] >= pd.Timestamp(block_start, tz="UTC")]
-            frames.append(df)
-            cur_end = block_start - timedelta(seconds=1)
-            time.sleep(1.0)
-        out = pd.concat(frames, ignore_index=True).drop_duplicates(subset="time").sort_values("time")
-    else:
-        out = fetch_ioc_block(code, end=datetime.utcnow(), days=days)
+        _log("PERINGATAN: IOC hanya menyediakan ~30 hari terakhir. "
+             "--start/--end hanya memfilter jendela itu; arsip panjang gunakan --source uhslc.")
+    out = fetch_ioc_block(code, end=datetime.utcnow(), days=days)
+    if start or end:
+        start_dt = datetime.fromisoformat(start) if start else None
+        end_dt = datetime.fromisoformat(end) if end else None
+        if start_dt:
+            out = out[out["time"] >= pd.Timestamp(start_dt, tz="UTC")]
+        if end_dt:
+            out = out[out["time"] <= pd.Timestamp(end_dt, tz="UTC")]
     output.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(output, index=False)
     _log(f"Simpan {len(out)} baris ke {output}")

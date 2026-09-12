@@ -23,10 +23,10 @@ Setiap **bab adalah satu artikel blog** yang:
    ```
 
 **Satu buku = satu DOI Zenodo.** PDF/DOCX utuh buku dirilis di `releases/` per versi.
-Karena seluruh 10 bab sudah selesai, rilis pertama langsung lengkap (v1.0); versi
-berikutnya (v1.1, v2.0) menandai revisi, bukan penambahan bab. Tiap bab relatif singkat
-(artikel panjang), sehingga tidak dipublikasikan per-bab di Zenodo; sitasi stabil melalui
-DOI buku, sedangkan traffic per topik diperoleh dari artikel blog.
+Karena seluruh 10 bab sudah selesai, rilis publik pertama langsung lengkap (v2.0);
+versi berikutnya (v2.1, v3.0) menandai revisi, bukan penambahan bab. Tiap bab relatif
+singkat (artikel panjang), sehingga tidak dipublikasikan per-bab di Zenodo; sitasi
+stabil melalui DOI buku, sedangkan traffic per topik diperoleh dari artikel blog.
 
 > Rencana detil isi buku (isi per bab, notebook, latihan, SEO, blog mapping, pacing rilis)
 > ada di **`outline.md`** — sumber kebenaran perencanaan, dipakai saat menulis tiap bab.
@@ -40,26 +40,31 @@ sitasi — versi baru naik di Zenodo, concept DOI tetap sama.
 01-pengantar-dl-meteorologi/
 ├── outline.md               # OUTLINE: rencana & detil isi 10 bab (sumber perencanaan)
 ├── front-matter/
-│   ├── 00-halaman-judul.md   # Halaman judul
-│   ├── 01-hak-cipta-lisensi.md # Hak cipta & lisensi
-│   ├── 02-prakata.md         # Prakata
-│   ├── cara-memakai-buku.md  # Peta baca (tidak dirilis ke Zenodo sebagai bab)
-│   └── 03-glosarium-notasi.md # Glosarium istilah & notasi matematis
+│   ├── 00-halaman-judul.md   # Halaman judul (judul, edisi, penulis, DOI)
+│   ├── 01-hak-cipta-lisensi.md # Hak cipta & lisensi (imprint)
+│   ├── 02-daftar-isi.md      # Daftar isi buku
+│   ├── 03-daftar-gambar-tabel.md # Daftar gambar & tabel
+│   ├── 04-prakata.md         # Prakata
+│   ├── 05-cara-memakai-buku.md  # Peta baca & konvensi (tidak dirilis sebagai bab)
+│   └── 06-glosarium-notasi.md # Glosarium, notasi, dan singkatan
 ├── manuscripts/
 │   └── ch-01-pengantar-deep-learning-meteorologi/
 │       ├── master.md        # MASTER: sumber kebenaran isi bab
 │       ├── refs.bib         # referensi (dipakai saat PDF build via citeproc)
 │       └── figures/         # gambar bab (PNG untuk PDF, webp untuk blog)
 ├── back-matter/
-│   ├── 00-daftar-pustaka.md # Daftar pustaka agregat (IEEE + DOI)
-│   ├── 01-indeks.md         # Indeks tematik
-│   ├── 02-daftar-dataset-sumber.md # Dataset & sumber data + lisensi
-│   └── 03-daftar-notebook-doi.md   # Daftar notebook & DOI
+│   ├── 00-lampiran.md       # Lampiran A & B (reproduksibilitas, konvensi)
+│   ├── 01-daftar-pustaka.md # Daftar pustaka agregat (IEEE + DOI)
+│   ├── 02-indeks.md         # Indeks tematik
+│   ├── 03-daftar-dataset-sumber.md # Dataset & sumber data + lisensi
+│   ├── 04-daftar-notebook-doi.md   # Daftar notebook & DOI
+│   ├── 05-tentang-penulis.md
+│   └── 06-kolofon.md
 ├── notebooks/               # notebook Colab (nama berawalan bab: ch-01-*.ipynb)
 ├── releases/
-│   └── v1.0.0/              # snapshot tiap rilis (PDF+DOCX) → untuk Zenodo
+│   └── v2.0.0/              # snapshot tiap rilis (PDF+DOCX) → untuk Zenodo
 └── build/
-    ├── generate.mjs         # master.md → PDF + DOCX per versi
+    ├── generate.mjs         # master.md → buku utuh (PDF + DOCX) per versi
     └── sync-to-blog.mjs     # sinkronkan master+figures+notebooks → blog (site/src/content/book)
 ```
 
@@ -89,7 +94,7 @@ build (generate.mjs tanpa error). Rincian lengkap: `outline.md` → "Alur Kerja 
 & Evaluasi Internal".
 
 **Penerbitan (Fase 3):** setelah lolos → daftarkan **DOI Zenodo** untuk buku utuh, buat
-**ISBN**, buka **GitHub publik** (release v1.0.0), lalu **posting blog 2 artikel/bulan**
+**ISBN**, buka **GitHub publik** (release v2.0.0), lalu **posting blog 2 artikel/bulan**
 berbasis bab.
 
 Tanpa lolos Fase 2, tidak ada publikasi (Zenodo/ISBN/GitHub publik/blog).
@@ -98,9 +103,9 @@ Tanpa lolos Fase 2, tidak ada publikasi (Zenodo/ISBN/GitHub publik/blog).
 
 1. Generate bundel buku:
    ```
-   node build/generate.mjs --version v1.0.0
+   node build/generate.mjs --version=v2.0.0
    ```
-2. Unggah `releases/v1.0.0/` ke Zenodo → dapat **satu DOI buku**, salin ke field
+2. Unggah `releases/v2.0.0/` ke Zenodo → dapat **satu DOI buku**, salin ke field
    `bookDOI` di semua bab.
 3. Buat ISBN, buka repo publik, buat GitHub release.
 4. Posting blog per bab (2 artikel/bulan) via `node build/sync-to-blog.mjs`.

@@ -9,8 +9,9 @@
 - Estimasi total: **±195–260 halaman (du ~220)** pada format PDF/A5.
 - Struktur: 4 bagian, 10 bab + front/back matter.
 - Pola per bab: **1 bab ≈ 1 artikel blog ≈ 1 notebook Colab.**
-- **1 buku = 1 DOI Zenodo** (PDF+DOCX utuh), versi bertambah tiap milestone rilis:
-  v1.0 (Bab 1–5) → v1.1 (Bab 6–9) → v2.0 (lengkap 10 bab).
+- **1 buku = 1 DOI Zenodo** (PDF+DOCX utuh), konsep versi yang dipakai:
+  **v2.0 = lengkap 10 bab** (rilis publik pertama; v1.0–v1.1 adalah *milestone*
+  internal pembangunan, tidak pernah dirilis publik).
 - Setiap bab berdiri sendiri; sidebar "Prasyarat: Bab …" memetakan urutan baca; notasi &
   terminologi seragam di seluruh buku (istilah Indonesia + Inggris di pemunculan pertama).
 
@@ -26,7 +27,7 @@ agar satu buku utuh terasa seimbang & pantas di Zenodo:
 | 3 | 3.000–3.500 | Tambah contoh confusion matrix + trade-off threshold |
 | 4 | 3.500–4.000 | Kalkulasi backprop tertulis (langkah demi langkah) |
 | 5 | 3.500–4.000 | Tambah studi mini sample imbalance |
-| 6 | 3.500–4.000 | Tambah studi data BMKG/ERA5 nyata |
+| 6 | 3.500–4.000 | Tambah studi data ERA5/CHIRPS nyata |
 | 7 | 4.000–4.500 | Tambah jadwal multi-step & perbandingan univariate/multivariate |
 | 8 | 4.000–4.500 | Perdalam framing analisis harmonik vs ML |
 | 9 | 4.000–4.500 | Table verifikasi kategori + interpretasi |
@@ -52,7 +53,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 4. **Mengevaluasi** model dengan metrik yang tepat untuk konteks operasional — MAE/RMSE
    untuk regresi, CSI/FAR/POD untuk kejadian ekstrem — serta membandingkannya dengan
    baseline (Bab 2, 5, 8–9).
-5. **Mereproduksi** studi kasus end-to-end pasang surut Kapuas dan curah hujan BMKG,
+5. **Mereproduksi** studi kasus end-to-end pasang surut Kapuas dan curah hujan (data terbuka),
    menginterpretasi hasil, dan mengenali batas model (Bab 8–9).
 6. **Mengomunikasikan** hasil model kepada praktisi/penentu kebijakan secara jujur,
    termasuk keterbatasan, ketidakpastian, dan implikasi etika (Bab 10).
@@ -211,7 +212,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 `manuscripts/ch-06-data-meteorologi/master.md` · ±18–24 hal
 
 - **Tujuan pembelajaran:** setelah bab ini, pembaca mampu:
-  1. Mengambil dan menghubungkan data meteorologi Indonesia (BMKG, ERA5, pasang surut)
+  1. Mengambil dan menghubungkan data meteorologi Indonesia (GHCND, ERA5, pasang surut)
      beserta lisensi dan batasannya.
   2. Membaca/menulis format CSV, NetCDF, GRIB dan menangani nilai hilang, outlier, serta
      imputasi dasar.
@@ -219,7 +220,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
      engineering (lag, musiman, ENSO/MJO).
   4. Menerapkan normalisasi (fit pada train) dan split berbasis waktu anti-leakage.
 - **Isi:**
-  1. Sumber data: **stasiun BMKG**, reanalysis **ERA5** (Copernicus), CMIP6, **pasang surut
+  1. Sumber data: **stasiun GHCN-Daily & grid CHIRPS**, reanalysis **ERA5** (Copernicus), CMIP6, **pasang surut
      (PSMSL/IOC/BIG)**, satelit. Lisensi & batasan akses.
   2. Format: CSV, NetCDF, GRIB; tooling xarray, netCDF4.
   3. Kualitas: nilai hilang, outlier, imputasi dasar.
@@ -227,10 +228,10 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   5. Feature engineering: lag, indikator musiman, **ENSO/MJO sebagai fitur contoh**.
   6. Normalisasi (fit **hanya** pada train); split berbasis waktu + anti-leakage.
 - **Notebook:** `05_persiapan_data` (hujan harian + fitur ERA5).
-- **Latihan:** bangun dataset sendiri dari BMKG/ERA5 untuk stasiun pilihan.
+- **Latihan:** bangun dataset sendiri dari ERA5/CHIRPS/GHCND untuk titik pilihan.
 - **SEO:** "data cuaca untuk machine learning", "dataset meteorologi Indonesia",
-  "tutorial ERA5", "data curah hujan BMKG".
-- **Blog:** 2–3 artikel (tutorial data BMKG; tutorial ERA5; checklist kualitas).
+  "tutorial ERA5", "data curah hujan terbuka".
+- **Blog:** 2–3 artikel (tutorial data terbuka; tutorial ERA5; checklist kualitas).
 
 ---
 
@@ -301,18 +302,18 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 
 ---
 
-### Bab 9 — Studi Kasus: Prediksi Curah Hujan Stasiun BMKG
-`manuscripts/ch-09-studi-kasus-curah-hujan-bmkg/master.md` · ±22–30 hal
+### Bab 9 — Studi Kasus: Prediksi Curah Hujan dengan Data Terbuka
+`manuscripts/ch-09-studi-kasus-curah-hujan-terbuka/master.md` · ±22–30 hal
 
 - **Tujuan pembelajaran:** setelah bab ini, pembaca mampu:
-  1. Membangun prediktor hujan stasiun BMKG (regresi jumlah hujan + klasifikasi intensitas).
+  1. Membangun prediktor hujan harian (data terbuka; regresi jumlah hujan + klasifikasi intensitas).
   2. Menerapkan verifikasi operasional dengan CSI/FAR/POD dan trade-off threshold.
   3. Membandingkan walk-forward vs baseline (persistence, klimatologi, ARIMA singkat).
   4. Melakukan interpretasi awal (permutation importance/SHAP) dan menyusun tabel verifikasi
      per kategori.
 - **Isi:**
-  1. Konteks layanan (BBMKG, peringatan dini) tanpa sensasionalisme.
-  2. Data hujan harian stasiun + fitur regional ERA5 + musiman.
+  1. Konteks layanan (peringatan dini) tanpa sensasionalisme.
+  2. Data hujan harian titik grid (CHIRPS) + fitur ERA5/ERA5-Land + indeks iklim.
   3. Dua lintasan:
      - Regresi jumlah hujan (MAE + metrik domain).
      - Klasifikasi hujan/tidak & kategori intensitas dengan **CSI/FAR/POD + trade-off threshold**.
@@ -322,7 +323,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 - **Reproduksibilitas:** sumber data, lisensi, pipeline, seed, versi/**DOI**.
 - **Latihan:** model untuk stasiun pola berbeda (Indonesia timur vs barat).
 - **SEO:** "prediksi curah hujan machine learning", "prediksi hujan LSTM",
-  "machine learning BMKG".
+  "machine learning cuaca".
 - **Blog:** 3–4 artikel + **video YouTube** (Fase II).
 
 ---
@@ -349,27 +350,41 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   5. **Arah riset:** CNN & data spasial (nowcasting radar/satelit, downscaling),
      transfer learning (singkat), **diffusion/generative untuk imputasi data & skenario iklim**.
   6. Komunitas & peta belajar lanjut.
-- **Blog:** artikel "deep learning operasional BMKG" + peta belajar lanjut.
+- **Blog:** artikel "deep learning operasional cuaca" + peta belajar lanjut.
 - **SEO:** "deep learning operasional cuaca", "arah riset AI meteorologi",
   "nowcasting machine learning".
 
 ---
 
-## Front & Back Matter (±15–25 hal)
+## Front & Back Matter (±20–30 hal)
+
+Urutan berkas mengikuti urutan baca dalam buku (konvensi standar buku ilmiah).
 
 - **Front matter:** 
-  - `front-matter/00-halaman-judul.md` — halaman judul (judul, edisi, DOI, lisensi).
+  - `front-matter/00-halaman-judul.md` — halaman judul (judul, subjudul, edisi, penulis &
+    afiliasi, DOI, lisensi, tempat & tahun).
   - `front-matter/01-hak-cipta-lisensi.md` — halaman hak cipta & lisensi (CC BY-SA 4.0 isi;
-    CC BY 4.0 kode; lisensi data mengikuti penyedia).
-  - `front-matter/02-prakata.md` — prakata (latar belakang, audiens, keterbatasan, ucapan terima kasih).
-  - `front-matter/cara-memakai-buku.md` — peta baca (sumber: `front-matter/cara-memakai-buku.md`,
-    di luar `manuscripts/`, **tidak** dirilis ke Zenodo sebagai bab ber-DOI).
-  - `front-matter/03-glosarium-notasi.md` — glosarium istilah (idiom Indonesia/*English*) & notasi matematis terpusat.
+    CC BY 4.0 kode; lisensi data mengikuti penyedia; ISBN/DOI; sitasi yang disarankan).
+  - `front-matter/02-daftar-isi.md` — daftar isi buku (seluruh bagian/bab + back matter).
+  - `front-matter/03-daftar-gambar-tabel.md` — daftar gambar dan daftar tabel.
+  - `front-matter/04-prakata.md` — prakata (latar belakang, audiens, struktur buku,
+    keterbatasan, ucapan terima kasih).
+  - `front-matter/05-cara-memakai-buku.md` — peta baca & konvensi (di luar `manuscripts/`,
+    **tidak** dirilis ke Zenodo sebagai bab ber-DOI).
+  - `front-matter/06-glosarium-notasi.md` — glosarium istilah (idiom Indonesia/*English*),
+    notasi matematis, dan singkatan terpusat.
 - **Back matter:** 
-  - `back-matter/00-daftar-pustaka.md` — daftar pustaka agregat seluruh bab (IEEE, sertakan DOI).
-  - `back-matter/01-indeks.md` — indeks tematik per bagian (untuk indeks halaman final, bangkit via LaTeX `\makeindex`).
-  - `back-matter/02-daftar-dataset-sumber.md` — daftar dataset & sumber (BMKG, ERA5, IOC/UHSLC/PSMSL, BIG, CHIRPS, ENSO/MJO) + lisensi & cara akses.
-  - `back-matter/03-daftar-notebook-doi.md` — daftar notebook Colab + DOI buku/versi.
+  - `back-matter/00-lampiran.md` — Lampiran A (reproduksibilitas & lingkungan komputasi)
+    dan Lampiran B (konvensi penulisan & penomoran aset).
+  - `back-matter/01-daftar-pustaka.md` — daftar pustaka agregat seluruh bab (IEEE, DOI,
+    selaras dengan `refs.bib` tiap bab).
+  - `back-matter/02-indeks.md` — indeks tematik per bagian (untuk indeks halaman final,
+    bangkit via LaTeX `\makeindex`).
+  - `back-matter/03-daftar-dataset-sumber.md` — daftar dataset & sumber (GHCND/CHIRPS, ERA5,
+    IOC/UHSLC/PSMSL, BIG, CHIRPS, ENSO/MJO) + lisensi & cara akses.
+  - `back-matter/04-daftar-notebook-doi.md` — daftar notebook Colab + DOI buku/versi.
+  - `back-matter/05-tentang-penulis.md` — biografi singkat penulis.
+  - `back-matter/06-kolofon.md` — kolofon (info produksi dokumen, peranti lunak, lisensi).
 
 ---
 
@@ -411,7 +426,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
      *fold* (pada k-fold), *leakage*, *walk-forward*, *skill score*, dst.
    - **TIDAK miring** (nama diri / merek / istilah KBBI yang sudah diserap): TensorFlow,
      PyTorch, Keras, NumPy, Pandas, scikit-learn, xarray, Google Colab, Python, GitHub,
-     Zenodo, DOI, ISBN, arXiv, GPU, CPU, TPU, BMKG, ERA5, ERA5-Land, BMKG, WMO, IEEE,
+     Zenodo, DOI, ISBN, arXiv, GPU, CPU, TPU, ERA5, ERA5-Land, WMO, IEEE,
      Colab, Notebook, Internet. Akronim/singkatan organisasi juga tidak miring.
    - **Penulisan pertama** untuk istilah yang punya padanan Indonesia: pakai pola
      "padanan Indonesia (*istilah Inggris*)" (mis. "tolok ukur (*baseline*)") dan
@@ -454,7 +469,7 @@ Standar sitasi seluruh bab, selaras dengan aturan IEEE di umbrella (§3.1b) dan 
 | 1 | Jurnal/prosiding *peer-reviewed*, buku teks klasik | Sumber utama klaim teknis |
 | 2 | Buku teks DL/ML (Goodfellow, Bishop, Géron, Chollet, Nielsen) | Untuk definisi & derivasi inti |
 | 3 | Dokumentasi resmi library (TensorFlow, Keras, xarray, Pandas) | Cantumkan versi API |
-| 4 | Dataset & data (BMKG, ERA5/Copernicus, PSMSL/BIG) | Wajib: lisensi, identifikasi dataset, versi, cara akses |
+| 4 | Dataset & data (ERA5/Copernicus, GHCND/CHIRPS, PSMSL/BIG) | Wajib: lisensi, identifikasi dataset, versi, cara akses |
 | 5 | Preprint (arXiv/SSRN) | Boleh bila tak ada versi peer-reviewed; tandai "preprint" |
 | 6 | Blog/artikel non-review, Wikipedia | **Hanya untuk konteks/lintasan**, bukan penguat klaim inti; usahakan diganti sumber primer |
 | ✗ | Sumber sekunder tanpa kredibilitas, tautan mati, UGC tanpa verifikasi | Jangan |
@@ -466,7 +481,7 @@ Standar sitasi seluruh bab, selaras dengan aturan IEEE di umbrella (§3.1b) dan 
 - **Kebenaran klaim:** setiap pernyataan substantif (definisi, angka, sifat matematis,
   klaim performa) harus bersitasi; data/kutipan harus bisa dilacak ke sumber.
 - **Bahasa:** preferensikan sumber berbahasa Inggris (ilmiah). Sumber berbahasa Indonesia
-  hanya dari institusi resmi (BMKG, BPP) atau jurnal nasional terindeks.
+  hanya dari institusi resmi atau jurnal nasional terindeks.
 - **Konteks meteorologi:** preferensikan literatur domain (meteo/ocean/hidro) bila ada,
   misal paper time series/pasang surut/ML-cuaca; jangan hanya kutip literatur CS.
 
@@ -479,7 +494,7 @@ Standar sitasi seluruh bab, selaras dengan aturan IEEE di umbrella (§3.1b) dan 
 - **Konsistensi lintas kanal:** istilah + sitasi yang sama di buku, blog, dan YouTube
   (minimal satu sitasi primer per artikel/video).
 - **Konteks gambar & data:** setiap gambar/tabel yang diambil memberi atribusi + lisensi di
-  keterangan; data disebutkan sumbernya, bukan hanya "BMKG" tanpa spesifik.
+  keterangan; data disebutkan sumbernya secara spesifik.
 - **Self-citation:** kutip DOI buku sendiri (melalui `bookDOI` pada bab terkait)
   diperbolehkan secukupnya, tidak berlebihan, dan jangan jadi mayoritas referensi.
 
@@ -550,7 +565,7 @@ Setelah evaluasi lolos:
 1. **DOI Zenodo** — daftarkan buku utuh (PDF+DOCX `releases/`), konsep versi untuk revisi
    berikutnya; salin ke `bookDOI` semua bab.
 2. **ISBN** — daftarkan buku (untuk versi cetak/standar internasional).
-3. **GitHub publik** — buka repo (book + kode), rilis `v1.0.0` dengan tag.
+3. **GitHub publik** — buka repo (book + kode), rilis `v2.0.0` dengan tag.
 4. **Blog** — posting **2 artikel/bulan** berbasis bab (dari buku final), lengkap dengan
    notebook & figur; sinkronkan via `node build/sync-to-blog.mjs`.
 

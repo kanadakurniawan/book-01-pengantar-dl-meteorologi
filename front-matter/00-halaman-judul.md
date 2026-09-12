@@ -1,33 +1,39 @@
 ---
 title: "Halaman Judul"
 book: "Pengantar Deep Learning untuk Meteorologi"
-author: "Kanada Kurniawan"
 ---
 
-# Pengantar Deep Learning untuk Meteorologi
+**PENGANTAR DEEP LEARNING UNTUK METEOROLOGI**
 
-### Dari Praktisi untuk Praktisi di Indonesia
+*Dari Praktisi untuk Praktisi di Indonesia*
+
+&nbsp;
 
 **Kanada Kurniawan**
 
 Meteorology Officer — BMKG
 Stasiun Meteorologi Kelas III Maritim Dwikora, Pontianak
+Indonesia
 
----
+&nbsp;
 
-*Pengantar Deep Learning untuk Meteorologi* adalah buku pengenalan open-source
-bahasa Indonesia yang ditulis untuk mahasiswa kebumian dan praktisi meteorologi.
-Buku ini memadukan konsep *deep learning* dengan contoh data meteorologi
-Indonesia, disertai notebook yang dapat dijalankan di Google Colab.
+Edisi 2.0 — Lengkap, 10 bab
 
-**Edisi**: v2.0 (lengkap 10 bab)
+&nbsp;
 
-**DOI buku**: 10.5281/zenodo.0000000 *(placeholder — diperbarui saat rilis)*
+**DOI:** 10.5281/zenodo.0000000 *(placeholder — diperbarui saat rilis)*
+**Lisensi:** CC BY-SA 4.0 (isi) · CC BY 4.0 (kode) · lisensi data mengikuti penyedia
 
-**Lisensi**: CC-BY-SA 4.0 (isi), CC-BY 4.0 (kode)
+&nbsp;
 
----
+Pontianak, Indonesia — September 2026
 
-*Buku ini adalah materi pengenalan, bukan hasil riset baru. Seluruh isi merupakan
-ringkasan dan penyusunan ulang dari literatur klasik machine learning, dengan
-contoh-contoh yang dekat dengan dunia meteorologi Indonesia.*
+\newpage
+
+Buku ini ditujukan sebagai **materi pengenalan** (*introductory material*), bukan hasil riset baru.
+Seluruh isi merupakan ringkasan dan penyusunan ulang dari literatur klasik *machine learning*,
+dengan contoh-contoh yang dekat dengan dunia meteorologi Indonesia. Kutip silang dan definisi
+lengkap istilah tersedia di bagian "Glosarium dan Notasi"; sumber data yang dipakai dicantumkan
+di bagian "Daftar Dataset dan Sumber" pada bagian akhir buku.
+
+Versi dokumen ini: **v2.0** · Manuskrip sumber & kode pendamping tersedia secara terbuka.

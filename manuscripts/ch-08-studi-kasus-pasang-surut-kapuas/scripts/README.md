@@ -73,15 +73,20 @@ PSMSL ID untuk station Indonesia umum: 1709 (Bitung II), 1752 (Sibolga II),
 
 ## Catatan
 
+- **Hanya ~30 hari terakhir dari IOC**: endpoint `bgraph.php` mengembalikan data
+  *real-time* maksimal ±30 hari terakhir; ia **tidak** melayani arsip historis meski
+  `--start/--end` diberikan (parameter itu hanya memfilter jendela 30 hari). Untuk
+  deret panjang (berbulan-bertahun) gunakan **UHSLC ERDDAP** (`--source uhslc`),
+  yang menyediakan data *research quality* hourly harian. UHSLC kadang tidak
+  terjangkau dari sebagian jaringan (timeout); bila begitu, IOC 30 hari tetap
+  bisa dipakai untuk demo pipeline atau simulasi gap.
 - **Toleransi rate-limit**: skrip menunggu 1 detik antar-request IOC; untuk periode
   panjang, ini bisa memakan waktu beberapa menit. Tidak ada rate-limit keras di
   endpoint publik, tapi bersikap sopan adalah praktik baik.
 - **Sampling IOC**: data dapat 1-menit, 3-menit, atau hourly tergantung station.
-  Skrip menyimpan semua kolom sensor yang diterima; buku hanya menggunakan
-  kolom utama (rata-rata antar-sensor).
-- **Sampling UHSLC**: hourly atau 1-menit tergantung dataset; pilih via argumen
-  `--dataset` (default: `global_hourly_rqds`).
-- **PSMSL**: hanya data bulanan MSL; tidak cocok untuk prakiraan hourly.
+  Skrip menyimpan semua kolom sensor yang diterima; kolom `tinggi` dihitung
+  **hanya dari sensor berlabel `(m)`** (misal `ra2(m)`, `ra3(m)`, `rad(m)`), bukan
+  dari `bat(V)` (tegangan baterai) atau `sw1/2(min)` agar tidak merusak besaran.
 
 ## Verifikasi cepat
 

@@ -101,7 +101,7 @@
 | Jenis | Nomor | Caption / isi | File | Dirujuk di § |
 |---|---|---|---|---|
 | Gambar | Gambar 6.1 | Distribusi curah hujan harian (ekor panjang) | `figures/fig-6-1-distribusi-hujan.png` | §6.5 |
-| Tabel | Tabel 6.1 | Sumber data utama (BMKG, ERA5, CMIP6, PSMSL, satelit) | — | §6.2 |
+| Tabel | Tabel 6.1 | Sumber data utama (GHCND/CHIRPS, ERA5, CMIP6, PSMSL, satelit) | — | §6.2 |
 | Tabel | Tabel 6.2 | Perbandingan format berkas (CSV/NetCDF/GRIB) | — | §6.3 |
 | Persamaan | (6.1) | z-score normalisasi (train) | — | §6.7 |
 | Persamaan | (6.2) | transformasi target log1p | — | §6.7 |
@@ -162,7 +162,7 @@
 | Skrip | `scripts/generate_sample.py` | Hasilkan sample CSV | — | §8.3 |
 | Skrip | `scripts/generate_figures.py` | Hasilkan Gambar 8.2 & 8.3 dari sample | — | §8.5 |
 
-### Bab 9 — Studi Kasus: Curah Hujan Stasiun BMKG
+### Bab 9 — Studi Kasus: Curah Hujan dengan Data Terbuka
 
 | Jenis | Nomor | Caption / isi | File | Dirujuk di § |
 |---|---|---|---|---|
@@ -257,7 +257,8 @@
 
 | `[n]` | Key `refs.bib` | Jenis | DOI / ISBN / arXiv | Status |
 |---|---|---|---|---|
-| [1] | `bmkg_dataonline` | Web (BMKG) | URL dataonline.bmkg.go.id | ✅ |
+| [1] | `menne2012ghcnd` | Artikel (JTECH) | 10.1175/JTECH-D-11-00103.1 | ✅ |
+| [1b] | `ghcnd_data` | Web (NOAA NCEI) | URL ncei.noaa.gov/pub/data/ghcn/daily | ✅ |
 | [2] | `c3s_era5` | Web (C3S) | URL cds.climate.copernicus.eu | ✅ |
 | [3] | `hersbach2020era5` | Artikel | 10.1002/qj.3803 | ✅ |
 | [4] | `psmsl` | Web (PSMSL) | URL psmsl.org | ✅ |
@@ -295,11 +296,12 @@
 | [9] | `holgate2013psmsl` | Artikel (JCR) | 10.2112/JCOASTRES-D-12-00175.1 | ✅ |
 | [10] | `abadi2016tensorflow` | Software/arXiv | arXiv:1603.04467 | ✅ |
 
-### Bab 9 — Studi Kasus Curah Hujan BMKG
+### Bab 9 — Studi Kasus Curah Hujan (Data Terbuka)
 
 | `[n]` | Key `refs.bib` | Jenis | DOI / ISBN / arXiv | Status |
 |---|---|---|---|---|
-| [1] | `bmkg_dataonline` | Web (BMKG) | URL dataonline.bmkg.go.id | ✅ |
+| [1] | `funk2015chirps` | Artikel (Scientific Data) | 10.1038/sdata.2015.66 | ✅ |
+| [1b] | `chirps_data` | Web (CHC UCSB) | URL data.chc.ucsb.edu/products/CHIRPS-2.0/ | ✅ |
 | [2] | `c3s_era5` | Web (C3S) | URL cds.climate.copernicus.eu | ✅ |
 | [3] | `hersbach2020era5` | Artikel | 10.1002/qj.3803 | ✅ |
 | [4] | `wheeler2004rmm` | Artikel | 10.1175/1520-0493(2004)132<1917:AARMMI>2.0.CO;2 | ✅ |

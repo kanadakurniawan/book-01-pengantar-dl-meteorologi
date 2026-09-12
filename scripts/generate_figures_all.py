@@ -263,7 +263,7 @@ def fig_9_1():
     ax.set_xlim(0, 1); ax.set_ylim(0, 1.05)
     ax.legend()
     ax.grid(alpha=0.25)
-    save(fig, MANS / "ch-09-studi-kasus-curah-hujan-bmkg/figures/fig-9-1-precision-recall.png")
+    save(fig, MANS / "ch-09-studi-kasus-curah-hujan-terbuka/figures/fig-9-1-precision-recall.png")
 
 
 # ---------------------------------------------------------------- fig-9-2
@@ -283,7 +283,7 @@ def fig_9_2():
     ax.set_ylim(0, 1.05)
     ax.legend()
     ax.grid(axis="y", alpha=0.25)
-    save(fig, MANS / "ch-09-studi-kasus-curah-hujan-bmkg/figures/fig-9-2-verifikasi-kategori.png")
+    save(fig, MANS / "ch-09-studi-kasus-curah-hujan-terbuka/figures/fig-9-2-verifikasi-kategori.png")
 
 
 # ---------------------------------------------------------------- fig-10-1

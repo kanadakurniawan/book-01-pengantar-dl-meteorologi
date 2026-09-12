@@ -1,0 +1,9 @@
+# Dependensi untuk skrip data (scripts/download_*.py)
+requests>=2.28
+pandas>=1.5
+numpy>=1.24
+xarray>=2023.1
+netCDF4>=1.6
+cdsapi>=0.7
+utide>=0.3
+tifffile>=2023.7
