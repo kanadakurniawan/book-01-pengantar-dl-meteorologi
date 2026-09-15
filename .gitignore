@@ -17,10 +17,9 @@ npm-debug.log*
 __pycache__/
 *.pyc
 
-# Data pasang surut mentah — diunduh via scripts/download_ioc.py
-# Sample kecil tetap di-commit agar notebook jalan out-of-the-box.
-manuscripts/*/data/raw/
-manuscripts/*/data/era5/
+# Data nyata yang dipakai notebook WAJIB ikut clone GitHub (jalan out-of-the-box).
+# Tidak di-ignore: manuscripts/*/data/raw/ dan manuscripts/*/data/era5/ (data nyata).
+# Build artifact tetap di-ignore.
 manuscripts/*/data/sample/.gitkeep
 !manuscripts/*/data/sample/*.csv
 !manuscripts/*/data/sample/*.md
