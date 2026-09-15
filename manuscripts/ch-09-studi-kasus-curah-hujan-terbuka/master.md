@@ -1,6 +1,6 @@
 ---
 title: "Studi Kasus: Prediksi Curah Hujan dengan Data Terbuka"
-description: "Bab 9 - proyek end-to-end prediksi curah hujan harian dengan data terbuka (CHIRPS + ERA5-Land + indeks ENSO/MJO): dua lintasan (regresi jumlah hujan dan klasifikasi kategori intensitas), fitur regional + indeks iklim, verifikasi operasional CSI/POD/FAR, trade-off threshold, interpretasi awal (SHAP), dan tabel verifikasi per kategori."
+description: "Bab 9 - proyek end-to-end prediksi curah hujan harian dengan data terbuka (CHIRPS + ERA5-Land + indeks ENSO/MJO): dua lintasan (regresi jumlah hujan dan klasifikasi kategori intensitas), fitur regional + indeks iklim, verifikasi operasional CSI/POD/FAR, trade-off threshold, interpretasi awal (permutation importance), dan tabel verifikasi per kategori."
 pubDate: 2026-09-10
 categories: ["Deep Learning", "Meteorologi"]
 tags: ["curah hujan", "CHIRPS", "ERA5", "prediksi hujan", "CSI", "FAR", "POD", "GRU", "SHAP", "walk-forward", "studi kasus"]
@@ -29,8 +29,8 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
    klasifikasi intensitas) dengan fitur regional ERA5/ERA5-Land dan indeks iklim.
 2. **Menerapkan** verifikasi operasional dengan CSI/POD/FAR dan trade-off threshold.
 3. **Membandingkan** *walk-forward* vs baseline (persistence, klimatologi, ARIMA singkat).
-4. **Melakukan** interpretasi awal (SHAP) dan menyusun tabel verifikasi per kategori
-   intensitas.
+4. **Melakukan** interpretasi awal (*permutation importance*; SHAP penuh di Bab 10)
+   dan menyusun tabel verifikasi per kategori intensitas.
 
 ## 9.1 Konteks Pelayanan dan Kejujuran Framing
 
@@ -356,7 +356,7 @@ meniru mayoritas.
 Deep learning "kotak hitam" menjadi masalah untuk kepercayaan operasional. Interpretasi
 **global** (fitur apa yang paling berpengaruh) dan **lokal** (mengapa satu prediksi
 tertentu) dibahas penuh di Bab 10; di sini kita mulai dengan **permutation importance**
-dan **SHAP** sederhana pada model yang sudah dilatih.
+  pada model yang sudah dilatih (SHAP penuh di Bab 10).
 
 **Kode 9.2 - Permutation importance sederhana.**
 
