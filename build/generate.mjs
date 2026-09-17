@@ -8,6 +8,9 @@ const manuscriptsDir = join(root, 'manuscripts');
 const frontMatterDir = join(root, 'front-matter');
 const backMatterDir = join(root, 'back-matter');
 const releasesDir = join(root, 'releases');
+const previewDir = join(root, 'preview');
+
+const bookTitle = 'Pengantar Deep Learning untuk Meteorologi';
 
 function hasTool(name) {
 	try {
@@ -18,30 +21,50 @@ function hasTool(name) {
 	}
 }
 
+// --- Mode -----------------------------------------------------------------
+// Zonder `--version`     -> PREVIEW: cuma 1 file PDF buku utuh naar `preview/`,
+//                           folder wordt elke keer overschreven. Geen versie,
+//                           geen MANIFEST, geen 'rilis'.
+// Met `--version=vX.Y.Z` -> RELEASE: volledige bundel naar `releases/<versie>/`
+//                           (PDF+DOCX buku utuh, per bab, MANIFEST.md).
 const args = process.argv.slice(2);
 const versionArg = args.find((a) => a.startsWith('--version='));
-if (!versionArg) {
-	console.error('Usage: node build/generate.mjs --version=v2.0.0');
+const bareVersionFlag = args.includes('--version');
+const isPreview = !versionArg && !bareVersionFlag;
+let version = null;
+if (versionArg) {
+	version = versionArg.split('=')[1].trim();
+	if (!/^v\d+\.\d+\.\d+$/.test(version)) {
+		console.error('Usage: node build/generate.mjs --version=vX.Y.Z (of zonder --version voor preview)');
+		process.exit(1);
+	}
+} else if (bareVersionFlag) {
+	console.error('--version vereist een waarde: --version=vX.Y.Z (of laat --version weg voor preview)');
 	process.exit(1);
 }
-const version = versionArg.split('=')[1];
-const releaseDir = join(releasesDir, version);
-mkdirSync(releaseDir, { recursive: true });
+const outDir = isPreview ? previewDir : join(releasesDir, version);
+
+if (isPreview) {
+	rmSync(previewDir, { recursive: true, force: true });
+}
+mkdirSync(outDir, { recursive: true });
 
 const hasPandoc = hasTool('pandoc');
 const hasLatex = hasTool('pdflatex') || hasTool('xelatex') || hasTool('lualatex');
 
-console.log(`Generating release ${version}`);
+console.log(
+	`Generating ${isPreview ? `PREVIEW (cuma liat format, naar ${outDir})` : `RELEASE ${version} (naar ${outDir})`}`,
+);
 console.log(`  pandoc: ${hasPandoc ? 'OK' : 'TIDAK ADA'} | LaTeX: ${hasLatex ? 'OK' : 'TIDAK ADA'}`);
 
-// --- Utilitas Markdown -------------------------------------------------------
+// --- Utilitas Markdown ----------------------------------------------------
 
 /** Strip blok front matter YAML (--- ... ---) di awal berkas. */
 function stripFrontmatter(text) {
 	return text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '');
 }
 
-/** Tulis ulang path gambar `figures/...` menjadi absolut (buku utuh di-release-dir). */
+/** Tulis ulang path gambar `figures/...` menjadi absolut (buku utuh di-out-dir). */
 function rewriteFigurePaths(content, chDir) {
 	return content.replace(/!\[([^\]]*)\]\(figures\/([^)]+)\)/g, (_m, alt, src) => {
 		const full = join(manuscriptsDir, chDir, 'figures', src);
@@ -65,7 +88,7 @@ function loadSectionFiles(dir, { excludeNames = [] } = {}) {
 		});
 }
 
-// --- Buku utuh (front matter + bab + back matter) ----------------------------
+// --- Sumber (front matter + bab + back matter) ------------------------------
 
 const chapterDirs = readdirSync(manuscriptsDir, { withFileTypes: true })
 	.filter((d) => d.isDirectory() && !d.name.startsWith('.'))
@@ -77,10 +100,9 @@ if (chapterDirs.length === 0) {
 	process.exit(0);
 }
 
-// Daftar Isi disimpan sebagai berkas `02-daftar-isi.md` dan disertakan pada
-// posisi yang benar (setelah hak cipta & lisensi). Untuk edisi cetak yang
-// membutuhkan nomor halaman, tambahkan flag `--toc` pada perintah pandoc
-// (TOC otomatis) dan pindahkan letaknya sesuai urutan standar buku.
+// Daftar Isi disimpan sebagai berkas `02-daftar-isi.md` en disertakan pada
+// posisi die correct is (na hak cipta & lisensi). Voor edisi cetak die
+// paginanummers nodig heeft, voeg `--toc` toe aan het pandoc-commando.
 const frontMatter = loadSectionFiles(frontMatterDir);
 const backMatter = loadSectionFiles(backMatterDir);
 
@@ -96,82 +118,90 @@ const chapters = chapterDirs
 	})
 	.filter(Boolean);
 
-const bookTitle = 'Pengantar Deep Learning untuk Meteorologi';
+if (!hasPandoc) {
+	console.warn('  SKIP build: pandoc tidak terpasang. Install dari https://pandoc.org');
+	process.exit(0);
+}
 
-if (hasPandoc) {
-	const orderedFiles = [
-		...frontMatter.map((f) => f.content),
-		...chapters.map((c) => c.content),
-		...backMatter.map((f) => f.content),
-	].map((content, i) =>
-		// Halaman baru antar bagian (PDF); raw LaTeX diabaikan di DOCX.
-		`${i === 0 ? '' : '\\newpage\n\n'}${content}`,
-	);
+const orderedFiles = [
+	...frontMatter.map((f) => f.content),
+	...chapters.map((c) => c.content),
+	...backMatter.map((f) => f.content),
+].map((content, i) =>
+	// Halaman baru antar bagian (PDF); raw LaTeX diabaikan di DOCX.
+	`${i === 0 ? '' : '\\newpage\n\n'}${content}`,
+);
 
-	const bookMd = join(releaseDir, '_buku-utuh.md');
-	writeFileSync(bookMd, orderedFiles.join('\n\n'), 'utf8');
+const bookMd = join(outDir, '_buku-utuh.md');
+writeFileSync(bookMd, orderedFiles.join('\n\n'), 'utf8');
 
-	// Bangun DOCX
+// --- Buku utuh PDF (altijd; bij preview de enige output) --------------------
+
+if (hasLatex) {
 	try {
 		execSync(
 			`pandoc "${bookMd}" --metadata title="${bookTitle}" ` +
 				`--metadata author="Kanada Kurniawan" --metadata lang=id ` +
-				`-o "${join(releaseDir, 'buku-pengantar-dl-meteorologi.docx')}"`,
+				`--pdf-engine=xelatex -o "${join(outDir, 'buku-pengantar-dl-meteorologi.pdf')}"`,
 			{ stdio: 'ignore' },
 		);
-		console.log(`  OK  buku-pengantar-dl-meteorologi.docx (buku utuh)`);
+		console.log('  OK  buku-pengantar-dl-meteorologi.pdf (buku utuh)');
 	} catch (e) {
-		console.error(`  GAGAL docx buku utuh: ${e.message}`);
-	}
-
-	// Bangun PDF
-	if (hasLatex) {
-		try {
-			execSync(
-				`pandoc "${bookMd}" --metadata title="${bookTitle}" ` +
-					`--metadata author="Kanada Kurniawan" --metadata lang=id ` +
-					`--pdf-engine=xelatex -o "${join(releaseDir, 'buku-pengantar-dl-meteorologi.pdf')}"`,
-				{ stdio: 'ignore' },
-			);
-			console.log(`  OK  buku-pengantar-dl-meteorologi.pdf (buku utuh)`);
-		} catch (e) {
-			console.error(`  GAGAL pdf buku utuh: ${e.message}`);
-		}
-	} else {
-		console.warn(`  SKIP buku utuh .pdf (LaTeX tidak terpasang)`);
-	}
-
-	rmSync(bookMd, { force: true });
-
-	// Output per bab (dengan citeproc bila ada refs.bib) — tetap dipertahankan.
-	for (const ch of chapters) {
-		const bib = join(manuscriptsDir, ch.name, 'refs.bib');
-		const chDir = join(manuscriptsDir, ch.name);
-		const outBase = join(releaseDir, ch.name);
-		const bibOpts = existsSync(bib) ? `--citeproc --bibliography="${bib}"` : '';
-		const resOpts = `--resource-path="${chDir}"`;
-		try {
-			execSync(`pandoc "${ch.path}" ${bibOpts} ${resOpts} -o "${outBase}.docx"`, { stdio: 'ignore' });
-			console.log(`  OK  ${ch.name}.docx`);
-		} catch (e) {
-			console.error(`  GAGAL docx ${ch.name}: ${e.message}`);
-		}
-		if (hasLatex) {
-			try {
-				execSync(`pandoc "${ch.path}" ${bibOpts} ${resOpts} -o "${outBase}.pdf" --pdf-engine=xelatex`, {
-					stdio: 'ignore',
-				});
-				console.log(`  OK  ${ch.name}.pdf`);
-			} catch (e) {
-				console.error(`  GAGAL pdf ${ch.name}: ${e.message}`);
-			}
-		} else {
-			console.warn(`  SKIP ${ch.name}.pdf (LaTeX tidak terpasang)`);
-		}
+		console.error(`  GAGAL pdf buku utuh: ${e.message}`);
 	}
 } else {
-	console.warn('  SKIP build: pandoc tidak terpasang. Install dari https://pandoc.org');
+	console.warn('  SKIP buku utuh .pdf (LaTeX tidak terpasang)');
 }
+
+if (isPreview) {
+	rmSync(bookMd, { force: true });
+	console.log(`Selesai. Preview (1 file): ${join(outDir, 'buku-pengantar-dl-meteorologi.pdf')}`);
+	process.exit(0);
+}
+
+// --- RELEASE only: DOCX buku utuh -------------------------------------------
+
+try {
+	execSync(
+		`pandoc "${bookMd}" --metadata title="${bookTitle}" ` +
+			`--metadata author="Kanada Kurniawan" --metadata lang=id ` +
+			`-o "${join(outDir, 'buku-pengantar-dl-meteorologi.docx')}"`,
+		{ stdio: 'ignore' },
+	);
+	console.log('  OK  buku-pengantar-dl-meteorologi.docx (buku utuh)');
+} catch (e) {
+	console.error(`  GAGAL docx buku utuh: ${e.message}`);
+}
+
+// --- RELEASE only: output per bab (met citeproc bila er refs.bib is) ---------
+
+for (const ch of chapters) {
+	const bib = join(manuscriptsDir, ch.name, 'refs.bib');
+	const chDir = join(manuscriptsDir, ch.name);
+	const outBase = join(outDir, ch.name);
+	const bibOpts = existsSync(bib) ? `--citeproc --bibliography="${bib}"` : '';
+	const resOpts = `--resource-path="${chDir}"`;
+	try {
+		execSync(`pandoc "${ch.path}" ${bibOpts} ${resOpts} -o "${outBase}.docx"`, { stdio: 'ignore' });
+		console.log(`  OK  ${ch.name}.docx`);
+	} catch (e) {
+		console.error(`  GAGAL docx ${ch.name}: ${e.message}`);
+	}
+	if (hasLatex) {
+		try {
+			execSync(`pandoc "${ch.path}" ${bibOpts} ${resOpts} -o "${outBase}.pdf" --pdf-engine=xelatex`, {
+				stdio: 'ignore',
+			});
+			console.log(`  OK  ${ch.name}.pdf`);
+		} catch (e) {
+			console.error(`  GAGAL pdf ${ch.name}: ${e.message}`);
+		}
+	} else {
+		console.warn(`  SKIP ${ch.name}.pdf (LaTeX tidak terpasang)`);
+	}
+}
+
+rmSync(bookMd, { force: true });
 
 // Manifes rilis
 const manifest = [
@@ -185,6 +215,6 @@ const manifest = [
 	`- Output per bab: \`ch-<NN>-*/master.md\` → \`ch-<NN>-*.pdf\` / \`ch-<NN>-*.docx\``,
 	`- Sumber: \`front-matter/\`, \`manuscripts/\`, \`back-matter/\` (lihat README)`,
 ].join('\n');
-writeFileSync(join(releaseDir, 'MANIFEST.md'), manifest, 'utf8');
+writeFileSync(join(outDir, 'MANIFEST.md'), manifest, 'utf8');
 
-console.log(`Selesai. Rilis: ${releaseDir}`);
+console.log(`Selesai. Rilis: ${outDir}`);

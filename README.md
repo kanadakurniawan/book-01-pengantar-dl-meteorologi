@@ -23,6 +23,14 @@ Setiap **bab adalah satu artikel blog** yang:
    ```
 
 **Satu buku = satu DOI Zenodo.** PDF/DOCX utuh buku dirilis di `releases/` per versi.
+Build lokal tadi preview (cuma liat format, 1 file PDF naar `preview/`, tidak rilis):
+```
+npm run preview
+```
+Rilis resmi (bundel volledig naar `releases/<versie>/`):
+```
+npm run generate -- --version=v2.0.0
+```
 Karena seluruh 10 bab sudah selesai, rilis publik pertama langsung lengkap (v2.0);
 versi berikutnya (v2.1, v3.0) menandai revisi, bukan penambahan bab. Tiap bab relatif
 singkat (artikel panjang), sehingga tidak dipublikasikan per-bab di Zenodo; sitasi
@@ -62,9 +70,10 @@ sitasi — versi baru naik di Zenodo, concept DOI tetap sama.
 │   └── 06-kolofon.md
 ├── notebooks/               # notebook Colab (nama berawalan bab: ch-01-*.ipynb)
 ├── releases/
-│   └── v2.0.0/              # snapshot tiap rilis (PDF+DOCX) → untuk Zenodo
+│   └── v2.0.0/              # snapshot tiap rilis (PDF+DOCX) → voor Zenodo
+├── preview/                 # preview build (1 PDF, steeds overschreven, geen rilis)
 └── build/
-    ├── generate.mjs         # master.md → buku utuh (PDF + DOCX) per versi
+    ├── generate.mjs         # 2 modi: zonder --version → preview/; met --version=vX → releases/vX/
     └── sync-to-blog.mjs     # sinkronkan master+figures+notebooks → blog (site/src/content/book)
 ```
 
@@ -101,9 +110,14 @@ Tanpa lolos Fase 2, tidak ada publikasi (Zenodo/ISBN/GitHub publik/blog).
 
 ## Alur Kerja Rilis (saat milestone tercapai)
 
-1. Generate bundel buku:
+0. Preview format dulu (iterar tanpa komsumi nomor versi):
    ```
-   node build/generate.mjs --version=v2.0.0
+   npm run preview
+   ```
+   → `preview/buku-pengantar-dl-meteorologi.pdf`. Diskusi/check; herhal sampai siap.
+1. Generate bundel buku (rilis resmi):
+   ```
+   npm run generate -- --version=v2.0.0
    ```
 2. Unggah `releases/v2.0.0/` ke Zenodo → dapat **satu DOI buku**, salin ke field
    `bookDOI` di semua bab.

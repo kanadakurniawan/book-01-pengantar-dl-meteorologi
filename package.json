@@ -6,6 +6,7 @@
   "scripts": {
     "sync": "node build/sync-to-blog.mjs",
     "watch": "node build/watch.mjs",
+    "preview": "node build/generate.mjs",
     "generate": "node build/generate.mjs"
   },
   "description": "Buku 'Pengantar Deep Learning untuk Meteorologi' — manuscript, release, dan sinkronisasi ke blog."

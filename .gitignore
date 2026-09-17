@@ -1,5 +1,6 @@
 # Build artifacts (regenerate via node build/generate.mjs)
 releases/
+preview/
 
 # OS
 .DS_Store
