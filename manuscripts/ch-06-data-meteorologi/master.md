@@ -93,11 +93,11 @@ dipakai.
 | Sumber | Jenis data | Resolusi | Akses | Catatan lisensi & kutip |
 |---|---|---|---|---|
 | GHCN-Daily (NOAA) | Observasi suhu, hujan, dll. - stasiun global termasuk Indonesia | Harian, per stasiun | `ncei.noaa.gov/pub/data/ghcn/daily` [1] | Publik (domain publik AS); kutip Menne et al. [1] |
-| ERA5 / ERA5-Land (Copernicus) | *Reanalysis* suhu, hujan, angin, dll. | ±0.25° (~31 km) / ±0.1° (~9 km), per jam | Copernicus Climate Data Store [2] | Lisensi CC-BY untuk C3S; kutip Hersbach et al. [3] |
+| ERA5 / ERA5-Land (Copernicus) | *Reanalysis* suhu, hujan, angin, dll. | ±0.25° (~31 km) / ±0.1° (~9 km), per jam | Copernicus Climate Data Store [2] | Lisensi terbuka (setara CC-BY); kutip Hersbach et al. [3] |
 | CMIP6 | Proyeksi iklim (skenario) | Lebih kasar, bulanan-harian | ESGF / Copernicus | Untuk konteks jangka panjang, Bab 10 |
-| PSMSL / IOC / BIG | Muka laut / pasang surut | Menit-jam, per stasiun | `psmsl.org` [4], `tides.big.go.id` [5] | Gratis; sertakan rujukan data & bottle/stasiun |
+| PSMSL / IOC / BIG | Muka laut / pasang surut | Menit-jam, per stasiun | `psmsl.org` [4], `tides.big.go.id` [5] | Gratis; IOC non-komersial (CC BY-NC 4.0); sertakan rujukan data & bottle/stasiun |
 | GSMaP (JAXA) | Hujan satelit+kalibrasi | 0.1°, 3 jam-harian | `sharaku.eorc.jaxa.jp` [11] | Kutip paper pembuat |
-| CHIRPS (CHC UCSB) | Hujan satelit+kalibrasi | ±0.05° (~5 km), harian | CHC UCSB [6] | Kutip paper pembuat |
+| CHIRPS (CHC UCSB) | Hujan satelit+kalibrasi | ±0.05° (~5 km), harian | CHC UCSB [6] | Domain publik; kutip paper pembuat |
 
 **Catatan penting:** stasiun GHCND [1] (termasuk sejumlah stasiun Indonesia pada jaringan
 GSN) adalah sumber "kebenaran lokal" yang terbuka, tetapi tidak merata spasial dan kadang

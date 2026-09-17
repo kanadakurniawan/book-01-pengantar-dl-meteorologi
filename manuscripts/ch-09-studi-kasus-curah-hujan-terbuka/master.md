@@ -97,7 +97,7 @@ df["era5_tp_mm"] = df["era5_tp"] * 1000.0        # meter -> mm
 df["era5_tp_harian"] = df["era5_tp_mm"].resample("24h", offset="7h").sum()
 ```
 
-Lisensi data: semua sumber terbuka - CHIRPS (CC-BY, kutip Funk et al. 2015 [1]),
+Lisensi data: semua sumber terbuka - CHIRPS (domain publik, kutip Funk et al. 2015 [1]),
 ERA5/ERA5-Land di bawah Copernicus Climate Data Store license [2][3], NOAA/BoM dengan
 attribution sesuai sumber (Bab 6 §6.9). Tidak ada data berizin/rahasia yang dipakai.
 

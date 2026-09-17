@@ -175,7 +175,8 @@ astronomis", machine learning praktis.
 
 Untuk pembaca yang ingin mereproduksi studi kasus ini dengan data nyata, tiga sumber
 utama dipakai buku ini. Semuanya **terbuka dan gratis untuk riset/pendidikan** dengan
-atribusi (lihat catatan lisensi di bawah).
+atribusi (rincian lisensi dan batasannya ada pada "Catatan lisensi dan penggunaan"
+di bawah).
 
 ### Sumber data
 
@@ -204,6 +205,30 @@ Selain itu:
 - **BIG (tides.big.go.id)** [1] - tabel pasut harmonik per lokasi (komponen
   konstituen, amplitudo, fase) yang dipakai BIG untuk prakiraan operasional; tidak
   menyediakan time-series tinggi air mentah yang mudah di-curl otomatis.
+
+### Catatan lisensi dan penggunaan
+
+Lisensi tiap sumber **berbeda dengan lisensi buku** (CC BY-SA 4.0 yang mengizinkan
+penggunaan komersial):
+
+- **UNESCO/IOC Sea Level Station Monitoring Facility** [2] - **CC BY-NC 4.0
+  (non-komersial)** per catatan resmi dataset (DOI 10.14284/482). Gratis untuk
+  riset/pendidikan dan prakiraan operasional, tetapi **tidak boleh dipakai untuk
+  produk/jasa komersial**; turunan dari data ini tetap non-komersial. Penggunaan di
+  luar ketentuan tersebut memerlukan izin dari penyedia data (*data originator*)
+  yang bersangkutan.
+- **UHSLC** [4] - gratis untuk riset/pendidikan; sertakan atribusi
+  "University of Hawaii Sea Level Center"; untuk penggunaan di luar itu, periksa
+  kebijakan UHSLC saat mengunduh.
+- **PSMSL** [3] - gratis; wajib menyertakan sitasi dataset (Holgate et al. 2013)
+  dan referensi data/stasiun.
+- **BIG (tides.big.go.id)** [1] - publik untuk keperluan informasi pasut; atribusi
+  BIG dianjurkan.
+
+Karena buku ini berlisensi **CC BY-SA 4.0** (penggunaan komersial diperbolehkan),
+jika Anda menggabungkan data **non-komersial** (IOC) ke dalam produk turunan,
+kewajiban non-komersial dari data tersebut **tetap berlaku** - cantumkan peringatan
+eksplisit di produk Anda.
 
 ### Station Indonesia yang datanya tersedia di sumber terbuka
 

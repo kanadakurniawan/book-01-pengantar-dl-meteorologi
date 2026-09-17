@@ -11,7 +11,7 @@ data ke dalam repo (lihat `.gitignore` untuk pengecualian); ia hanya menulis ke
 
 | Sumber | Fungsi | Lisensi | Atribusi |
 |---|---|---|---|
-| UNESCO/IOC Sea Level Station Monitoring Facility | Real-time / near real-time (max 30 hari/request) | Gratis riset/pendidikan | "IOC Sea Level Station Monitoring Facility" |
+| UNESCO/IOC Sea Level Station Monitoring Facility | Real-time / near real-time (max 30 hari/request) | Gratis riset/pendidikan; **CC BY-NC 4.0 (non-komersial)** — tidak untuk penggunaan komersial | "IOC Sea Level Station Monitoring Facility" |
 | UHSLC (University of Hawaii Sea Level Center) | Hourly & daily research-quality (arsip panjang) | Gratis riset/pendidikan | "University of Hawaii Sea Level Center" |
 | PSMSL | Rata-rata MSL bulanan jangka panjang | Gratis riset dengan sitasi Holgate (2013) | Holgate, S. J. (2013), J. Coast. Res. 29(3) |
 
