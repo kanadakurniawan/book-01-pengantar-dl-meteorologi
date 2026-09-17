@@ -203,6 +203,12 @@ Catatan: `class_weight` mengubah distribusi yang "dilihat" model, jadi angka POD
 harus dievaluasi dengan data asli (tidak seimbang) - jangan mengevaluasi pada data yang
 sudah di-resample.
 
+Peringatan khusus deret waktu: **hindari *oversampling* acak (mis. SMOTE)** pada data
+hujan harian. Menyalin atau mensintesis contoh secara acak merusak kontinuitas temporal
+(window "baru" bisa berisi hari yang sama dari masa depan) dan membuat evaluasi bocor.
+Untuk deret waktu, `class_weight` (Bab 3 §3.6) dan pergeseran *threshold* (Bab 9.4)
+jauh lebih aman daripada *resampling*.
+
 ## 9.4 Verifikasi Operasional: CSI/POD/FAR dan Threshold
 
 Inilah bagian yang membedakan bab ini dengan tutorial ML umum. Setelah probabilitas
@@ -253,13 +259,40 @@ Pilih **precision-recall curve**:
 - Sumbu x: recall (= POD); sumbu y: precision (= 1 - FAR).
 - Model ideal: kurva mendekati pojok kanan-atas (recall tinggi, precision tinggi).
 - Luas di bawah (AUPRC) lebih informatif daripada AUC untuk kelas langka.
+- **Baseline kurva PR bukan 0.5** (tidak seperti ROC/AUC): garis acak berada di
+  proporsi kelas positif dalam data (mis. 5% hujan lebat). Model lebih baik daripada
+  menebak jika kurvanya berada **di atas** garis baseline itu (Gambar 9.1).
 
 ![Gambar 9.1 - Precision-recall curve](figures/fig-9-1-precision-recall.png)
 
-**Gambar 9.1**: Precision-recall curve untuk deteksi hujan lebat (ilustratif).
+**Gambar 9.1**: Precision-recall curve untuk deteksi hujan lebat (ilustratif);
+garis putus-putus menunjukkan *baseline* acak (proporsi kelas positif).
 
-Visualisasi pada Gambar 9.1 (dibuat di notebook) melengkapi Tabel 9.3 dan menjadi
-argumen visual mengapa threshold tertentu dipilih.
+Visualisasi semacam Gambar 9.1 melengkapi Tabel 9.3 dan menjadi
+argumen visual mengapa threshold tertentu dipilih. Untuk data Anda sendiri, hitung
+kurva dengan `sklearn.metrics.precision_recall_curve`:
+
+**Kode 9.4 - Menggambar kurva precision-recall dengan baseline acak.**
+
+```python
+from sklearn.metrics import precision_recall_curve
+import matplotlib.pyplot as plt
+
+prec, rec, _ = precision_recall_curve(y_true, prob)  # y_true: label biner (lebat)
+base = float(y_true.mean())                          # baseline = proporsi kelas positif
+
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.plot(rec, prec, lw=2, label="Model")
+ax.axhline(base, color="gray", ls="--", lw=1.3,
+           label=f"Baseline acak (proporsi positif {base:.0%})")
+ax.set_xlabel("Recall (= POD)")
+ax.set_ylabel("Precision (= 1 - FAR)")
+ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+ax.grid(alpha=0.3)
+ax.legend(loc="best")
+plt.tight_layout()
+plt.show()
+```
 
 Persamaan yang dipakai (dari Tabel 5.3 Bab 5, pedoman WMO [7]):
 

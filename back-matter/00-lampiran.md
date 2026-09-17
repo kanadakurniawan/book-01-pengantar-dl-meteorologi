@@ -12,6 +12,10 @@ Konvensi yang dipakai di seluruh notebook:
 
 - **`seed` tetap:** `np.random.seed(42)` dan `tf.random.set_seed(42)` di awal
   setiap notebook agar hasil dapat diulang.
+- **Catatan GPU:** meskipun *seed* sudah diatur, eksekusi pada GPU (terutama operasi
+  reduksi di balik cuDNN) kadang bersifat *non-deterministic*. Perbedaan kecil pada
+  angka desimal terakhir (mis. sekitar 0.0001 pada MAE) antar-run di Colab adalah
+  wajar dan bukan tanda kesalahan.
 - **Versi library:** versi TensorFlow/Keras yang digunakan tercatat di notebook
   (biasanya di sel pertama) dan di metadata *release* Zenodo.
 - **Python:** 3.10+; paket inti: `tensorflow`, `numpy`, `pandas`,

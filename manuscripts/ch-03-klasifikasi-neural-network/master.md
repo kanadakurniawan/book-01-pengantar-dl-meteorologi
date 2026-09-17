@@ -310,7 +310,8 @@ operasional dikeluarkan WMO [4]. Di bab ini kita cukup paham mengapa akurasi tid
 3. **Pemberian bobot kelas** - `class_weight` di Keras memberi penalti lebih besar untuk
    kesalahan pada kelas minoritas (contoh dalam notebook).
 4. **Resampling** - undersampling kelas mayoritas atau oversampling minoritas (konsekuensi:
-   mengubah distribusi; diskusi di Bab 5).
+   mengubah distribusi; diskusi di Bab 5). **Hati-hati pada deret waktu:** oversampling
+   acak (mis. SMOTE) merusak urutan temporal - lebih aman pakai `class_weight` (Bab 9).
 
 ### Contoh numerik lengkap precision/recall
 

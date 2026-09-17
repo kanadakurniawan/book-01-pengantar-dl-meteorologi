@@ -207,6 +207,12 @@ seluruh buku:
    learning* hanya layak jika **mengalahkan *baseline*** dengan data yang cukup Prinsip ini
   menjadi tulang punggung Bab 7-9. Jika model sederhana sudah melebihi kebutuhan, tidak
   ada alasan memperkenalkan kompleksitas.
+- **Ingat *baseline* non-linear: model berbasis pohon.** Untuk data tabular dan deret
+  waktu, algoritma seperti **Random Forest** atau **XGBoost** sering mengalahkan jaringan
+  saraf kecil dari segi kecepatan, akurasi, dan keterbacaan. Buku ini fokus pada jaringan
+  saraf, tetapi praktisi wajib tahu bahwa pohon bisa menjadi pembanding yang sangat kuat
+  sebelum beralih ke *deep learning* - yang benar-benar unggul saat data sangat masif
+  atau melibatkan data spasial (citra radar/satelit, grid).
 - **Perhatikan ukuran data.** Jaringan saraf besar membutuhkan banyak data untuk belajar.
   Untuk deret waktu stasiun dengan puluhan ribu pengamatan, model sekuensial (*sequence*)
   seperti LSTM (Bab 7) adalah pilihan yang masuk akal, tetapi jangan langsung melompat

@@ -212,7 +212,16 @@ Untuk GRIB (prakiraan model operasional), dua jalur umum: xarray dengan *engine*
 untuk eksplorasi cepat, atau `wgrib2` untuk ekstraksi presisi pada skala besar. Catatan:
 engine `cfgrib` (beserta pustaka `eccodes` di belakangnya) perlu diinstal terpisah dari
 xarray - `pip install cfgrib` biasanya mencukupi di Colab, tetapi kegagalan instalasi
-pada beberapa sistem sering menjadi titik hambatan pertama pembaca.
+pada beberapa sistem sering menjadi titik hambatan pertama pembaca. Jika *pip* saja
+gagal, resep yang biasa berhasil di Colab: instal dulu pustaka sistem `libeccodes0`,
+baru `cfgrib`:
+
+```python
+!apt-get install -y libeccodes0
+!pip install cfgrib
+```
+
+(Alternatif: `!pip install cfgrib eccodes`; coba resep *apt* bila instalasi *pip* gagal.)
 
 **Kode 6.2 - Membaca GRIB dengan xarray + engine cfgrib.**
 

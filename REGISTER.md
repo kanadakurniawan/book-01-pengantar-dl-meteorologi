@@ -177,6 +177,7 @@
 | Kode | Kode 9.1 | Verifikasi CSI/POD/FAR di threshold | — | §9.4 |
 | Kode | Kode 9.2 | Permutation importance | — | §9.6 |
 | Kode | Kode 9.3 | Crosstab kategori | — | §9.7 |
+| Kode | Kode 9.4 | Gambar kurva precision-recall + baseline acak | — | §9.4 |
 
 ### Bab 10 — Operasional & Arah Riset
 
