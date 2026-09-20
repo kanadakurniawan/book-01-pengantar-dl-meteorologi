@@ -19,7 +19,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 3. T. M. Mitchell, *Machine Learning*. New York, NY, USA: McGraw-Hill, 1997. ISBN 978-0070428072.
 4. R. J. Hyndman and G. Athanasopoulos, *Forecasting: Principles and Practice*, 3rd ed. Melbourne, Australia: OTexts, 2021. [Online]. Available: https://otexts.com/fpp3/
 5. D. T. Pugh and P. L. Woodworth, *Sea-Level Science: Understanding Tides, Surges, Tsunamis and Mean Sea-Level Changes*. Cambridge, UK: Cambridge University Press, 2014.
-6. I. T. Jolliffe and D. B. Stephenson, Eds., *Forecast Verification: A Practitioner's Guide in Atmospheric Science*, 2nd ed. Chichester, UK: Wiley, 2012. doi: 10.1002/9781119960003.
+6. I. T. Jolliffe and D. B. Stephenson, Eds., *Forecast Verification: A Practitioner's Guide in Atmospheric Science*, 2nd ed. Chichester, UK: Wiley, 2011. doi: 10.1002/9781119960003.
 
 ## 2. Artikel Jurnal *Peer-Reviewed*
 

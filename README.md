@@ -2,6 +2,14 @@
 
 > **"Deep learning untuk meteorologi, dari praktisi untuk praktisi di Indonesia."**
 
+> **Positioning:** Belajar deep learning bukan hanya memahami arsitektur *neural network*,
+> tetapi juga memakai metode itu untuk menghadapi persoalan nyata. Buku ini ditujukan untuk
+> mahasiswa kebumian dan praktisi yang mulai dari nol, dengan **meteorologi Indonesia** sebagai
+> konteks utama: konsep dijelaskan dengan intuisi + kode, notebook Colab yang dapat dijalankan
+> langsung, data lokal (pasang surut, curah hujan, ERA5/CHIRPS), dan evaluasi yang jujur, model
+> selalu dibandingkan dengan *baseline*. Kami tidak menggantikan sumber primer, kami menyediakan
+> **jembatan** dari nol hingga model DL pertama Anda untuk data meteorologi Indonesia.
+
 Buku pengenalan open-source berbahasa Indonesia yang ditulis oleh **Kanada Kurniawan** —
 Meteorology Officer di BMKG (Stasiun Meteorologi Kelas III Maritim Dwikora, Pontianak) dengan
 latar riset pengembangan model neural network untuk prediksi cuaca, pasang surut, dan

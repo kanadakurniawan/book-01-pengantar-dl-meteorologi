@@ -12,12 +12,15 @@ learning, tapi dari mana mulainya?"*
 Jawaban yang jujur adalah: bahan belajarnya banyak, tetapi hampir semuanya
 ditulis dalam bahasa Inggris dan dengan contoh dari belahan dunia lain. Mahasiswa
 kebumian di Indonesia yang ingin belajar *deep learning* biasanya harus
-menerjemahkan dua hal sekaligus: bahasa dan konteks. Buku ini mencoba menurunkan
-salah satu dari dua hambatan itu — konteks.
+menerjemahkan dua hal sekaligus: bahasa dan konteks. Buku ini ditulis dalam
+bahasa Indonesia dan dengan contoh yang dekat dengan dunia meteorologi Indonesia,
+sehingga mengatasi kedua hambatan itu sekaligus.
 
 Saya menulis buku ini dengan keyakinan bahwa **deep learning bukan monopoli
-ilmuwan komputer**. Ia adalah alat; dan alat terbaik untuk praktisi meteorologi
-adalah yang dijelaskan dengan data meteorologi. Karena itu, di setiap bab Anda
+ilmuwan komputer**: belajar deep learning bukan hanya memahami arsitektur *neural
+network*, tetapi juga memakai metode itu untuk menghadapi persoalan nyata. Alat
+terbaik untuk praktisi meteorologi adalah yang dijelaskan dengan data meteorologi.
+Karena itu, di setiap bab Anda
 akan menemukan:
 
 1. **Konsep** — dijelaskan dari nol, dengan analogi dunia nyata.
@@ -67,8 +70,8 @@ Buku" memetakan urutan baca yang disarankan.
 ## Keterbatasan yang jujur
 
 Buku ini adalah **pengantar**, bukan pengganti buku teks seperti *Deep
-Learning* (Goodfellow et al., 2016) atau kursus yang lebih dalam. Ia bukan
-hasil riset baru; ia adalah jembatan menuju literatur primer. Angka dan hasil
+Learning* (Goodfellow et al., 2016) atau kursus yang lebih dalam. Buku ini bukan
+hasil riset baru, melainkan jembatan menuju literatur primer. Angka dan hasil
 yang ditampilkan harus dipahami sebagai ilustrasi alur, bukan sebagai klaim
 performa untuk semua kondisi. Bab 10 membahas keterbatasan ini lebih lanjut.
 

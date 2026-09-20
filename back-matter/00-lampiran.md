@@ -28,6 +28,22 @@ Konvensi yang dipakai di seluruh notebook:
   melalui skrip yang disediakan (lihat "Daftar Dataset dan Sumber"). Snapshot
   dataset studi kasus akan diunggah ke Zenodo saat rilis.
 
+**Troubleshooting Colab** (dibutuhkan terutama saat latih model besar, Bab 7-10):
+
+- **Sesi terputus.** Colab gratis ber-batas waktu sesi (≈ 12 jam, atau lebih
+  singkat bila diam). Simpan notebook dan data ke Google Drive secara berkala:
+  ```python
+  from google.colab import drive
+  drive.mount('/content/drive')
+  ```
+- **Runtime tidak GPU.** Colab tidak selalu menyediakan GPU; coba lagi nanti, atau
+  gunakan TPU. Untuk latih Bab 1-6 CPU cukup; studi kasus (Bab 8-9) GPU mempermudah.
+- **Memori habis.** Dataset besar (jutaan baris) dapat kehabisan RAM. Muat data dalam
+  *chunk* (potongan) atau gunakan sampling (strategi detil di Bab 6).
+- **Versi library berubah.** Colab kadang memperbarui TensorFlow. Jika notebook
+  tiba-tiba error, periksa versi dengan `print(tf.__version__)` dan lihat catatan
+  perubahan (changelog) TensorFlow.
+
 ## Lampiran B — Konvensi Penulisan dan Penomoran Aset
 
 | Konvensi | Aturan |

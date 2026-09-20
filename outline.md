@@ -401,9 +401,10 @@ Urutan berkas mengikuti urutan baca dalam buku (konvensi standar buku ilmiah).
 ## Aturan Konsistensi Global
 
 1. **Template seragam tiap bab:** Tujuan Pembelajaran (3–5 butir aksi) → Pembukaan masalah →
-   Isi/konsep → Kode/notebook → Ringkasan kunci → Latihan → Referensi (IEEE, sertakan DOI)
-   → Keyword SEO. Latihan tiap bab dirancang untuk menguji Tujuan Pembelajaran
-   (*constructive alignment*); rujukan tujuan buku di bagian "Tujuan Pembelajaran Buku".
+   Isi/konsep → Kode/notebook → Ringkasan kunci → Latihan → Referensi (IEEE, sertakan DOI).
+   Kata kunci SEO cukup di metadata YAML bab, tidak perlu di badan teks. Latihan tiap bab
+   dirancang untuk menguji Tujuan Pembelajaran (*constructive alignment*); rujukan tujuan
+   buku di bagian "Tujuan Pembelajaran Buku".
 2. **Notasi & glosarium satu sumber:** istilah Indonesia + Inggris di pemunculan pertama
    (mis. "fungsi aktivasi (*activation function*)"); istilah sama di blog/buku/YouTube.
 3. **Setiap bab berdiri sendiri** (sidebar "Prasyarat: Bab …"), tapi satu narasi & notasi.
@@ -537,6 +538,10 @@ Checklist wajib lolos **seluruh bab** sebelum membuat DOI/ISBN:
 **A. Isi & keilmuan**
 - Semua klaim teknis disitasi; tidak ada pernyataan tanpa sumber untuk klaim substantif.
 - Ketepatan istilah: istilah Indonesia + Inggris benar, konsisten di seluruh buku.
+- Kebahasaan & idiom: kolokasi wajar bahasa Indonesia tanpa kalka harfiah (mis. "menurunkan hambatan" → "mengatasi hambatan"); konsisten lintas bab.
+- Ejaan & ortografi: penulisan konsisten dengan konvensi buku (glosarium; PUEBI §18); jangan mengadopsi standar ejaan dari bahasa lain.
+- Tulisan miring: istilah asing yang belum diserap dicetak *miring* (PUEBI §18); nama merek/diri/akronim tidak miring.
+- Kejelasan kalimat: tidak ada kalimat sulit dipahami atau berisi error bahas akademik; cocok baca untuk pembaca target.
 - Anti-overhype: semua hasil DL dibandingkan baseline; disclaimer "materi pengenalan" ada.
 
 **B. Struktur & konsistensi**
@@ -547,6 +552,7 @@ Checklist wajib lolos **seluruh bab** sebelum membuat DOI/ISBN:
 
 **C. Sitasi**
 - `[n]` di teks ≡ daftar References ≡ `refs.bib`; urutan incremental; DOI/ISBN/arXiv tercantum.
+- Kesesuaian isi sitasi: setiap `[n]` benar-benar mendukung klaim pada kalimatnya (cek silang isi sumber ke klaim; bukan hanya nomor konsisten).
 - Cek semua DOI via `doi.org/<doi>`; URL dengan tanggal akses.
 
 **D. Kode & reproduksibilitas**
