@@ -25,7 +25,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 
 | Dataset | Penyedia | Cakupan | Lisensi & akses | Dipakai di |
 |---|---|---|---|---|
-| Sea Level Station Monitoring Facility | UNESCO/IOC (`ioc-sealevelmonitoring.org`) | Real-time/near-real-time, termasuk 24 station Indonesia | Gratis riset/pendidikan; **CC BY-NC 4.0 (non-komersial)** — tidak untuk penggunaan komersial, dan data turunan tetap non-komersial; atribusi "UNESCO/IOC". Endpoint: `bgraph.php?code=<KODE>&period=<HARI>` | Bab 8 |
+| Sea Level Station Monitoring Facility | UNESCO/IOC (`ioc-sealevelmonitoring.org`) | Real-time/near-real-time, termasuk 24 stasiun Indonesia | Gratis riset/pendidikan; **CC BY-NC 4.0 (non-komersial)** — tidak untuk penggunaan komersial, dan data turunan tetap non-komersial; atribusi "UNESCO/IOC". Endpoint: `bgraph.php?code=<KODE>&period=<HARI>` | Bab 8 |
 | PSMSL (MSL bulanan) | Permanent Service for Mean Sea Level (`psmsl.org`) | Global, puluhan tahun | Gratis dengan sitasi Holgate et al. (2013); format RLR/Metric | Bab 2*, 8 |
 | UHSLC Research Quality | Univ. of Hawaii Sea Level Center (`uhslc.soest.hawaii.edu`) | Hourly/daily research quality | Gratis riset/pendidikan; atribusi UHSLC/NOAA | Bab 8 |
 | Peta pasut & data pasang BIG | Badan Informasi Geospasial (`tides.big.go.id`) | Indonesia | Publik; atribusi BIG | Bab 2*, 6, 8 |

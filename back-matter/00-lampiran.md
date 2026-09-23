@@ -15,7 +15,7 @@ Konvensi yang dipakai di seluruh notebook:
 - **Catatan GPU:** meskipun *seed* sudah diatur, eksekusi pada GPU (terutama operasi
   reduksi di balik cuDNN) kadang bersifat *non-deterministic*. Perbedaan kecil pada
   angka desimal terakhir (mis. sekitar 0.0001 pada MAE) antar-run di Colab adalah
-  wajar dan bukan tanda kesalahan.
+  wajar dan bukan tanda galat.
 - **Versi library:** versi TensorFlow/Keras yang digunakan tercatat di notebook
   (biasanya di sel pertama) dan di metadata *release* Zenodo.
 - **Python:** 3.10+; paket inti: `tensorflow`, `numpy`, `pandas`,
@@ -41,7 +41,7 @@ Konvensi yang dipakai di seluruh notebook:
 - **Memori habis.** Dataset besar (jutaan baris) dapat kehabisan RAM. Muat data dalam
   *chunk* (potongan) atau gunakan sampling (strategi detil di Bab 6).
 - **Versi library berubah.** Colab kadang memperbarui TensorFlow. Jika notebook
-  tiba-tiba error, periksa versi dengan `print(tf.__version__)` dan lihat catatan
+  tiba-tiba galat, periksa versi dengan `print(tf.__version__)` dan lihat catatan
   perubahan (changelog) TensorFlow.
 
 ## Lampiran B — Konvensi Penulisan dan Penomoran Aset

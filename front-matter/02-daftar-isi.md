@@ -64,7 +64,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
   - Memilih stasiun: Cilacap (GLOSS #291) dan sumber data terbuka
   - Alur kerja (*pipeline*): *baseline* vs MLP vs LSTM/GRU, *walk-forward* 4 blok
   - Evaluasi MAE/RMSE vs toleransi tinggi pasang; prediksi 1–7 hari
-  - Framing jujur: analisis harmonik untuk penjelasan, ML untuk prakiraan cepat
+  - Framing jujur: analisis harmonik untuk penjelasan, ML untuk prediksi cepat
 - **Bab 9. Studi Kasus: Prediksi Curah Hujan dengan Data Terbuka**
   - Regresi jumlah hujan + klasifikasi kategori intensitas
   - Verifikasi operasional CSI/FAR/POD dengan *trade-off threshold*

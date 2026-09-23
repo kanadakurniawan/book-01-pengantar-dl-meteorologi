@@ -17,6 +17,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 |---|---|---|
 | Gambar 1.1 | Keterkaitan AI, *machine learning*, dan *deep learning* | 1 |
 | Gambar 2.1 | Struktur neuron buatan (x → z → aktivasi a) | 2 |
+| Gambar 2.2 | Arsitektur MLP contoh (1 → 8 ReLU → 8 ReLU → 1) | 2 |
 | Gambar 3.1 | Kurva sigmoid memetakan z ke (0, 1) | 3 |
 | Gambar 3.2 | *Confusion matrix* contoh data tidak seimbang | 3 |
 | Gambar 4.1 | Contoh *learning curve* (*train* turun, *val* naik → *overfit*) | 4 |
@@ -38,8 +39,9 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Tabel 1.2 | Contoh data cuaca mini → shape tensor | 1 |
 | Tabel 1.3 | Glosarium mini bab 1 | 1 |
 | Tabel 2.1 | Contoh target regresi meteorologi (satuan & sifat data) | 2 |
-| Tabel 2.2 | Contoh *windowing* (dua langkah) pasang surut | 2 |
-| Tabel 2.3 | Perbandingan MAE vs MSE | 2 |
+| Tabel 2.2 | Contoh deret raw pasang surut (nilai ilustratif) | 2 |
+| Tabel 2.3 | Contoh *windowing* (dua langkah) pasang surut | 2 |
+| Tabel 2.4 | Perbandingan MAE vs MSE | 2 |
 | Tabel 3.1 | Perbedaan regresi vs klasifikasi | 3 |
 | Tabel 3.2 | Perbandingan sigmoid vs softmax | 3 |
 | Tabel 3.3 | Contoh data tidak seimbang | 3 |
@@ -60,7 +62,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Tabel 7.5 | Strategi multi-langkah | 7 |
 | Tabel 8.1 | Tipe pasang surut Indonesia | 8 |
 | Tabel 8.2 | Harmonik vs *machine learning* | 8 |
-| Tabel 8.3 | Station Indonesia di sumber terbuka (IOC/UHSLC/PSMSL) | 8 |
+| Tabel 8.3 | Stasiun Indonesia di sumber terbuka (IOC/UHSLC/PSMSL) | 8 |
 | Tabel 8.4 | Ringkasan dataset Cilacap yang dibangun (sintetik deterministik) | 8 |
 | Tabel 8.5 | Pilihan *window* (jam-an) | 8 |
 | Tabel 8.6 | Contoh hasil MAE per *horizon* | 8 |

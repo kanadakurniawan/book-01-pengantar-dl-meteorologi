@@ -38,7 +38,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | *Leakage* | Kebocoran informasi masa depan ke data latih | 5, 8 |
 | *Reanalysis* | Data cuaca historis gabungan model + observasi (mis. ERA5) | 6, 9 |
 | Nilai hilang / *gap* | Data yang tidak terekam; ditangani dengan imputasi/pemotongan | 6, 8 |
-| *Outlier* / pencilan | Nilai ekstrem yang menyimpang dari pola; potensi kesalahan pengukuran | 6 |
+| *Outlier* / pencilan | Nilai ekstrem yang menyimpang dari pola; potensi galat pengukuran | 6 |
 | Imputasi | Mengisi nilai hilang dengan estimasi | 6, 8, 10 |
 | Normalisasi | Menskala fitur (mis. z-score) agar pelatihan stabil | 6 |
 | Fitur lag / *window* | Konstruksi masukan deret waktu dari masa lalu | 7, 8 |
@@ -47,7 +47,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Analisis harmonik | Pemodelan pasang surut dengan konstituen astronomis (M2, S2, K1, O1) | 8 |
 | Formzahl (F) | Rasio komponen untuk menentukan tipe pasang | 8 |
 | *Tide gauge* / pasang surut | Alat/deret tinggi muka air | 8 |
-| MAE / RMSE | Metrik error regresi: *mean absolute error*; *root mean square error* | 2, 5, 8, 9 |
+| MAE / RMSE | Metrik galat regresi: *mean absolute error*; *root mean square error* | 2, 5, 8, 9 |
 | R², Willmott, KGE | Metrik kesesuaian regresi | 5 |
 | CSI / FAR / POD / TS | Metrik verifikasi kejadian ekstrem (kategori) | 3, 5, 9 |
 | *Confusion matrix* | Tabel tabulasi prediksi vs aktual untuk klasifikasi | 3, 5 |
@@ -57,7 +57,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | *Quantile* / *interval* prediksi | Rentang ketidakpastian prediksi | 10 |
 | SHAP | Metode interpretasi model (kontribusi fitur) | 10 |
 | *Downscaling* | Dari skala reanalysis/global ke skala lokal | 10 |
-| *Nowcasting* | Prakiraan sangat jangka pendek (kini–6 jam) | 10 |
+| *Nowcasting* | Prediksi sangat jangka pendek (kini–6 jam) | 10 |
 | *Generative* | Model yang menghasilkan data baru (imputasi, skenario) | 10 |
 | *Seed* | Nilai acak tetap untuk reproduksibilitas | 5, 6, 8 |
 

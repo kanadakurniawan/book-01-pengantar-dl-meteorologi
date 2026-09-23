@@ -97,6 +97,73 @@ def fig_2_1():
     save(fig, MANS / "ch-02-regresi-neural-network/figures/fig-2-1-neuron.png")
 
 
+# ---------------------------------------------------------------- fig-2-2
+def fig_2_2():
+    """Arsitektur MLP contoh: 1 masukan -> 8 ReLU -> 8 ReLU -> 1 keluaran."""
+    fig, ax = plt.subplots(figsize=(11.5, 5.8))
+    ax.axis("off")
+    ax.set_xlim(0, 12.6)
+    ax.set_ylim(-3.75, 3.35)
+
+    xs = {"input": 1.6, "h1": 4.5, "h2": 7.5, "output": 10.6}
+    n_h = 8
+    r = 0.30
+    ys_h1 = np.linspace(2.35, -2.35, n_h)
+    ys_h2 = np.linspace(2.35, -2.35, n_h)
+
+    def node(x, y, rr=r, fc="#dbe9f6", ec="#1f4e79", lw=2):
+        circ = plt.Circle((x, y), rr, fc=fc, ec=ec, lw=lw)
+        ax.add_patch(circ)
+
+    def edge(x1, y1, x2, y2, alpha=0.4, color="#555", lw=1.6):
+        ax.plot([x1, x2], [y1, y2], color=color, lw=lw, alpha=alpha,
+                zorder=0)
+
+    # lapisan masukan: satu neuron x (suhu kemarin)
+    node(xs["input"], 0)
+    ax.text(xs["input"] - 0.55, 0, r"$x$", ha="right", va="center",
+            fontsize=20, color="#1f4e79")
+
+    # lapisan tersembunyi 1 & 2: 8 neuron ReLU
+    for y in ys_h1:
+        node(xs["h1"], y)
+    for y in ys_h2:
+        node(xs["h2"], y)
+    ax.text(xs["h1"], 2.9, r"$h_1$", ha="center", va="center", fontsize=18,
+            color="#1f4e79")
+    ax.text(xs["h2"], 2.9, r"$h_2$", ha="center", va="center", fontsize=18,
+            color="#1f4e79")
+
+    # lapisan keluaran: satu neuron a = y-hat (suhu besok)
+    node(xs["output"], 0, fc="#f5ead6", ec="#c0552b", lw=2.2)
+    ax.text(xs["output"] + 0.55, 0, r"$\hat{y}$", ha="left", va="center",
+            fontsize=20, color="#c0552b")
+
+    # sambungan penuh (dense)
+    for y2 in ys_h1:
+        edge(xs["input"], 0, xs["h1"], y2, alpha=0.65)
+    for y1 in ys_h1:
+        for y2 in ys_h2:
+            edge(xs["h1"], y1, xs["h2"], y2, alpha=0.35, lw=1.5)
+    for y1 in ys_h2:
+        edge(xs["h2"], y1, xs["output"], 0, alpha=0.65)
+
+    # label lapisan: dua baris di BAWAH tiap kolom (bebas dari node)
+    labels = [
+        (xs["input"], "Lapisan masukan", "suhu kemarin"),
+        (xs["h1"], "Lapisan tersembunyi 1", "8 neuron · ReLU"),
+        (xs["h2"], "Lapisan tersembunyi 2", "8 neuron · ReLU"),
+        (xs["output"], "Lapisan keluaran", "suhu besok · tanpa aktivasi"),
+    ]
+    for x, nama, sub in labels:
+        ax.text(x, -2.95, nama, ha="center", va="center", fontsize=13,
+                color="#1f4e79")
+        ax.text(x, -3.35, sub, ha="center", va="center", fontsize=11,
+                color="#333")
+
+    save(fig, MANS / "ch-02-regresi-neural-network/figures/fig-2-2-mlp-arsitektur.png")
+
+
 # ---------------------------------------------------------------- fig-3-1
 def fig_3_1():
     z = np.linspace(-9, 9, 400)
@@ -311,7 +378,7 @@ def fig_10_1():
 
 
 def main():
-    fig_2_1(); fig_3_1(); fig_3_2()
+    fig_2_1(); fig_2_2(); fig_3_1(); fig_3_2()
     fig_4_1(); fig_5_1(); fig_6_1(); fig_7_1()
     fig_8_1(); fig_9_1(); fig_9_2(); fig_10_1()
     print("Semua gambar diregenerasi tanpa judul.")

@@ -31,6 +31,10 @@
 - [ ] **Ketepatan & konsistensi istilah:** istilah Indonesia + Inggris benar dan seragam di
       seluruh buku; satu istilah satu padanan (glosarium satu sumber); tidak ada istilah
       ganda yang membingungkan pembaca.
+- [ ] **Canonieke terminologie (automatisch):** run `python scripts/cek-terminologie.py`;
+      exit 0 = één concept één term (canonieke: `galat`, `stasiun`, `prediksi`,
+      `*baseline*`, `pelatihan`); meld alleen "schoon" bij exit 0; `error`/`kesalahan`/
+      `station`/`prakiraan`/`patokan`/`forecast`/`training` in proza = fout.
 - [ ] **Elemen non-naratif ikut dicek:** judul/subjudul bab, *caption* gambar & tabel,
       sidebar, komentar kode berbahasa Indonesia, dan glosarium lolos cek yang sama
       (baku, miring, jelas).
@@ -101,7 +105,7 @@
 | Bab | A | B | C | D | E | Siap publikasi? |
 |-----|---|---|---|---|---|-----------------|
 | 1 | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | Belum (uji build & DOI) |
-| 2 |   |   |   |   |   |                 |
+| 2 | ✅ | ✅ | ✅ | ✅ | ⚠️ | Belum (build & DOI) |
 | 3 |   |   |   |   |   |                 |
 | 4 |   |   |   |   |   |                 |
 | 5 |   |   |   |   |   |                 |
@@ -131,3 +135,35 @@
   perlu uji eksekusi dari awal–akhir di Colab.
 - **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh
   Pandoc+LaTeX di mesin rilis); `bookDOI` masih placeholder `10.5281/zenodo.0000000`.
+
+### Catatan Evaluasi Bab 2 (21 Sep 2026 — setelah perbaikan)
+
+- **A (isi & keilmuan):** ✅ Perbaikan terpasang: "Contrast dengan MSE" → "Berbeda dengan MSE";
+  latihan 10: "run sekema uji" → "jalankan skema uji" (plus "sekema"→"skema",
+  "menyaji"→"menyajikan", "diskutikan"→"diskusikan"); "mengoscila" → "berosilasi";
+  "baik … baik … baik" → "baik … maupun … maupun"; "~36.500 baris" → "sekitar 36 ribu baris";
+  "Di Bab 2 ini" → "dalam bab ini"; "(Bab 2.5)" → "(Bagian 2.5)"; tag YAML "reLU" → "ReLU";
+  klaim kesamaan OLS diubah acuannya dari "Kode 2.2–2.3" ke kasus dasar Bagian 2.3 (Kode
+  2.2–2.3 adalah MLP ber-ReLU, bukan neuron linear); `print(model.summary())` →
+  `model.summary()`. Gaya pisah " - " dibiarkan (register konversasional buku; 12× Bab 1,
+  41× Bab 2) — keputusan gaya; rapatkan pada penyuntingan akhir bila diinginkan.
+- **B (struktur & konsistensi):** ✅ Volume isi ±3.800 kata (target 3.500–4.000);
+  Tujuan Pembelajaran 4 butir selaras dengan latihan; prasyarat Bab 1 benar; penomoran
+  persamaan/gambar/tabel/kode utuh. Belum ada penutup "Koneksi ke Bab Berikutnya"
+  seperti 1.13 di Bab 1 (opsional).
+- **C (sitasi):** ✅ DOI [2] diberi keterangan terbit-ulang: entri *NeurIPS* 2012 + "reissued
+  in *Communications of the ACM* 60(6):84–90, 2017, doi: 10.1145/3065386" — disamakan di
+  master.md Bab 2, `refs.bib` Bab 2, `back-matter/01-daftar-pustaka.md`, serta Bab 1
+  (master.md + refs.bib) agar satu sumber konsisten. [3] daftar References Bab 2 kini
+  memuat "(diakses: September 2026)", sama dengan `refs.bib`. Entri Krizhevsky
+  diselaraskan hingga nomor volume (vol. 25) di semua berkas. `[n]` teks 1–3 ≡ daftar ≡ bib.
+- **D (kode & reproduksibilitas):** ✅ Uji eksekusi ulang dari awal–akhir selesai
+  (21 Sep 2026, mesin lokal): `jupyter nbconvert --execute` — 8/8 sel berhasil tanpa error,
+  seed 42, TensorFlow 2.21.0 (CPU; GPU `[]` di Windows). Hasil akhir: baseline
+  *persistence* MAE 0.3256 m; MLP MAE test 0.0782 m; `loss="mse"` → MAE 0.0782 / RMSE
+  0.0948; `loss="mae"` → MAE 0.0745 / RMSE 0.0921. Sel perbandingan MAE vs MSE (sebelumnya
+  belum tereksekusi) kini ikut tereksekusi. Warning Keras `input_shape=` di `Dense` muncul
+  (tidak berbahaya; opsional diganti `Input(shape=...)`). Validasi silang di Colab
+  disarankan sebelum rilis karena log/GPU Colab dapat sedikit berbeda. Cadangan notebook
+  sebelum uji: `C:\Users\Hi\AppData\Local\Temp\kilo\ch-02-01_backup.ipynb`.
+- **E (build & output):** ⚠️ Belum diuji `node build/generate.mjs`; `bookDOI` placeholder.

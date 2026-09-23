@@ -13,7 +13,7 @@ wilayah Indonesia.
 
 Sebelum berkarya di dunia operasional meteorologi, ia menempuh pendidikan di
 bidang meteorologi dan terlibat dalam berbagai kegiatan pengembangan data dan
-aplikasi prakiraan. Buku ini ditulis berangkat dari kebutuhan sehari-hari —
+aplikasi prediksi. Buku ini ditulis berangkat dari kebutuhan sehari-hari —
 menjelaskan *deep learning* kepada praktisi dan mahasiswa kebumian dalam bahasa
 yang dekat dengan data Indonesia.
 

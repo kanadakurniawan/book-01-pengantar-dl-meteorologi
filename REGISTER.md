@@ -32,20 +32,23 @@
 | Jenis | Nomor | Caption / isi | File | Dirujuk di § |
 |---|---|---|---|---|
 | Gambar | Gambar 2.1 | Struktur neuron buatan (x → z → aktivasi a) | `figures/fig-2-1-neuron.png` | §2.2 |
+| Gambar | Gambar 2.2 | Arsitektur MLP contoh (1 → 8 ReLU → 8 ReLU → 1) | `figures/fig-2-2-mlp-arsitektur.png` | §2.4 |
 | Tabel | Tabel 2.1 | Contoh target regresi meteorologi (satuan & sifat data) | — | §2.1 |
-| Tabel | Tabel 2.2 | Contoh windowing (dua langkah) pasang surut | — | §2.5 |
-| Tabel | Tabel 2.3 | Perbandingan MAE vs MSE | — | §2.6 |
+| Tabel | Tabel 2.2 | Contoh deret raw pasang surut (nilai ilustratif) | — | §2.5 |
+| Tabel | Tabel 2.3 | Contoh windowing (dua langkah) pasang surut | — | §2.5 |
+| Tabel | Tabel 2.4 | Perbandingan MAE vs MSE | — | §2.6 |
 | Persamaan | (2.1) | $z = \sum w_i x_i + b$ | — | §2.2 |
 | Persamaan | (2.2) | $a = f(z)$ | — | §2.2 |
 | Persamaan | (2.3) | $\hat{y} = wx + b$ | — | §2.3 |
 | Persamaan | (2.4) | $\mathrm{ReLU}(x) = \max(0, x)$ | — | §2.4 |
-| Persamaan | (2.5) | $\mathrm{MAE} = \frac{1}{n}\sum \|\cdot\|$ (contoh) | — | §2.6 |
-| Persamaan | (2.6) | $\mathrm{MSE} = \frac{1}{n}\sum (\cdot)^2$ (contoh) | — | §2.6 |
+| Persamaan | (2.5) | Alur MLP: $x \to h_1 \to h_2 \to \hat{y}$ | — | §2.4 |
+| Persamaan | (2.6) | $\mathrm{MAE} = \frac{1}{n}\sum \|\cdot\|$ (contoh) | — | §2.6 |
+| Persamaan | (2.7) | $\mathrm{MSE} = \frac{1}{n}\sum (\cdot)^2$ (contoh) | — | §2.6 |
 | Kode | Kode 2.1 | Definisi arsitektur MLP regresi (Keras) | — | §2.4 |
 | Kode | Kode 2.2 | Windowing + split berbasis waktu + data sintetik | — | §2.5 |
 | Kode | Kode 2.3 | Compile, latih, evaluasi vs persistence | — | §2.5 |
 
-> **Catatan:** Kode/notebook pendamping (setup data, baseline, training) di Bab 2 belum
+> **Catatan:** Kode/notebook pendamping (setup data, baseline, pelatihan) di Bab 2 belum
 > diberi nomor `Kode 2.2` dst. Tambahkan saat review.
 
 ### Bab 3 — Klasifikasi: Mengenali Kategori Fenomena Cuaca
@@ -134,7 +137,7 @@
 | Kode | Kode 7.2 | baseline persistence & klimatologi | — | §7.3 |
 | Kode | Kode 7.3 | LSTM univariate | — | §7.7 |
 | Kode | Kode 7.4 | LSTM multivariate | — | §7.7 |
-| Kode | Kode 7.5 | Plot forecast vs aktual | — | §7.8 |
+| Kode | Kode 7.5 | Plot prediksi vs aktual | — | §7.8 |
 | Kode | Kode 7.6 | LSTM bertumpuk (stacked) | — | §7.7 |
 | Kode | Kode 7.7 | Satu model per horizon (strategi direct) | — | §7.7 |
 
@@ -147,7 +150,7 @@
 | Gambar | Gambar 8.3 | Residu per amplitudo dan fase pasang M2 | `figures/fig-8-3-residu.png` | §8.5 |
 | Tabel | Tabel 8.1 | Tipe pasang surut Indonesia | — | §8.2 |
 | Tabel | Tabel 8.2 | Harmonik vs machine learning | — | §8.2 |
-| Tabel | Tabel 8.3 | Station Indonesia di sumber terbuka (IOC/UHSLC/PSMSL) | — | §8.3 |
+| Tabel | Tabel 8.3 | Stasiun Indonesia di sumber terbuka (IOC/UHSLC/PSMSL) | — | §8.3 |
 | Tabel | Tabel 8.4 | Ringkasan dataset Cilacap yang dibangun (sintetik deterministik) | — | §8.3 |
 | Tabel | Tabel 8.5 | Pilihan window (jam-an) | — | §8.4 |
 | Tabel | Tabel 8.6 | Contoh hasil MAE per horizon | — | §8.5 |

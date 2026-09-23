@@ -46,6 +46,17 @@ Jika masalah kambuh, tambahkan token baru ke dalam daftar ini.
 3. Kalau kalimat tanpa kata itu sudah tidak mengalir → tulis ulang seluruh kalimat;
    JANGAN biarkan kata asing itu berdiri.
 4. Jika saya tergoda menyalin istilah buku → beri penanda `dalam bahasa buku: "…"`.
+5. **Pindai spesial voor functiewoorden van Nederlandse herkomst** (de bron van
+   kontaminasi in deze proyek): `zonder`, `met`, `en`, `niet`, `alleen`, `voor`,
+   `uit`, `een`, `de`, `het`, `van`, `wordt`, `zijn`, `heeft`, `maar`, `als`,
+   `omdat`, `veel`, `goed`, `ook`. Als zo'n token in de chat-teks staat → vervang
+   met Bahasa Indonesia standar of tulis ulang kalimat (stap 2-3).
+6. **Bij pengeditan manuskrip**: loop `python scripts/cek-bahasa-asing.py` EN
+   `python scripts/cek-terminologie.py` op het bewerkte bestand (of het hele
+   boek) VOOR het rapport "klaar"; meld alleen "schoon" als BEIDE exit-code 0
+   zijn.
+7. Houd chatzinnen kort; bij twijfel over een woord: herformuleer de zin in plaats
+   van te raden naar registertaal.
 
 ## 4. Pelaporan
 
