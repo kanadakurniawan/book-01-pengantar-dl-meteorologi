@@ -28,14 +28,14 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 ## 5.1 Bias-Variance: Dua Sumber Galat
 
-Setiap model memiliki dua jenis galat struktural. Kerangka ini juga yang dipakai literatur verifikasi operasional - misalnya bagaimana WMO meninjau keandalan metrik perkiraan [1]; rujukan standar verifikasi perkiraan adalah Jolliffe & Stephenson [2], dan untuk deep learning umum (termasuk aspek bias-variance) lihat Goodfellow et al. [3]:
+Setiap model memiliki dua jenis galat struktural. Kerangka ini juga yang dipakai literatur verifikasi operasional, misalnya bagaimana WMO meninjau keandalan metrik perkiraan [1]; rujukan standar verifikasi perkiraan adalah Jolliffe & Stephenson [2], dan untuk deep learning umum (termasuk aspek bias-variance) lihat Goodfellow et al. [3]:
 
 - **Bias tinggi** - model terlalu sederhana, tidak menangkap pola data (underfit). Misal: memakai garis lurus untuk data yang jelas tidak linear.
 - **Varians tinggi** - model terlalu sensitif pada data latih; sedikit perubahan data mengubah prediksi besar (overfit). Misal: jaringan sangat besar yang "menghafal" noise.
 
-Ini bukan dua "tipe" yang terpisah, melainkan **trade-off**: saat kapasitas model naik, bias turun tetapi varian naik. Titik keseimbangan terbaik adalah di mana galat total (bias + varian + noise) minimal - dicapai di "titik manis" antara underfit dan overfit.
+Ini bukan dua "tipe" yang terpisah, melainkan **trade-off**: saat kapasitas model naik, bias turun tetapi varian naik. Titik keseimbangan terbaik adalah di mana galat total (bias + varian + noise) minimal; dicapai di "titik manis" antara underfit dan overfit.
 
-Analoginya di meteorologi: peramal yang "selalu memprediksi rata-rata klimatologi" punya **bias tinggi namun varian nol** (tidak pernah meleset besar, tapi selalu kurang tajam). Peramal yang "selalu memprediksi kondisi tahun lalu persis" bisa sangat akurat untuk data yang dihafalnya, tetapi **varian tinggi** - memburuk drastis saat kondisi berubah. Kita ingin peramal yang berada di tengah: mengikuti pola nyata tetapi tidak menghafal kebetulan tahun lalu.
+Analoginya di meteorologi: peramal yang "selalu memprediksi rata-rata klimatologi" punya **bias tinggi namun varian nol** (tidak pernah meleset besar, tapi selalu kurang tajam). Peramal yang "selalu memprediksi kondisi tahun lalu persis" bisa sangat akurat untuk data yang dihafalnya, tetapi **variannya tinggi**, sehingga memburuk drastis saat kondisi berubah. Kita ingin peramal yang berada di tengah: mengikuti pola nyata tetapi tidak menghafal kebetulan tahun lalu.
 
 **Tabel 5.1**: Perbandingan pola underfit, fit baik, dan overfit.
 
@@ -57,7 +57,7 @@ Cara paling langsung melihat underfit/overfit: **plot train galat vs validation 
 
 **Gambar 5.1**: *Learning curve* klasik overfit.
 
-Gambar 5.1 adalah pola overfit paling umum. Perhatikan titik di mana val mulai naik - itu sinyal bahwa model mulai menghafal.
+Gambar 5.1 adalah pola overfit paling umum. Perhatikan titik di mana val mulai naik; itu sinyal bahwa model mulai menghafal.
 
 Untuk **klasifikasi**, kurva yang sama bisa dipakai dengan loss (cross-entropy); untuk regresi, dengan MAE/MSE.
 
@@ -91,7 +91,7 @@ callbacks = [
 ]
 ```
 
-Nilai `patience=15` di Kode 5.1 hanyalah titik mulai. Nilai optimal bergantung pada seberapa berisik (noisy) kurva validasi Anda: pada data cuaca/hujan yang fluktuasinya kuat, patience yang terlalu kecil bisa menghentikan pelatihan karena fluktuasi, bukan konvergensi sejati - sebaliknya, pada dataset besar dengan loss halus, patience besar hanya membuang waktu. Mulai dengan 10-20, amati kurva, lalu sesuaikan.
+Nilai `patience=15` di Kode 5.1 hanyalah titik mulai. Nilai optimal bergantung pada seberapa berisik (noisy) kurva validasi Anda: pada data cuaca/hujan yang fluktuasinya kuat, patience yang terlalu kecil bisa menghentikan pelatihan karena fluktuasi, bukan konvergensi sejati; sebaliknya, pada dataset besar dengan loss halus, patience besar hanya membuang waktu. Mulai dengan 10-20, amati kurva, lalu sesuaikan.
 
 ### 2. Regularisasi L2 (weight decay)
 
@@ -105,7 +105,7 @@ Persamaan (5.1): `λ` (lambda) mengontrol kekuatan penalti. Model "didorong" mem
 tf.keras.layers.Dense(8, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(1e-4))
 ```
 
-**Catatan untuk pelanjut:** istilah "L2" dan "weight decay" baru menjadi benar-benar identik pada SGD vanila. Pada optimizer adaptif seperti Adam, menambahkan penalti L2 ke dalam loss tidak sama dengan *decoupled weight decay* (penalti terpisah pada parameter `weight_decay`, dikenal sebagai AdamW) - versi terpisah ini sering lebih stabil [4]. Nuansa ini tidak diperlukan untuk latihan bab ini; cukup pakai `kernel_regularizer`.
+**Catatan untuk pelanjut:** istilah "L2" dan "weight decay" baru menjadi benar-benar identik pada SGD vanila. Pada optimizer adaptif seperti Adam, menambahkan penalti L2 ke dalam loss tidak sama dengan *decoupled weight decay* (penalti terpisah pada parameter `weight_decay`, dikenal sebagai AdamW); versi terpisah ini sering lebih stabil [4]. Nuansa ini tidak diperlukan untuk latihan bab ini; cukup pakai `kernel_regularizer`.
 
 ### 3. Dropout
 
@@ -139,7 +139,7 @@ Menormalkan aktivasi di dalam jaringan agar pelatihan lebih stabil; sering dipak
 - Overfit menengah-berat → tambah dropout.
 - Underfit → **jangan** tambah regularisasi; perbaiki kapasitas/fitur dulu.
 
-Aturan penting: **jangan** menambah regularisasi hanya karena "model tidak jalan" tanpa melihat learning curve - bisa memperburuk underfit.
+Aturan penting: **jangan** menambah regularisasi hanya karena "model tidak jalan" tanpa melihat learning curve, yang bisa memperburuk underfit.
 
 ### Bagaimana regularisasi bekerja secara intuitif?
 
@@ -151,7 +151,7 @@ Ketiganya menyerang arah berbeda dari masalah yang sama: terlalu bebasnya model 
 
 ### Contoh sederhana efek L2
 
-Bayangkan fitur kelembapan penting untuk hujan. Tanpa L2, model bisa memberi bobot besar pada kelembapan dan mengabaikan yang lain; dengan L2, bobot besar "dikenai biaya" (penalti kuadrat) sehingga model lebih menyebar bobotnya. Efeknya: prediksi lebih stabil saat ada sedikit noise pada pengukuran kelembapan - relevan karena data lapangan selalu ber-noise.
+Bayangkan fitur kelembapan penting untuk hujan. Tanpa L2, model bisa memberi bobot besar pada kelembapan dan mengabaikan yang lain; dengan L2, bobot besar "dikenai biaya" (penalti kuadrat) sehingga model lebih menyebar bobotnya. Efeknya: prediksi lebih stabil saat ada sedikit noise pada pengukuran kelembapan, yang relevan karena data lapangan selalu ber-noise.
 
 ### Memilih kekuatan regularisasi (lambda & dropout rate)
 
@@ -161,7 +161,7 @@ Bayangkan fitur kelembapan penting untuk hujan. Tanpa L2, model bisa memberi bob
 
 ### Perbandingan kode lengkap (Kode 5.2 & 5.3 dipakai bersama)
 
-Kode 5.1-5.2 menunjukkan pola; dalam notebook `ch-05-04_metrik_walkforward.ipynb`, `build_model(reg=True, drop=0.3)` menggabungkan L2 + dropout dan dibandingkan dengan versi tanpa regularisasi pada learning curve serta metrik test - latihan benarnya di §5.8.
+Kode 5.1-5.2 menunjukkan pola; dalam notebook `ch-05-04_metrik_walkforward.ipynb`, `build_model(reg=True, drop=0.3)` menggabungkan L2 + dropout dan dibandingkan dengan versi tanpa regularisasi pada learning curve serta metrik test; latihan benarnya di §5.8.
 
 ## 5.4 Memilih Metrik Operasional yang Tepat
 
@@ -195,7 +195,7 @@ Sebagai referensi dasar evaluasi & praktik model pada umumnya, lihat pula [3]; u
 - **Willmott d**: "seberapa dekat prediksi ke aktual dalam skala 0-1 yang 'ramah' terhadap pencilan" - sering digunakan pada laporan hidrologi Indonesia.
 - **KGE**: "seberapa baik model menangkap korelasi, tanpa bias, dan variabilitas sekaligus?" (terurai oleh Gupta et al., 2009 [8]).
 
-KGE dirumuskan lewat tiga komponen: korelasi (`r`), bias rasio, dan rasio variabilitas; nilai `1` = sempurna. Untuk model yang selalu memprediksi rata-rata klimatologi, korelasi = 0 dan rasio variabilitas = 0, sehingga KGE = `1 − √2 ≈ −0.41` - bukan 0 seperti yang kadang keliru disebut. Nilai di bawah baseline itu berarti lebih buruk daripada memakai rata-rata. Konteks ini membuat rekomendasi pemilihan di Tabel 5.2 menjadi masuk akal.
+KGE dirumuskan lewat tiga komponen: korelasi (`r`), bias rasio, dan rasio variabilitas; nilai `1` = sempurna. Untuk model yang selalu memprediksi rata-rata klimatologi, korelasi = 0 dan rasio variabilitas = 0, sehingga KGE = `1 − √2 ≈ −0.41`, bukan 0 seperti yang kadang keliru disebut. Nilai di bawah baseline itu berarti lebih buruk daripada memakai rata-rata. Konteks ini membuat rekomendasi pemilihan di Tabel 5.2 menjadi masuk akal.
 
 ### Contoh ukuran cepat untuk memahami skala metrik
 
@@ -207,7 +207,7 @@ Untuk data uji dengan `y = [10, 20, 30]` dan prediksi `ŷ = [12, 19, 29]`:
 - Willmott d ≈ `0.99`
 - (KGE perlu varian pred/obs; dihitung di notebook)
 
-Bandingkan cerita: MAE/RMSE memberi ukuran fisik, R²/d memberi kualitas pola - keduanya dilaporkan bergantian sesuai tujuan.
+Bandingkan cerita: MAE/RMSE memberi ukuran fisik, R²/d memberi kualitas pola; keduanya dilaporkan bergantian sesuai tujuan.
 
 ### Untuk klasifikasi / kejadian langka
 
@@ -229,7 +229,7 @@ Bab 3 sudah mengenalkan precision/recall/F1. Di operasional, kuartet klasik pera
 
 Pedoman resmi: WMO *Guidelines on the Verification of Operational Forecasts* [1].
 
-**Bias score (terlalu sering atau terlalu jarang memprediksi?)**: Bias score = `(TP+FP)/(TP+FN)` menjawab: "berapa jumlah kejadian yang diumumkan dibandingkan yang benar terjadi?" Nilai > 1 berarti model *over-forecast* - terlalu sering mengumumkan kejadian, kemungkinan banyak peringatan kosong; nilai < 1 berarti *under-forecast* - terlalu jarang, kemungkinan banyak kejadian terlewat. Perlu diingat: bias score hanya menghitung kecenderungan **jumlah**, bukan ketepatan posisi kejadian (waktu/wilayah) - dua model dengan bias score sama bisa jauh berbeda kualitasnya. Karena itu ia selalu dibaca bersama POD/FAR/CSI, bukan berdiri sendiri.
+**Bias score (terlalu sering atau terlalu jarang memprediksi?)**: Bias score = `(TP+FP)/(TP+FN)` menjawab: "berapa jumlah kejadian yang diumumkan dibandingkan yang benar terjadi?" Nilai > 1 berarti model *over-forecast*: terlalu sering mengumumkan kejadian, kemungkinan banyak peringatan kosong; nilai < 1 berarti *under-forecast*: terlalu jarang, kemungkinan banyak kejadian terlewat. Perlu diingat: bias score hanya menghitung kecenderungan **jumlah**, bukan ketepatan posisi kejadian (waktu/wilayah); dua model dengan bias score sama bisa jauh berbeda kualitasnya. Karena itu ia selalu dibaca bersama POD/FAR/CSI, bukan berdiri sendiri.
 
 **Mengapa ini penting?** Data kejadian langka (hujan deras, gelombang tinggi, badai) membuat akurasi menyesatkan (Bab 3). CSI/POD/FAR memberi gambaran yang jujur tentang **nilai operasional** model, bukan sekadar "benar berapa persen".
 
@@ -244,7 +244,7 @@ Ambil kasus: dari 100 hari, 10 hari benar-benar hujan deras. Model A dan B:
 
 **Tabel 5.4**: Dua model, cerita yang sangat berbeda.
 
-Model A berakurasi 96% dan POD 0.80 - tangkapannya bagus, tapi 20% peringatan salah (FAR). Model B tidak pernah salah beri peringatan (FAR 0) - tapi melewatkan 7 dari 10 kejadian (POD 0.30). CSI mengungkap yang sebenarnya: keduanya tidak hebat, dan **tujuan operasional** yang menentukan mana yang lebih diterima (peringatan dini → Model A; biaya evakuasi mahal → Model B). Ini persis alasan kita tidak bisa berhenti di akurasi.
+Model A berakurasi 96% dan POD 0.80, tangkapannya bagus, meski 20% peringatan salah (FAR). Model B tidak pernah salah beri peringatan (FAR 0), tetapi melewatkan 7 dari 10 kejadian (POD 0.30). CSI mengungkap yang sebenarnya: keduanya tidak hebat, dan **tujuan operasional** yang menentukan mana yang lebih diterima (peringatan dini → Model A; biaya evakuasi mahal → Model B). Ini persis alasan kita tidak bisa berhenti di akurasi.
 
 ## 5.5 Cross-Validation untuk Deret Waktu: Walk-Forward
 
@@ -268,7 +268,7 @@ Solusinya: **walk-forward validation** (juga disebut *forward chaining* atau *ex
 
 Pada Tabel 5.5, latih selalu **hanya masa lalu**; validasi selalu **di depan** batas latih. Ini mereplikasi kondisi nyata: saat model dipakai, ia hanya tahu data hingga hari ini.
 
-Tabel 5.5 memakai **expanding window**: latih selalu dimulai dari awal deret (t1), hanya batas akhirnya yang bergeser. Alternatifnya: **sliding window**, di mana latih *juga* bergeser (mis. t1-t100, t21-t120, dst). Expanding window memakai semua data sejarah - cocok untuk deret dengan tren jangka panjang, tetapi mulai berat saat deret sangat panjang; sliding window lebih cocok ketika perilaku lama tidak lagi relevan karena distribusi berubah seiring waktu. Pilih sesuai karakter data Anda, dan sebutkan pilihan itu saat melaporkan hasil.
+Tabel 5.5 memakai **expanding window**: latih selalu dimulai dari awal deret (t1), hanya batas akhirnya yang bergeser. Alternatifnya: **sliding window**, di mana latih *juga* bergeser (mis. t1-t100, t21-t120, dst). Expanding window memakai semua data sejarah; cocok untuk deret dengan tren jangka panjang, tetapi mulai berat saat deret sangat panjang; sliding window lebih cocok ketika perilaku lama tidak lagi relevan karena distribusi berubah seiring waktu. Pilih sesuai karakter data Anda, dan sebutkan pilihan itu saat melaporkan hasil.
 
 **Kode 5.3 - Contoh walk-forward sederhana (pseudo; lengkap di notebook).**
 
@@ -285,13 +285,13 @@ for start in range(0, len(X) - horizon, 20):
 print("Rata-rata MAE walk-forward:", round(sum(results)/len(results), 4))
 ```
 
-Penting: **latih model baru di tiap fold** - jika Anda melatih sekali & memprediksi semua fold, informasi masa depan bocor.
+Penting: **latih model baru di tiap fold**; jika Anda melatih sekali & memprediksi semua fold, informasi masa depan bocor.
 
 Catatan: Kode 5.3 (dan contoh di notebook) menggambarkan variant **sliding window** — batas *kiri* latih (`start`) juga bergeser tiap fold. Variant ini valid untuk data tanpa tren jangka panjang; untuk deret dengan tren kuat, versi **expanding window** (latih selalu mulai dari awal deret, hanya batas kanan bergeser, seperti Tabel 5.5) lebih cocok. Kode hampir sama — cukup mantenir `start = 0` dan hanya berubah `i_end`, misalnya: `for i_end in range(100, len(X) - horizon, 20): Xtr_fold, ytr_fold = X[:i_end], y[:i_end]`.
 
 ### Kenapa bukan "k-fold acak" untuk data iklim?
 
-Data cuaca menunjukkan **autokorelasi** (nilai hari ini mirip hari kemarin). K-fold acak menempatkan sampel berdekatan di train dan test, sehingga evaluasi "menyontek" dari ketetanggaan. Studi kasus Bab 8-9 akan memperlihatkan betapa besar perbedaannya: model yang tampak hebat pada k-fold acak bisa gagal total pada walk-forward - persis perilaku yang akan dialami di produksi.
+Data cuaca menunjukkan **autokorelasi** (nilai hari ini mirip hari kemarin). K-fold acak menempatkan sampel berdekatan di train dan test, sehingga evaluasi "menyontek" dari ketetanggaan. Studi kasus Bab 8-9 akan memperlihatkan betapa besar perbedaannya: model yang tampak hebat pada k-fold acak bisa gagal total pada walk-forward, persis perilaku yang akan dialami di produksi.
 
 ### k-fold (blocked) sebagai alternatif
 
@@ -299,7 +299,7 @@ Jika dataset panjang dan Anda butuh lebih banyak fold, pakai **blocked/rolling k
 
 ### Kapan memakai k-fold acak masih ok?
 
-Hanya jika data Anda benar-benar *i.i.d.* (misal koleksi gambar cuaca independen). Untuk deret waktu stasiun, pasang surut, atau hujan - **selalu** walk-forward/blocked. Ini aturan yang akan dipakai keras di Bab 8-9.
+Hanya jika data Anda benar-benar *i.i.d.* (misal koleksi gambar cuaca independen). Untuk deret waktu stasiun, pasang surut, atau hujan; **selalu** walk-forward/blocked. Ini aturan yang akan dipakai keras di Bab 8-9.
 
 ### Galat umum saat walk-forward
 
@@ -329,9 +329,9 @@ Metrik memberi satu angka; **residu** (selisih aktual-prediksi) menunjukkan *di 
 - **Plot residu terhadap fitur penting** - misal, apakah galat membesar ketika kelembapan sangat tinggi?
 - **Distribusi residu** - residu yang condong kuat (skew) menandakan model bias sistematis (misal selalu memprediksi terlalu rendah pada hujan besar).
 
-Cara membacanya: residu yang berayun mengikuti musim (mis. selalu positif di musim hujan, selalu negatif di musim kemarau) mengisyaratkan model gagal menangkap pola musiman - tambahkan fitur musiman (bulan, hari dalam tahun) atau interaksi. Residu yang membesar saat kelembapan sangat tinggi mengisyaratkan hubungan non-linear - coba transformasi target atau fitur interaksi. Pola sistematis yang masih terlihat di residu = sinyal bahwa ada struktur yang belum dipelajari model.
+Cara membacanya: residu yang berayun mengikuti musim (mis. selalu positif di musim hujan, selalu negatif di musim kemarau) mengisyaratkan model gagal menangkap pola musiman; tambahkan fitur musiman (bulan, hari dalam tahun) atau interaksi. Residu yang membesar saat kelembapan sangat tinggi mengisyaratkan hubungan non-linear; coba transformasi target atau fitur interaksi. Pola sistematis yang masih terlihat di residu = sinyal bahwa ada struktur yang belum dipelajari model.
 
-Analisis residu hampir selalu menghasilkan ide perbaikan: fitur baru, transformasi target (mis. `log(y+1)` untuk hujan), atau threshold yang lebih sesuai. Inilah "analisis galat" yang disebut di Bab 4 - dan merupakan keterampilan paling berharga seorang praktisi model cuaca.
+Analisis residu hampir selalu menghasilkan ide perbaikan: fitur baru, transformasi target (mis. `log(y+1)` untuk hujan), atau threshold yang lebih sesuai. Inilah "analisis galat" yang disebut di Bab 4, dan merupakan keterampilan paling berharga seorang praktisi model cuaca.
 
 ### Kapan sebuah model "lulus"?
 
@@ -364,21 +364,21 @@ Angka metrik tidak berdiri sendiri. Sebelum melaporkan, tanyakan:
 4. **Apakah angka stabil?** - satu run bisa beruntung; gunakan beberapa seed atau walk-forward untuk melihat varians.
 5. **Threshold mana?** - POD/FAR bergantung threshold; selalu laporkan threshold yang dipakai.
 
-Disiplin ini - bukan sekadar "akurasi tinggi" - yang membedakan laporan yang bisa dipercaya di dunia operasional meteorologi.
+Disiplin ini, bukan sekadar "akurasi tinggi", yang membedakan laporan yang bisa dipercaya di dunia operasional meteorologi.
 
 ### FAQ singkat
 
 **Kapan KGE lebih baik daripada R²?** Jika Anda peduli pada bias/skala (khas hidrologi & peramalan), KGE memisah korelasi, bias, dan variabilitas. R² hanya korelasi-pola; model dengan bias besar tapi pola bagus bisa R² tinggi padahal tidak akurat.
 
-**Apakah dropout membuat model selalu lebih baik?** Tidak. Dropout menambah regularisasi - bagus untuk overfit, tetapi bisa memperburuk underfit. Terapkan sesuai diagnosis.
+**Apakah dropout membuat model selalu lebih baik?** Tidak. Dropout menambah regularisasi; bagus untuk overfit, tetapi bisa memperburuk underfit. Terapkan sesuai diagnosis.
 
-**Walk-forward lebih lambat - apakah wajib?** Untuk klaim evaluasi pada data iklim, ya. Kecepatan bisa ditingkatkan dengan model kecil / subset; kejujuran tidak bisa dikompromi.
+**Apakah walk-forward yang lebih lambat itu wajib?** Untuk klaim evaluasi pada data iklim, ya. Kecepatan bisa ditingkatkan dengan model kecil / subset; kejujuran tidak bisa dikompromi.
 
 **Apa beda CSI dan TS?** Dalam praktik peramalan, keduanya merujuk rumus yang sama; TS (*threat score*) adalah nama lama untuk CSI.
 
 **Mengapa metrik "nilai rata-rata" tidak cukup?** Rata-rata menyembunyikan distribusi: MAE 2 mm bisa berarti "selalu meleset 2 mm" atau "sempurna kecuali beberapa hari ekstrem". Laporkan distribusi galat (kuantil, plot) bila penting.
 
-**Apakah saya perlu melaporkan semua metrik?** Tidak - pilih yang informatif untuk tujuan Anda (Tabel 5.2) dan sertakan baseline + threshold. Lebih baik sedikit angka yang bermakna daripada banyak angka yang membingungkan.
+**Apakah saya perlu melaporkan semua metrik?** Tidak, pilih yang informatif untuk tujuan Anda (Tabel 5.2) dan sertakan baseline + threshold. Lebih baik sedikit angka yang bermakna daripada banyak angka yang membingungkan.
 
 ## 5.8 Latihan
 

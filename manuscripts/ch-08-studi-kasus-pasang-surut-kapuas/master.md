@@ -29,7 +29,7 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 ## 8.1 Konteks Lokal: Perairan Indonesia dan Mengapa Cilacap
 
-Banjir rob - naiknya muka laut yang menggenangi daratan pesisir - adalah masalah nyata di banyak kota pantai Indonesia: Jakarta, Semarang, Cilacap, dan pesisir utara Jawa [1]. Di kota-kota yang **rendah dan padat**, satu pasang tinggi yang bertepatan dengan debit sungai besar atau *storm surge* dapat menggenangi permukiman, mengganggu pelabuhan, dan memutuskan aktivitas ekonomi. Prediksi tinggi air yang andal membantu peringatan dini dan keputusan operasional.
+Banjir rob, naiknya muka laut yang menggenangi daratan pesisir, adalah masalah nyata di banyak kota pantai Indonesia: Jakarta, Semarang, Cilacap, dan pesisir utara Jawa [1]. Di kota-kota yang **rendah dan padat**, satu pasang tinggi yang bertepatan dengan debit sungai besar atau *storm surge* dapat menggenangi permukiman, mengganggu pelabuhan, dan memutuskan aktivitas ekonomi. Prediksi tinggi air yang andal membantu peringatan dini dan keputusan operasional.
 
 ### Mengapa Cilacap sebagai contoh studi kasus
 
@@ -45,7 +45,7 @@ Pembaca yang bekerja di **stasiun lain** (mis. Ambon GLOSS #68, Bitung GLOSS #69
 
 ### Mengapa studi kasus penting bagi pembaca
 
-Studi kasus adalah kesempatan mempraktikkan **seluruh rantai** yang sudah dipelajari - bukan sekadar "model lagi". Di sini pembaca akan mengalami:
+Studi kasus adalah kesempatan mempraktikkan **seluruh rantai** yang sudah dipelajari, bukan sekadar "model lagi". Di sini pembaca akan mengalami:
 
 1. **Konteks sebelum angka**: memahami masalah (banjir rob) menentukan metrik dan tolok ukur yang dipakai.
 2. **Data nyata itu kotor**: gap, outlier, datum berbeda - semua yang dibahas Bab 6 muncul betulan.
@@ -71,21 +71,21 @@ Pasang surut di perairan Indonesia dikelompokkan menjadi tiga tipe utama [5]:
 | Diurnal | 1 pasang + 1 surut | Pesisir Indonesia timur | Siklus ~24,84 jam |
 | Campuran | tidak teratur | Sebagian besar Indonesia barat | Kombinasi komponen |
 
-Indonesia memiliki variasi tipe pasang surut yang kaya karena bentangan garis pantainya yang luas dan dipengaruhi oleh karakteristik basin Pasifik dan Hindia [5]. Untuk stasiun demo Cilacap, pola yang akan pembaca temui adalah **campuran condong semi-diurnal** dengan komponen diurnal cukup kuat (terutama saat musim tertentu) - khas pesisir selatan Jawa. Jika ingin tahu tipe stasiun Anda, cara cepat: hitung *Formzahl* `F = (K1 + O1)/(M2 + S2)` dari komponen harmonik [5] - `F < 0,25` semi-diurnal, `0,25-1,5` campuran condong semi-diurnal, `1,5-3,0` campuran condong diurnal, `> 3` diurnal. Untuk pengguna machine learning, pembacaan spektrum deret (FFT) cukup untuk melihat periode dominan (Gambar 8.1).
+Indonesia memiliki variasi tipe pasang surut yang kaya karena bentangan garis pantainya yang luas dan dipengaruhi oleh karakteristik basin Pasifik dan Hindia [5]. Untuk stasiun demo Cilacap, pola yang akan pembaca temui adalah **campuran condong semi-diurnal** dengan komponen diurnal cukup kuat (terutama saat musim tertentu), khas pesisir selatan Jawa. Jika ingin tahu tipe stasiun Anda, cara cepat: hitung *Formzahl* `F = (K1 + O1)/(M2 + S2)` dari komponen harmonik [5]; `F < 0,25` semi-diurnal, `0,25-1,5` campuran condong semi-diurnal, `1,5-3,0` campuran condong diurnal, `> 3` diurnal. Untuk pengguna machine learning, pembacaan spektrum deret (FFT) cukup untuk melihat periode dominan (Gambar 8.1).
 
 ![Gambar 8.1 - Spektrum frekuensi muka air](figures/fig-8-1-spektrum-pasang.png)
 
 **Gambar 8.1**: Spektrum frekuensi muka air.
 
-Puncak pada periode ~12,42 jam (semi-diurnal) dan ~24 jam (diurnal) - pola ini cocok dengan tipe campuran condong semi-diurnal di pesisir selatan Jawa.
+Puncak pada periode ~12,42 jam (semi-diurnal) dan ~24 jam (diurnal); pola ini cocok dengan tipe campuran condong semi-diurnal di pesisir selatan Jawa.
 
-Metode harmonik (tradisional) memodelkan `y(t)` sebagai jumlahan sinusoid dengan frekuensi tetap dari konstituen astronomis (M2, S2, K1, O1, …) [5]. Machine learning tidak "tahu" konstituen ini - ia belajar periodisitas dari data. Inilah beda yang perlu dipahami pembaca: harmonik memakai teori fisis; deep learning memakai data. Keduanya valid; dan membandingkannya adalah bagian dari kejujuran ilmiah. Kerangka teori model deep learning secara umum dapat dirujuk pada [6]; kerangka *forecasting* praktis pada [7].
+Metode harmonik (tradisional) memodelkan `y(t)` sebagai jumlahan sinusoid dengan frekuensi tetap dari konstituen astronomis (M2, S2, K1, O1, …) [5]. Machine learning tidak "tahu" konstituen ini; ia belajar periodisitas dari data. Inilah beda yang perlu dipahami pembaca: harmonik memakai teori fisis; deep learning memakai data. Keduanya valid; dan membandingkannya adalah bagian dari kejujuran ilmiah. Kerangka teori model deep learning secara umum dapat dirujuk pada [6]; kerangka *forecasting* praktis pada [7].
 
 ### Model harmonik: mengapa masih relevan
 
 Analisis harmonik bekerja karena pasang surut didorong oleh gaya gravitasi benda langit yang periodik dan dapat diprediksi jauh ke depan. Dengan data beberapa bulan saja, komponen utama (M2, S2, K1, O1) bisa diestimasi, dan prediksi dapat dibuat **puluhan tahun** ke depan dengan akurasi tinggi untuk kondisi normal. Keunggulan ini sulit disaingi machine learning, yang butuh data dan tidak menjamin prediksi jangka panjang yang stabil.
 
-Namun harmonik juga punya kelemahan: ia mengasumsikan stasioneritas amplitudo/fase dalam jendela estimasi, dan gagal menangkap **variabilitas non-periodik** - misalnya kenaikan muka air saat badai, efek debit sungai Kapuas, atau perubahan lokal ([5] untuk catatan umum pengembangan). Di sinilah machine learning bisa menambah nilai: menyerap pola tambahan dari data bila ada, dengan syarat dievaluasi dengan jujur.
+Namun harmonik juga punya kelemahan: ia mengasumsikan stasioneritas amplitudo/fase dalam jendela estimasi, dan gagal menangkap **variabilitas non-periodik**, misalnya kenaikan muka air saat badai, efek debit sungai Kapuas, atau perubahan lokal ([5] untuk catatan umum pengembangan). Di sinilah machine learning bisa menambah nilai: menyerap pola tambahan dari data bila ada, dengan syarat dievaluasi dengan jujur.
 
 ### Perbandingan ringkas harmonik vs deep learning
 
@@ -129,7 +129,7 @@ Lisensi tiap sumber **berbeda dengan lisensi buku** (CC BY-SA 4.0 yang mengizink
 - **PSMSL** [3] - gratis; wajib menyertakan sitasi dataset (Holgate et al. 2013) dan referensi data/stasiun.
 - **BIG (tides.big.go.id)** [1] - publik untuk keperluan informasi pasut; atribusi BIG dianjurkan.
 
-Karena buku ini berlisensi **CC BY-SA 4.0** (penggunaan komersial diperbolehkan), jika Anda menggabungkan data **non-komersial** (IOC) ke dalam produk turunan, kewajiban non-komersial dari data tersebut **tetap berlaku** - cantumkan peringatan eksplisit di produk Anda.
+Karena buku ini berlisensi **CC BY-SA 4.0** (penggunaan komersial diperbolehkan), jika Anda menggabungkan data **non-komersial** (IOC) ke dalam produk turunan, kewajiban non-komersial dari data tersebut **tetap berlaku**; cantumkan peringatan eksplisit di produk Anda.
 
 ### Stasiun Indonesia yang datanya tersedia di sumber terbuka
 
@@ -176,18 +176,18 @@ QC yang konsisten dengan Bab 6 §6.4:
 | File nyata (di-commit) | `data/raw/cili_30d.csv` (observasi IOC), `data/raw/cili_1y_hourly_real.csv` (derivasi harmonik), `data/raw/cilacap_psmsl_rlr_monthly.rlrdata` (PSMSL) |
 | Sifat data | **Observasi nyata IOC** (+ derivasi harmonik klar dicantumkan); bukan sintetik |
 
-> **Catatan kejujuran:** sejak v2.0 notebook memakai **data nyata IOC** real-time (`scripts/download_ioc.py --source ioc --code cili --days 30`). IOC hanya menyediakan ~30 hari terakhir, jadi hasil di bab ini adalah contoh pendek (~1 bulan), bukan validasi jangka panjang. `cili_1y_hourly_real.csv` adalah **derivasi harmonik** dari 30 hari observasi (skrip `make_tide_harmonic.py`), bukan pengukuran langsung - tandai dengan jelas saat dipakai. Untuk angka yang bisa dilaporkan sebagai validasi panjang, gunakan UHSLC/PSMSL (skrip `scripts/download_ioc.py`) dengan beberapa tahun data.
+> **Catatan kejujuran:** sejak v2.0 notebook memakai **data nyata IOC** real-time (`scripts/download_ioc.py --source ioc --code cili --days 30`). IOC hanya menyediakan ~30 hari terakhir, jadi hasil di bab ini adalah contoh pendek (~1 bulan), bukan validasi jangka panjang. `cili_1y_hourly_real.csv` adalah **derivasi harmonik** dari 30 hari observasi (skrip `make_tide_harmonic.py`), bukan pengukuran langsung; tandai dengan jelas saat dipakai. Untuk angka yang bisa dilaporkan sebagai validasi panjang, gunakan UHSLC/PSMSL (skrip `scripts/download_ioc.py`) dengan beberapa tahun data.
 
 Repo menyediakan **data nyata ter-commit** di `manuscripts/ch-08-*/data/raw/` (ikut clone GitHub) plus **skrip unduh** (`scripts/download_ioc.py`) untuk stasiun lain. Prinsip QC mengikuti Bab 6 §6.4.
 
 ### Menangani gap dan outlier pada data pasang surut
 
-Karena pasang surut sangat periodik, gap pendek sering bisa diisi dengan interpolasi atau model - tetapi dengan aturan (Bab 6): bedakan gap acak (isi) vs gap sistematis (pertimbangkan potong). Untuk *outlier*, konteks fisis penting:
+Karena pasang surut sangat periodik, gap pendek sering bisa diisi dengan interpolasi atau model, tetapi dengan aturan (Bab 6): bedakan gap acak (isi) vs gap sistematis (pertimbangkan potong). Untuk *outlier*, konteks fisis penting:
 
 - Nilai yang **melompat ekstrem** di luar pasang normal → periksa: bisa jadi tsunami/rob, bisa juga galat sensor.
 - Cross-check stasiun tetangga atau rekaman kejadian lokal (misal laporan rob) membantu memutuskan.
 
-Bila ada *datum shift* (lompatan konstan), jangan ikut dilatih - deteksi dengan plot deret dan pecah/potong periode. Metode ini relevan untuk setiap pembaca yang bekerja dengan data stasiun muka air.
+Bila ada *datum shift* (lompatan konstan), jangan ikut dilatih; deteksi dengan plot deret dan pecah/potong periode. Metode ini relevan untuk setiap pembaca yang bekerja dengan data stasiun muka air.
 
 ### Menyiapkan fitur tambahan (opsional)
 
@@ -208,7 +208,7 @@ Alur eksperimen mengikuti pola Bab 7:
 3. Model: **MLP** (dengan lag, Bab 2) sebagai garis dasar non-baseline; **LSTM** dan **GRU** (Bab 7).
 4. Evaluasi: *walk-forward* (misal 6 blok tahunan) + MAE/RMSE per horizon + plot.
 
-Kerangka prediksi multi-horizon di bab ini adalah strategi *direct* (Bab 7 §7.7): **tiap horizon `h` dilatih dengan model sendiri**. Layer output tiap model tetap `Dense(1)`, karena target tiap model adalah satu nilai - titik akhir horizon itu (bukan seluruh jajaran). Untuk `h=72` dan `h=168`, latih ulang dengan target horizon yang sesuai (Kode 8.2); arsitektur tidak diubah.
+Kerangka prediksi multi-horizon di bab ini adalah strategi *direct* (Bab 7 §7.7): **tiap horizon `h` dilatih dengan model sendiri**. Layer output tiap model tetap `Dense(1)`, karena target tiap model adalah satu nilai, yaitu titik akhir horizon itu (bukan seluruh jajaran). Untuk `h=72` dan `h=168`, latih ulang dengan target horizon yang sesuai (Kode 8.2); arsitektur tidak diubah.
 
 ### Persiapan fitur masukan
 
@@ -233,7 +233,7 @@ Sesuai Bab 5 §5.5, kita tidak boleh mengacak data waktu. Untuk pasang surut:
 - Untuk tiap blok validasi, latih model **hanya dengan data sebelum blok tersebut** (expanding window), lalu evaluasi pada blok itu.
 - Rata-rata MAE/RMSE seluruh blok → angka "walk-forward" sebagai klaim utama.
 
-Ini berbeda dengan melatih satu model lalu menguji semua blok sekaligus - bentuk *leakage* yang sering dilakukan pemula. Bab 8-9 mempraktikkan disiplin ini.
+Ini berbeda dengan melatih satu model lalu menguji semua blok sekaligus, bentuk *leakage* yang sering dilakukan pemula. Bab 8-9 mempraktikkan disiplin ini.
 
 ### Memilih window dan horizon
 
@@ -318,7 +318,7 @@ def buat_model(kind, w=168, f=1):
 
 Untuk MLP, *window* di-flatten (`w*f`) karena MLP tidak membaca urutan; LSTM/GRU membaca urutan `w × f`. Ini mengingatkan kembali Bab 7 §7.7.
 
-`Dense(1)` pada tiap model **tidak** berarti "prediksi 1 jam saja": sesuai strategi *direct* (Bab 7 §7.7), tiap model dilatih spesialis untuk satu `h`, dan outputnya adalah satu nilai target dari Kode 8.2 (`y[:, -1]`). Untuk `h=72` dan `h=168`, latih ulang `buat_window` dengan horizon yang sesuai - arsitektur tidak diubah.
+`Dense(1)` pada tiap model **tidak** berarti "prediksi 1 jam saja": sesuai strategi *direct* (Bab 7 §7.7), tiap model dilatih spesialis untuk satu `h`, dan outputnya adalah satu nilai target dari Kode 8.2 (`y[:, -1]`). Untuk `h=72` dan `h=168`, latih ulang `buat_window` dengan horizon yang sesuai; arsitektur tidak diubah.
 
 ## 8.5 Evaluasi dan Interpretasi
 
@@ -330,7 +330,7 @@ Untuk pasang surut, target operasional sering dinyatakan sebagai toleransi tingg
 - **Skill score** terhadap persistence (Persamaan 7.6) - jika nilai negatif, model kalah dari "tebak nilai kemarin".
 - **Plot prediksi vs aktual** 1, 3, 7 hari.
 
-Tabel 8.6 merangkum pola hasil tipikal (angka ilustratif - ganti dengan hasil eksperimen Anda; horizon `h` diukur dalam jam, Bagian 8.4):
+Tabel 8.6 merangkum pola hasil tipikal (angka ilustratif: ganti dengan hasil eksperimen Anda; horizon `h` diukur dalam jam, Bagian 8.4):
 
 **Tabel 8.6**: Contoh hasil ringkas per horizon.
 
@@ -361,7 +361,7 @@ Agar pembaca tahu bentuk hasil yang wajar, berikut pola yang *seharusnya* muncul
 - **h=72 (3 hari)**: persistence mulai "terbawa" fase; LSTM/GRU sering unggul beberapa persen; MLP tertinggal satu tingkat.
 - **h=168 (7 hari)**: selisih LSTM/GRU vs persistence makin jelas; variabilitas antar blok walk-forward meningkat - laporkan rentang, bukan satu angka.
 
-Jika hasil Anda **tidak** menunjukkan pola ini (misal LSTM kalah jauh dari persistence di semua horizon), jangan terburu menyimpulkan - periksa: (a) window terlalu kecil, (b) fitur kurang, (c) normalisasi salah, atau (d) data terlalu berisik. *Debugging* inilah proses belajar paling berharga di studi kasus.
+Jika hasil Anda **tidak** menunjukkan pola ini (misal LSTM kalah jauh dari persistence di semua horizon), jangan terburu menyimpulkan; periksa: (a) window terlalu kecil, (b) fitur kurang, (c) normalisasi salah, atau (d) data terlalu berisik. *Debugging* inilah proses belajar paling berharga di studi kasus.
 
 ### Komunikasi singkat: skill score relatif
 
@@ -376,11 +376,11 @@ Untuk laporan yang mudah dipahami, rangkum sebagai *skill score* relatif terhada
 
 **Tabel 8.7**: Contoh skill score relatif terhadap persistence (ilustratif).
 
-Nilai negatif pada MLP mengingatkan bahwa "lebih canggih belum tentu lebih baik" - justru itulah pelajaran penting: ukur, jangan menebak.
+Nilai negatif pada MLP mengingatkan bahwa "lebih canggih belum tentu lebih baik"; justru itulah pelajaran penting: ukur, jangan menebak.
 
 ### Membaca plot & residu
 
-Plot prediksi 7 hari (Gambar 8.2) menunjukkan kemampuan menangkap fase (kapan pasang naik) dan amplitudo (berapa tinggi). Ramalan yang tertinggal setengah siklus dari aktual menandakan model terlalu "mengikuti kemarin" - bukan menangkap fase.
+Plot prediksi 7 hari (Gambar 8.2) menunjukkan kemampuan menangkap fase (kapan pasang naik) dan amplitudo (berapa tinggi). Ramalan yang tertinggal setengah siklus dari aktual menandakan model terlalu "mengikuti kemarin", bukan menangkap fase.
 
 ![Gambar 8.2 - Prediksi vs aktual 7 hari, Cilacap](figures/fig-8-2-forecast-7hari.png)
 
@@ -394,7 +394,7 @@ Periksa juga **residu per fase pasang**: apakah galat membesar saat pasang punca
 
 **Gambar 8.3**: Residu per amplitudo dan fase pasang M2.
 
-**Panel kiri**: residu vs amplitudo aktual - titik yang menyebar acak di sekitar garis nol menandakan galat tidak bergantung pada amplitudo (gejala baik). **Panel kanan**: residu vs fase dalam siklus M2 (12,42 jam dilipat ke [0, 1)) - pola periodik di sini menandakan model kehilangan sebagian informasi fase (gejala umum untuk baseline persistence; LSTM/GRU biasanya lebih baik).
+**Panel kiri**: residu vs amplitudo aktual; titik yang menyebar acak di sekitar garis nol menandakan galat tidak bergantung pada amplitudo (gejala baik). **Panel kanan**: residu vs fase dalam siklus M2 (12,42 jam dilipat ke [0, 1)); pola periodik di sini menandakan model kehilangan sebagian informasi fase (gejala umum untuk baseline persistence; LSTM/GRU biasanya lebih baik).
 
 ### Cara membaca plot: tiga hal yang harus diperiksa
 
@@ -402,7 +402,7 @@ Periksa juga **residu per fase pasang**: apakah galat membesar saat pasang punca
 2. **Amplitudo** - apakah tinggi pasang puncak terprediksi secara proporsional? Model yang merata-rata akan "mendatar" dan meremehkan puncak.
 3. **Konsistensi dari hari ke hari** - galat besar di hari tertentu tetapi kecil di lainnya menandakan ketergantungan pada kondisi lokal (misal angin) yang belum ditangkap fitur.
 
-Ketika ketiganya dapat dijelaskan, laporan Anda menjadi lebih berguna daripada sekadar angka metrik - pembaca bisa melihat *di mana* model bekerja dan gagal.
+Ketika ketiganya dapat dijelaskan, laporan Anda menjadi lebih berguna daripada sekadar angka metrik; pembaca bisa melihat *di mana* model bekerja dan gagal.
 
 ### Menilai kepentingan praktis (bukan hanya statistik)
 
@@ -412,7 +412,7 @@ Setelah angka metrik, tanyakan "lalu?":
 - Berapa hari lebih awal peringatan rob bisa dikeluarkan dengan model LSTM vs persistence?
 - Apakah biaya pelatihan/pemeliharaan sebanding dengan keuntungan? (Bab 10).
 
-Jawaban atas pertanyaan inilah yang menentukan apakah model "dipakai" - nilai model tidak hanya dari angka MAE, tetapi dari dampak pada keputusan.
+Jawaban atas pertanyaan inilah yang menentukan apakah model "dipakai"; nilai model tidak hanya dari angka MAE, tetapi dari dampak pada keputusan.
 
 ## 8.6 Machine Learning untuk Mengisi Gap Data
 
@@ -452,7 +452,7 @@ mae_gap = float(np.mean(np.abs(np.array(pred_gap) - nilai_asli)))
 print(f"MAE imputasi gap {h} jam: {mae_gap:.4f} m")
 ```
 
-Cara ini - memvalidasi imputasi dengan menyembunyikan data asli - adalah praktik yang jujur (Bab 5): kita tahu "kebenaran" yang disembunyikan dan bisa mengukur galat imputasi tentatif. Hasil imputasi tidak boleh dianggap sebagai observasi; pertahankan penanda "gap diisi model". Seluruh eksperimen di bab ini berjalan di atas TensorFlow [10].
+Cara ini, memvalidasi imputasi dengan menyembunyikan data asli, adalah praktik yang jujur (Bab 5): kita tahu "kebenaran" yang disembunyikan dan bisa mengukur galat imputasi tentatif. Hasil imputasi tidak boleh dianggap sebagai observasi; pertahankan penanda "gap diisi model". Seluruh eksperimen di bab ini berjalan di atas TensorFlow [10].
 
 ### Keterbatasan yang harus diakui
 

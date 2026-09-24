@@ -46,17 +46,22 @@ Jika masalah kambuh, tambahkan token baru ke dalam daftar ini.
 3. Kalau kalimat tanpa kata itu sudah tidak mengalir → tulis ulang seluruh kalimat;
    JANGAN biarkan kata asing itu berdiri.
 4. Jika saya tergoda menyalin istilah buku → beri penanda `dalam bahasa buku: "…"`.
-5. **Pindai spesial voor functiewoorden van Nederlandse herkomst** (de bron van
-   kontaminasi in deze proyek): `zonder`, `met`, `en`, `niet`, `alleen`, `voor`,
-   `uit`, `een`, `de`, `het`, `van`, `wordt`, `zijn`, `heeft`, `maar`, `als`,
-   `omdat`, `veel`, `goed`, `ook`. Als zo'n token in de chat-teks staat → vervang
-   met Bahasa Indonesia standar of tulis ulang kalimat (stap 2-3).
-6. **Bij pengeditan manuskrip**: loop `python scripts/cek-bahasa-asing.py` EN
-   `python scripts/cek-terminologie.py` op het bewerkte bestand (of het hele
-   boek) VOOR het rapport "klaar"; meld alleen "schoon" als BEIDE exit-code 0
-   zijn.
-7. Houd chatzinnen kort; bij twijfel over een woord: herformuleer de zin in plaats
-   van te raden naar registertaal.
+5. **Pindai khusus kata fungsi berakar bahasa Belanda** (sumber kontaminasi di
+   proyek ini): `zonder`, `met`, `en`, `niet`, `alleen`, `voor`, `uit`, `een`,
+   `de`, `het`, `van`, `wordt`, `zijn`, `heeft`, `maar`, `als`, `omdat`, `veel`,
+   `goed`, `ook`, `opnieuw`, `terug`, `blijft`, `gegenereerd`, `gebruikt`,
+   `gemaakt`, `wel`, `toch`, `geen`, `nog`, `weer`. Bila token itu muncul di teks
+   chat → ganti dengan Bahasa Indonesia standar atau tulis ulang kalimat (langkah 2-3).
+6. **Saat penyuntingan manuskrip**: jalankan `python scripts/cek-bahasa-asing.py` DAN
+   `python scripts/cek-terminologie.py` pada berkas yang disunting (atau seluruh
+   buku) SEBELUM melaporkan "selesai"; laporkan hanya "bersih" bila KEDUA exit code 0.
+   Jalankan juga `python scripts/cek-dash-prosa.py` (exit 0 = tidak ada `" - "` sebagai
+   pemisah klausa di prosa) pada setiap penyuntingan yang menyentuh prosa.
+7. Jaga kalimat chat tetap pendek; bila ragu soal satu kata, tulis ulang kalimat
+   daripada menebak register.
+8. **Semua berkas proyek** (AGENTS.md, CHECKLIST, dokumentasi) ditulis dalam Bahasa
+   Indonesia atau Bahasa Inggris. Jangan memakai bahasa Belanda sebagai bahasa
+   pengantar, karena bahasa berkas menular ke bahasa respons chat.
 
 ## 4. Pelaporan
 

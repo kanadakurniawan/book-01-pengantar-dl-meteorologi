@@ -21,23 +21,23 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Membangun** model klasifikasi biner dan multi-kelas (hujan/tidak hujan, level bahaya) dengan TensorFlow/Keras.
 2. **Menjelaskan** peran sigmoid dan softmax serta binary/categorical cross-entropy.
-3. **Mendiagnosis** *class imbalance* dan memilih metrik yang tepat (precision, recall, F1, pengenalan CSI/FAR) - bukan hanya akurasi.
-4. **Menerapkan** *trade-off* *threshold* ala praktisi peramalan untuk fenomena langka.
+3. **Mendiagnosis** *class imbalance* dan memilih metrik yang tepat (*precision*, *recall*, F1, pengenalan CSI/FAR) - bukan hanya akurasi.
+4. **Menerapkan** *trade-off* *threshold* untuk prediksi fenomena langka.
 
-## 3.1 Dari Angka ke Kategori: Mengapa Klasifikasi Berbeda
+## 3.1 Mengapa Klasifikasi Berbeda
 
-Bab 2 membahas *regresi*: memprediksi besaran kontinu (suhu, tinggi pasang). Di dunia nyata, banyak keputusan meteorologi bukan "berapa?", melainkan **"apa?"**:
+Bab 2 membahas regresi yaitu memprediksi besaran kontinu (suhu, tinggi pasang). Di dunia nyata, banyak keputusan meteorologi bukan "berapa?", melainkan **"apa?"**:
 
 - Apakah besok akan hujan atau tidak?
 - Apakah intensitas hujan masuk kategori lebat, sedang, atau ringan?
 - Apakah perlu peringatan dini banjir untuk level siaga?
 
-Masalah ini disebut **klasifikasi** - memprediksi **kategori** (label) dari fitur. Ada dua varian utama:
+Masalah ini disebut **klasifikasi**, memprediksi **kategori** (label) dari fitur. Ada dua varian utama:
 
 - **Biner (dua kelas):** misal `0 = tidak hujan`, `1 = hujan`.
 - **Multi-kelas:** misal `ringan`, `sedang`, `lebat` - atau level bahaya `waspada`, `siaga`, `awas`.
 
-Perbedaan inti dari regresi: keluaran bukan bilangan kontinu melainkan **probabilitas atas kategori**. Di balik layar, kita tetap memakai neuron - tetapi lapisan keluaran memakai fungsi aktivasi khusus: **sigmoid** untuk biner, **softmax** untuk multi-kelas. Prinsip umum pelatihan supervised dijelaskan dalam literatur deep learning [1]. Akar historisnya adalah **perceptron** (Rosenblatt, 1958): neuron tunggal yang mengklasifikasikan input ke dua kelas berdasarkan ambang [2].
+Perbedaan inti dari regresi adalah keluaran bukan bilangan kontinu melainkan **probabilitas atas kategori**. Di balik layar, kita tetap memakai neuron tetapi lapisan keluaran memakai fungsi aktivasi khusus: **sigmoid** untuk biner, **softmax** untuk multi-kelas. Prinsip umum pelatihan *supervised* dijelaskan dalam literatur *deep learning* [1]. Akar historisnya adalah **perceptron** (Rosenblatt, 1958): neuron tunggal yang mengklasifikasikan *input* ke dua kelas berdasarkan ambang [2].
 
 Mengapa kita perlu probabilitas, bukan sekadar label? Karena informasi **seberapa yakin** model sangat berharga di operasional. Dua model yang sama-sama memprediksi "hujan" tidaklah setara jika yang satu yakin 90% dan yang lain 51%. Probabilitas memberi kita ruang untuk menetapkan ambang keputusan yang sesuai risiko, topik Bagian 3.7.
 
@@ -45,23 +45,25 @@ Mengapa kita perlu probabilitas, bukan sekadar label? Karena informasi **seberap
 
 **Tabel 3.1**: Perbedaan utama regresi dan klasifikasi.
 
-| Aspek | Regresi (Bab 2) | Klasifikasi (bab ini) |
-|---|---|---|
-| Keluaran | Bilangan kontinu | Kategori/label |
-| Aktivasi keluaran | Tanpa aktivasi (linear) | Sigmoid (biner) / softmax (multi-kelas) |
-| Loss utama | MAE atau MSE | Binary/categorical cross-entropy |
-| Metrik | MAE, RMSE, R² | Akurasi, precision, recall, F1, CSI/FAR |
-| Contoh meteo | Suhu besok, tinggi pasang | Hujan/tidak, level bahaya |
+| Aspek             | Regresi (Bab 2)           | Klasifikasi (bab ini)                       |
+| ----------------- | ------------------------- | ------------------------------------------- |
+| Keluaran          | Bilangan kontinu          | Kategori/label                              |
+| Aktivasi keluaran | Tanpa aktivasi (linear)   | Sigmoid (biner) / softmax (multi-kelas)     |
+| Loss utama        | MAE atau MSE              | Binary/categorical cross-entropy            |
+| Metrik            | MAE, RMSE, R²             | Akurasi, *precision*, *recall*, F1, CSI/FAR |
+| Contoh meteo      | Suhu besok, tinggi pasang | Hujan/tidak, level bahaya                   |
 
-Tabel 3.1 merangkum perbedaan yang akan kita bahas satu per satu. Perhatikan: struktur model (lapisan `Dense` + ReLU di tengah) sama dengan Bab 2 - yang berubah hanyalah ujung jaringan dan cara mengukurnya.
+Tabel 3.1 merangkum perbedaan yang akan kita bahas satu per satu. Perhatikan: struktur model (lapisan `Dense` + ReLU di tengah) sama dengan Bab 2; yang berubah hanyalah ujung jaringan dan cara mengukurnya.
 
 ## 3.2 Sigmoid: Aktivasi Keluaran untuk Dua Kelas
 
 Untuk klasifikasi biner, lapisan terakhir memakai **sigmoid**, yang memampatkan nilai `z` ke rentang 0-1:
 
-$$ \sigma(z) = \frac{1}{1 + e^{-z}} \tag{3.1} $$
+$$
+\sigma(z) = \frac{1}{1 + e^{-z}} \tag{3.1}
+$$
 
-Sigmoid pada Persamaan (3.1) memberi interpretasi probabilistik: keluaran `0.85` berarti keyakinan 85% bahwa sampel masuk kelas `1` (misal *hujan*). Sifat sigmoid yang penting:
+Sigmoid pada Persamaan (3.1) memberi interpretasi probabilistik: keluaran `0.85` berarti keyakinan 85% bahwa sampel masuk kelas `1` (misal hujan). Sifat sigmoid yang penting:
 
 - Nilai sangat positif → mendekati 1.
 - Nilai sangat negatif → mendekati 0.
@@ -73,58 +75,66 @@ Sigmoid pada Persamaan (3.1) memberi interpretasi probabilistik: keluaran `0.85`
 
 Gambar 3.1 memperlihatkan kurva *S* khas sigmoid: mulus, monoton naik, dan terampatkan; nilai `z` yang boleh dari -∞ sampai +∞ selalu dipetakan ke rentang (0, 1).
 
-Aturan ambang (*threshold*) standar adalah 0.5: jika `σ(z) ≥ 0.5`, prediksi kelas `1`; selain itu kelas `0`. Namun *threshold* ini **tidak wajib** - untuk fenomena jarang seperti hujan lebat, kita sering menaikkan/menurunkan *threshold* (dibahas Bagian 3.7).
+Aturan ambang (*threshold*) standar adalah 0.5: jika `σ(z) ≥ 0.5`, prediksi kelas `1`; selain itu kelas `0`. Namun *threshold* ini **tidak wajib**: untuk fenomena jarang seperti hujan lebat, kita sering menaikkan/menurunkan *threshold* (dibahas Bagian 3.7).
 
 ### Contoh numerik sigmoid
 
 Misalkan model memberi `z = 1.2`. Maka:
 
-$$ \sigma(1.2) = \frac{1}{1 + e^{-1.2}} = \frac{1}{1 + 0.301} \approx 0.77 $$
+$$
+\sigma(1.2) = \frac{1}{1 + e^{-1.2}} = \frac{1}{1 + 0.301} \approx 0.77
+$$
 
-Dengan *threshold* 0.5, sampel masuk kelas `1`. Jika kita menaikkan *threshold* ke 0.8, sampel ini menjadi kelas `0` - keputusan berubah hanya karena ambang, bukan model.
+Dengan *threshold* 0.5, sampel masuk kelas `1`. Jika kita menaikkan *threshold* ke 0.8, sampel ini menjadi kelas `0`; keputusan berubah hanya karena ambang, bukan model.
 
 ## 3.3 Softmax: Aktivasi Keluaran untuk Banyak Kelas
 
 Untuk klasifikasi multi-kelas, kita memakai **softmax**, yang mengubah vektor nilai `z` menjadi distribusi probabilitas yang **menjumlahkan ke 1**:
 
-$$ \text{softmax}(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}} \tag{3.2} $$
+$$
+\text{softmax}(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{K} e^{z_j}} \tag{3.2}
+$$
 
-Softmax pada Persamaan (3.2) memberi probabilitas untuk tiap kelas `i` di antara `K` kelas. Contoh: `[0.70, 0.20, 0.10]` untuk kelas `[ringan, sedang, lebat]` - model paling yakin "ringan".
+Softmax pada Persamaan (3.2) memberi probabilitas untuk tiap kelas `i` di antara `K` kelas. Contoh: `[0.70, 0.20, 0.10]` untuk kelas `[ringan, sedang, lebat]`, model paling yakin "ringan".
 
-**Penting:** softmax bersifat *relatif* - ia membandingkan semua kelas. Jika kita menambahkan satu kelas lagi, probabilitas semua kelas bisa berubah meski data untuk kelas lama sama. Ini berbeda dari sigmoid yang "mandiri" per kelas (untuk biner, hanya satu).
+**Penting:** softmax bersifat relatif, ia membandingkan semua kelas. Jika kita menambahkan satu kelas lagi, probabilitas semua kelas bisa berubah meski data untuk kelas lama sama. Ini berbeda dari sigmoid yang "mandiri" per kelas (untuk biner, hanya satu).
 
 ### Perbandingan sigmoid vs softmax
 
 **Tabel 3.2**: Perbandingan sigmoid dan softmax.
 
-| | Sigmoid | Softmax |
-|---|---|---|
-| Jumlah kelas | 1 neuron, 2 kelas (komplementer) | K neuron, K kelas |
-| Jumlah probabilitas | `p` tunggal; komplemen `1-p` implisit | Vektor `K` nilai, jumlah 1 |
-| Fungsi | $\frac{1}{1+e^{-z}}$ | $\frac{e^{z_i}}{\sum_j e^{z_j}}$ |
-| Kapan dipakai | Masalah biner | Masalah multi-kelas |
+|                     | Sigmoid                               | Softmax                          |
+| ------------------- | ------------------------------------- | -------------------------------- |
+| Jumlah kelas        | 1 neuron, 2 kelas (komplementer)      | K neuron, K kelas                |
+| Jumlah probabilitas | `p` tunggal; komplemen `1-p` implisit | Vektor `K` nilai, jumlah 1       |
+| Fungsi              | $\frac{1}{1+e^{-z}}$                  | $\frac{e^{z_i}}{\sum_j e^{z_j}}$ |
+| Kapan dipakai       | Masalah biner                         | Masalah multi-kelas              |
 
-## 3.4 Cross-Entropy: Fungsi Loss Klasifikasi
+## 3.4 Cross-Entropy: Fungsi *Loss* Klasifikasi
 
 Seperti MAE/MSE untuk regresi, klasifikasi memakai fungsi loss khusus:
 
 - **Binary cross-entropy** (biner): menghukum galat antara probabilitas sigmoid dan label biner.
-- **Categorical cross-entropy** (multi-kelas): menghukum galat antara distribusi softmax dan label satu-panas (one-hot).
+- **Categorical cross-entropy** (multi-kelas): menghukum galat antara distribusi softmax dan label *one-hot*.
+
+Catatan singkat: *one-hot* berarti label diubah menjadi vektor dengan panjang sesuai jumlah kelas, berisi `1` di posisi kelas yang benar dan `0` di posisi lain; contoh dan `sparse_categorical_crossentropy` ada di Bagian 3.5.
 
 Formula untuk binary cross-entropy (per sampel):
 
-$$ \mathcal{L} = -\left[ y \log(p) + (1 - y) \log(1 - p) \right] \tag{3.3} $$
+$$
+\mathcal{L} = -\left[ y \log(p) + (1 - y) \log(1 - p) \right] \tag{3.3}
+$$
 
-di mana `y` label (0 atau 1) dan `p` probabilitas prediksi. Intuisi: jika `y=1` dan `p` mendekati 1, `log(p)` mendekati 0 → loss kecil. Jika `y=1` tetapi `p` mendekati 0, loss sangat besar - model dihukum karena yakin salah.
+di mana `y` label (0 atau 1) dan `p` probabilitas prediksi. Intuisi: jika `y=1` dan `p` mendekati 1, `log(p)` mendekati 0 → loss kecil. Jika `y=1` tetapi `p` mendekati 0, loss sangat besar, model dihukum karena yakin salah.
 
-Prinsip intuisi: loss **kecil** jika model yakin benar, **besar** jika model yakin salah. Berbeda dari MSE yang menghukum selisih linier/kuadrat, cross-entropy langsung menargetkan ketidaktepatan keyakinan - inilah mengapa akurasi bisa tetap tinggi meski keyakinannya rendah.
+Prinsip intuisi: *loss* **kecil** jika model yakin benar, **besar** jika model yakin salah. Berbeda dari MSE yang menghukum selisih linier/kuadrat, cross-entropy langsung menargetkan ketidaktepatan keyakinan, inilah mengapa akurasi bisa tetap tinggi meski keyakinannya rendah.
 
 ### Kenapa bukan MSE untuk klasifikasi?
 
 Ada dua alasan utama:
 
 1. **Interpretasi probabilitas.** MSE dioptimalkan untuk nilai kontinu; ia tidak memberi "hukuman" sesuai makna probabilitas. Cross-entropy lahir dari teori informasi dan cocok dengan keluaran 0-1.
-2. **Pelatihan.** Dengan sigmoid + MSE, gradien bisa sangat kecil ketika kurva sigmoid datar - terutama saat model yakin **tetapi salah** (misal label `1`, prediksi `p ≈ 0`), karena turunan sigmoid mendekati nol dan gradien MSE mengecil, belajar melambat [1]. Sebaliknya, saat model yakin dan benar (`y=1`, `p ≈ 1`), gradien cross-entropy juga kecil - justru yang kita ingin. Cross-entropy + sigmoid/softmax menghasilkan gradien yang lebih sehat, karena proporsional terhadap `(p - y)` dan tetap besar ketika model yakin salah. Detail di Bab 4.
+2. **Pelatihan.** Dengan sigmoid + MSE, gradien bisa sangat kecil ketika kurva sigmoid datar, terutama saat model yakin **tetapi salah** (misal label `1`, prediksi `p ≈ 0`). Karena turunan sigmoid mendekati nol dan gradien MSE mengecil, proses belajar melambat [1]. Sebaliknya, saat model yakin dan benar (`y=1`, `p ≈ 1`), gradien cross-entropy juga kecil, justru yang kita ingin. Cross-entropy + sigmoid/softmax menghasilkan gradien yang lebih sehat, karena proporsional terhadap `(p - y)` dan tetap besar ketika model yakin salah. Detail di Bab 4.
 
 ## 3.5 Kode: Model Klasifikasi Pertama
 
@@ -192,7 +202,7 @@ history = model.fit(
 )
 ```
 
-Bobot `10.0` pada kelas `1` membuat galat pada kejadian langka dihukum 10× lipat. Rasio ketidakseimbangan (mis. bila 5% kejadian, bobot ~19) adalah **titik awal** yang membantu, bukan aturan baku: bobot optimal tidak selalu melihan dari frekuensi invers, dan nilai terlalu ekstrem bisa menaikkan *overfit* pada kelas minoritas. Sebaiknya tuning bobot empiris (misal telai 2, 5, 10, 19) dan pilih yang memberi F1/CSI terbaik pada validasi. Bandingkan hasil Kode 3.3 dengan tanpa bobot di notebook.
+Bobot `10.0` pada kelas `1` membuat galat pada kejadian langka dihukum 10 kali lipat. Rasio ketidakseimbangan (mis. bila 5% kejadian, bobot ~19) adalah **titik awal** yang membantu, bukan aturan baku: bobot optimal tidak selalu dilihat dari frekuensi invers, dan nilai terlalu ekstrem bisa menaikkan *overfit* pada kelas minoritas. Sebaiknya tuning bobot empiris (mis. coba 2, 5, 10, 19) dan pilih yang memberi F1/CSI terbaik pada validasi. Bandingkan hasil Kode 3.3 dengan tanpa bobot di notebook.
 
 ### Memahami keluaran satu-panas (one-hot)
 
@@ -204,13 +214,13 @@ sedang → [0, 1, 0]
 lebat  → [0, 0, 1]
 ```
 
-Keras menyediakan `to_categorical` untuk konversi, dan label integer lugas juga bisa dipakai dengan loss `sparse_categorical_crossentropy` - variasi yang sama, tanpa perlu encode manual.
+Keras menyediakan `to_categorical` untuk konversi, dan label integer lugas juga bisa dipakai dengan loss `sparse_categorical_crossentropy`, variasi yang sama, tanpa perlu encode manual.
 
 ## 3.6 Class Imbalance: Mengapa Akurasi Menipu
 
-Data meteorologi sering **tidak seimbang**: hujan deras >50 mm mungkin terjadi hanya beberapa hari dalam setahun di banyak stasiun tropis. Jika model selalu memprediksi "tidak hujan deras", akurasinya bisa 99% - tampak hebat, padahal model **gagal total** pada kejadian yang justru paling penting.
+Data meteorologi sering **tidak seimbang**: hujan deras >50 mm mungkin terjadi hanya beberapa hari dalam setahun di banyak stasiun tropis. Jika model selalu memprediksi "tidak hujan deras", akurasinya bisa 99%. Tampak hebat, padahal model **gagal total** pada kejadian yang justru paling penting.
 
-Mengapa ini sangat relevan untuk meteorologi? Karena banyak fenomena berisiko justru langka: hujan ekstrem, angin kencang, banjir rob, atau cuaca buruk penerbangan. Sebagian besar hari adalah "biasa"; kejadian berbahaya adalah sebagian kecil. Model yang dioptimalkan hanya untuk akurasi global akan "belajar" memprediksi kelas mayoritas dan praktis buta terhadap kelas langka - ironisnya, kelas yang paling kita pedulikan.
+Mengapa ini sangat relevan untuk meteorologi? Karena banyak fenomena berisiko justru langka: hujan ekstrem, angin kencang, banjir rob, atau cuaca buruk penerbangan. Sebagian besar hari adalah "biasa"; kejadian berbahaya adalah sebagian kecil. Model yang dioptimalkan hanya untuk akurasi global akan "belajar" memprediksi kelas mayoritas dan praktis buta terhadap kelas langka; ironisnya, kelas yang paling kita pedulikan.
 
 Tabel berikut menggambarkan jebakan ini:
 
@@ -220,7 +230,7 @@ Tabel berikut menggambarkan jebakan ini:
 
 **Gambar 3.2**: Confusion matrix contoh data tidak seimbang.
 
-Gambar 3.2 memvisualkan Tabel 3.3: dari 1000 hari, hanya 2 hujan deras yang tertangkap benar, 8 *miss*, 20 *false alarm*, dan 970 benar-tidak. Akurasi di sini = `(2+970)/1000 = 97.2%`. Catatan: angka 99% di atas adalah skenario **hipotetis** di mana model selalu berprediksi "tidak hujan deras" (untuk data dengan ~1% kejadian langka, akurasi = `990/1000 = 99%`), sementara Tabel 3.3 menggambarkan model yang **lain** yang masih melaporkan 20 *false alarm* - dua skenario, dua angka. Tetapi dari 10 hari hujan deras sungguhan, model hanya menangkap **2** (recall 20%) dan melaporkan **20** false alarm. Untuk peringatan dini, model seperti ini hampir tidak berguna.
+Gambar 3.2 memvisualkan Tabel 3.3: dari 1000 hari, hanya 2 hujan deras yang tertangkap benar, 8 *miss*, 20 *false alarm*, dan 970 benar-tidak. Akurasi di sini = `(2+970)/1000 = 97.2%`. Catatan: angka 99% di atas adalah skenario **hipotetis** di mana model selalu berprediksi "tidak hujan deras" (untuk data dengan ~1% kejadian langka, akurasi = `990/1000 = 99%`), sementara Tabel 3.3 menggambarkan model yang **lain** yang masih melaporkan 20 *false alarm*; dua skenario, dua angka. Tetapi dari 10 hari hujan deras sungguhan, model hanya menangkap **2** (recall 20%) dan melaporkan **20** false alarm. Untuk peringatan dini, model seperti ini hampir tidak berguna.
 
 Karena itu, metrik utama yang dipakai:
 
@@ -228,9 +238,11 @@ Karena itu, metrik utama yang dipakai:
 - **Recall** - dari semua yang benar-benar hujan deras, berapa yang tertangkap? `TP/(TP+FN) = 2/10 = 20%`.
 - **F1** - rata-rata harmonik precision-recall (seimbang):
 
-$$ F_1 = \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}} \tag{3.4} $$
+$$
+F_1 = \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}} \tag{3.4}
+$$
 
-Untuk kejadian langka dalam meteorologi operasional, kuartet yang lebih terpercaya adalah **CSI, POD, FAR, TS** - akan dibahas penuh di Bab 5. Pedoman resmi verifikasi perkiraan operasional dikeluarkan WMO [4]. Di bab ini kita cukup paham mengapa akurasi tidak cukup.
+Untuk kejadian langka dalam meteorologi operasional, kuartet yang lebih terpercaya adalah **CSI, POD, FAR, TS**; akan dibahas penuh di Bab 5. Pedoman resmi verifikasi perkiraan operasional dikeluarkan WMO [4]. Di bab ini kita cukup paham mengapa akurasi tidak cukup.
 
 ### Empat cara mengatasi imbalance (pratinjau)
 
@@ -256,19 +268,19 @@ Model memberi probabilitas (kekuatan sigmoid/softmax). Pertanyaan praktisnya: **
 - *Threshold* rendah (mis. 0.2) → lebih banyak *hujan deras* terdeteksi (recall naik), tetapi juga lebih banyak *false alarm* (precision turun).
 - *Threshold* tinggi (mis. 0.8) → lebih hati-hati; false alarm turun, tetapi banyak kejadian terlewat (recall turun).
 
-Tidak ada jawaban universal: tergantung **biaya galat**. Untuk peringatan dini bencana, false alarm mungkin lebih diterima daripada kejadian terlewat - maka pilih recall tinggi. Untuk keputusan yang mahal (misal evakuasi), mungkin precision lebih penting.
+Tidak ada jawaban universal: tergantung **biaya galat**. Untuk peringatan dini bencana, false alarm mungkin lebih diterima daripada kejadian terlewat, maka pilih recall tinggi. Untuk keputusan yang mahal (misal evakuasi), mungkin precision lebih penting.
 
 Kurva **precision-recall** dan **ROC** membantu memilih: kita mengevaluasi model di banyak *threshold* sekaligus, bukan hanya 0.5. Di Bab 9, *trade-off* ini diterapkan pada prediksi hujan harian.
 
-Bagaimana memilih *threshold* secara sistematis? Salah satu cara sederhana: hitung precision dan recall untuk rentang *threshold* (mis. 0.1, 0.2, ..., 0.9), lalu pilih titik yang paling sesuai kebutuhan. Cara lain: gunakan *cost matrix* - tetapkan berapa "harga" sebuah miss vs false alarm (misal 5:1), lalu pilih *threshold* yang meminimalkan total biaya pada validasi. Tidak ada jawaban tunggal, tetapi prosesnya **harus eksplisit dan terdokumentasi**.
+Bagaimana memilih *threshold* secara sistematis? Salah satu cara sederhana: hitung precision dan recall untuk rentang *threshold* (mis. 0.1, 0.2, ..., 0.9), lalu pilih titik yang paling sesuai kebutuhan. Cara lain: gunakan *cost matrix*: tetapkan berapa "harga" sebuah miss vs false alarm (misal 5:1), lalu pilih *threshold* yang meminimalkan total biaya pada validasi. Tidak ada jawaban tunggal, tetapi prosesnya **harus eksplisit dan terdokumentasi**.
 
 ### Contoh keputusan threshold dalam konteks peringatan dini
 
-Bayangkan sistem peringatan dini banjir rob. Jika *threshold* terlalu tinggi (konservatif), kita jarang mengeluarkan peringatan salah - tetapi ada risiko kejadian terlewat dan warga tidak sempat bersiap. Jika *threshold* terlalu rendah, kita sering "menangis serigala"; lama-kelamaan masyarakat mengabaikan peringatan. Pilihan *threshold* karena itu adalah **keputusan kebijakan** yang melibatkan biaya sosial, bukan sekadar statistik.
+Bayangkan sistem peringatan dini banjir rob. Jika *threshold* terlalu tinggi (konservatif), kita jarang mengeluarkan peringatan salah, tetapi ada risiko kejadian terlewat dan warga tidak sempat bersiap. Jika *threshold* terlalu rendah, kita sering "menangis serigala"; lama-kelamaan masyarakat mengabaikan peringatan. Pilihan *threshold* karena itu adalah **keputusan kebijakan** yang melibatkan biaya sosial, bukan sekadar statistik.
 
 ### Threshold mana yang "paling baik"?
 
-Jika tidak ada preferensi biaya eksplisit, praktisi sering memilih *threshold* yang memaksimalkan **F1** - karena F1 menyeimbangkan precision dan recall dalam satu angka. Peringatan: F1 adalah rata-rata harmonik dengan bobot yang **sama** untuk precision dan recall - ia implisit mengasumsikan bahwa biaya *false alarm* = biaya *miss*. Jika biaya miss jauh lebih besar (sering dalam peringatan dini bencana), *threshold* yang memaksimalkan F1 bisa bukan pilihan optimal; dalam hal itu gunakan *cost matrix* dengan biaya yang jelas. Selain itu, dua model dengan F1 sama bisa memiliki perilaku berbeda di lapangan; karena itu jangan pernah hanya melihat F1, tapi periksa juga angka precision & recall-nya dan, jika memungkinkan, *curve*-nya (ROC/*precision-recall*).
+Jika tidak ada preferensi biaya eksplisit, praktisi sering memilih *threshold* yang memaksimalkan **F1**, karena F1 menyeimbangkan precision dan recall dalam satu angka. Peringatan: F1 adalah rata-rata harmonik dengan bobot yang **sama** untuk precision dan recall; ia implisit mengasumsikan bahwa biaya *false alarm* = biaya *miss*. Jika biaya miss jauh lebih besar (sering dalam peringatan dini bencana), *threshold* yang memaksimalkan F1 bisa bukan pilihan optimal; dalam hal itu gunakan *cost matrix* dengan biaya yang jelas. Selain itu, dua model dengan F1 sama bisa memiliki perilaku berbeda di lapangan; karena itu jangan pernah hanya melihat F1, tapi periksa juga angka precision & recall-nya dan, jika memungkinkan, *curve*-nya (ROC/*precision-recall*).
 
 ## 3.8 Confusion Matrix: Membaca yang Terlewat dan Keliru
 
@@ -281,12 +293,12 @@ Jika tidak ada preferensi biaya eksplisit, praktisi sering memilih *threshold* y
 
 **Tabel 3.4**: Struktur confusion matrix untuk masalah biner.
 
-| | Prediksi: Positif | Prediksi: Negatif |
-|---|---|---|
-| Aktual: Positif | TP | FN (miss) |
-| Aktual: Negatif | FP (false alarm) | TN |
+|                 | Prediksi: Positif | Prediksi: Negatif |
+| --------------- | ----------------- | ----------------- |
+| Aktual: Positif | TP                | FN (miss)         |
+| Aktual: Negatif | FP (false alarm)  | TN                |
 
-Di meteorologi operasional, dua sel yang paling diperhatikan adalah **FP (false alarm)** dan **FN (miss)** - karena membawa konsekuensi langsung: peringatan keliru menggerus kepercayaan, kejadian terlewat membawa risiko keselamatan.
+Di meteorologi operasional, dua sel yang paling diperhatikan adalah **FP (false alarm)** dan **FN (miss)**, karena membawa konsekuensi langsung: peringatan keliru menggerus kepercayaan, kejadian terlewat membawa risiko keselamatan.
 
 Dari confusion matrix ini, semua metrik di atas diturunkan:
 
@@ -316,6 +328,7 @@ Bab 9 akan memakai precision-recall untuk verifikasi hujan harian.
 **Apakah saya perlu menyeimbangkan data dulu?** Tidak selalu. Mengubah distribusi kelas (undersampling/oversampling) mengubah masalah itu sendiri. Sering lebih baik: gunakan metrik yang tepat + bobot kelas, lalu evaluasi dengan CSI/FAR. Nanti di Bab 5.
 
 **Mengapa memakai softmax, bukan beberapa sigmoid untuk multi-kelas?** Softmax memaksa total probabilitas = 1 dan "bersaing" antar kelas, sesuai asumsi label saling eksklusif [1]. Beberapa sigmoid (multi-label) cocok jika sebuah sampel bisa punya lebih dari satu label sekaligus (misal "hujan" DAN "angin kencang" bersamaan). Untuk multi-label, lapisan keluaran berisi beberapa neuron sigmoid dan loss yang dipakai adalah `binary_crossentropy` per neuron
+
 - bukan `categorical_crossentropy`, yang menuntut distribusi softmax. Varian ini dilaporkan dalam literatur klasifikasi [1].
 
 ## 3.11 Alur Kerja Model Klasifikasi
@@ -341,9 +354,9 @@ Baseline *klimatologi* untuk klasifikasi mengingatkan kita pada prinsip Bab 1: j
 
 **4. Normalisasi/statistik dari seluruh data.** Sama seperti Bab 2 - jangan sampai informasi/statistik dari data test bocor ke dalam proses pelatihan (data leakage).
 
-**5. Menganggap *softmax* sebagai "probabilitas sejati".** *Softmax* hanya peringkat relatif, bukan kalibrasi probabilistik sesungguhnya (model bisa terlalu yakin). Misal, dengan logit `[10, 5, 5]` softmax memberikan `[0.99, 0.005, 0.005]` - "yakin" ~99% pada kelas pertama, sampai data yang di lapangan tidak jelas. Ini fenomena yang dikenal sebagai *overconfidence* pada neural network [5]. Kalibrasi dibahas singkat di Bab 10.
+**5. Menganggap *softmax* sebagai "probabilitas sejati".** *Softmax* hanya peringkat relatif, bukan kalibrasi probabilistik sesungguhnya (model bisa terlalu yakin). Misal, dengan logit `[10, 5, 5]` softmax memberikan `[0.99, 0.005, 0.005]`, "yakin" ~99% pada kelas pertama, padahal data di lapangan tidak jelas. Ini fenomena yang dikenal sebagai *overconfidence* pada neural network [5]. Kalibrasi dibahas singkat di Bab 10.
 
-Dengan menghindari galat ini, laporan klasifikasi Anda jujur dan berguna - nilai kepercayaan yang mahal di dunia operasional.
+Dengan menghindari galat ini, laporan klasifikasi Anda jujur dan berguna: nilai kepercayaan yang mahal di dunia operasional.
 
 ## Ringkasan
 
@@ -365,15 +378,15 @@ Dengan menghindari galat ini, laporan klasifikasi Anda jujur dan berguna - nilai
 
 **Latihan praktik (notebook `ch-03-02_klasifikasi_hujan.ipynb`)**
 
-5. Bangun model biner hujan/tidak hujan; hitung precision, recall, F1 pada beberapa *threshold* (0.2, 0.5, 0.8) dan buat tabelnya.
-6. Latih model multi-kelas intensitas (ringan/sedang/lebat). Catat confusion matrix.
-7. Bandingkan akurasi vs F1 pada data tidak seimbang; diskusikan mana yang lebih informatif.
-8. (Proyek mini) Gunakan data suhu/kelembapan stasiun lokal untuk prediksi hujan besok; laporkan CSI/POD/FAR untuk *threshold* terbaik Anda.
+1. Bangun model biner hujan/tidak hujan; hitung precision, recall, F1 pada beberapa *threshold* (0.2, 0.5, 0.8) dan buat tabelnya.
+2. Latih model multi-kelas intensitas (ringan/sedang/lebat). Catat confusion matrix.
+3. Bandingkan akurasi vs F1 pada data tidak seimbang; diskusikan mana yang lebih informatif.
+4. (Proyek mini) Gunakan data suhu/kelembapan stasiun lokal untuk prediksi hujan besok; laporkan CSI/POD/FAR untuk *threshold* terbaik Anda.
 
 ## References
 
 1. I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. Cambridge, MA, USA: MIT Press, 2016.
 2. F. Rosenblatt, "The perceptron: A probabilistic model for information storage and organization in the brain," *Psychological Review*, vol. 65, no. 6, pp. 386-408, 1958, doi: 10.1037/h0042519.
-3. M. Abadi et al., "TensorFlow: Large-scale machine learning on heterogeneous systems," 2016. [Online]. Available: https://arxiv.org/abs/1603.04467 (diakses: September 2026).
-4. World Meteorological Organization, "WMO guidelines on the verification of operational forecasts," WMO, Geneva, Switzerland, 2018. [Online]. Available: https://library.wmo.int (diakses: September 2026).
-5. C. Guo, G. Pleiss, Y. Sun, and K. Weinberger, "On calibration of modern neural networks," in *Proc. 34th Int. Conf. on Machine Learning (ICML)*, PMLR, vol. 70, 2017, pp. 1321-1330. [Online]. Available: https://arxiv.org/abs/1706.04596 (diakses: September 2026).
+3. M. Abadi et al., "TensorFlow: Large-scale machine learning on heterogeneous systems," 2016. [Online]. Available: [https://arxiv.org/abs/1603.04467](https://arxiv.org/abs/1603.04467) (diakses: September 2026).
+4. World Meteorological Organization, "WMO guidelines on the verification of operational forecasts," WMO, Geneva, Switzerland, 2018. [Online]. Available: [https://library.wmo.int](https://library.wmo.int) (diakses: September 2026).
+5. C. Guo, G. Pleiss, Y. Sun, and K. Weinberger, "On calibration of modern neural networks," in *Proc. 34th Int. Conf. on Machine Learning (ICML)*, PMLR, vol. 70, 2017, pp. 1321-1330. [Online]. Available: [https://arxiv.org/abs/1706.04596](https://arxiv.org/abs/1706.04596) (diakses: September 2026).

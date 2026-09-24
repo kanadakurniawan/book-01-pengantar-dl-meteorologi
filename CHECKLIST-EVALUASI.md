@@ -31,10 +31,10 @@
 - [ ] **Ketepatan & konsistensi istilah:** istilah Indonesia + Inggris benar dan seragam di
       seluruh buku; satu istilah satu padanan (glosarium satu sumber); tidak ada istilah
       ganda yang membingungkan pembaca.
-- [ ] **Canonieke terminologie (automatisch):** run `python scripts/cek-terminologie.py`;
-      exit 0 = één concept één term (canonieke: `galat`, `stasiun`, `prediksi`,
-      `*baseline*`, `pelatihan`); meld alleen "schoon" bij exit 0; `error`/`kesalahan`/
-      `station`/`prakiraan`/`patokan`/`forecast`/`training` in proza = fout.
+- [ ] **Terminologi kanonik (otomatis):** jalankan `python scripts/cek-terminologie.py`;
+      exit 0 = satu konsep satu istilah (kanonik: `galat`, `stasiun`, `prediksi`,
+      `*baseline*`, `pelatihan`); laporkan hanya "bersih" bila exit 0; `error`/`kesalahan`/
+      `station`/`prakiraan`/`patokan`/`forecast`/`training` di prosa = salah.
 - [ ] **Elemen non-naratif ikut dicek:** judul/subjudul bab, *caption* gambar & tabel,
       sidebar, komentar kode berbahasa Indonesia, dan glosarium lolos cek yang sama
       (baku, miring, jelas).
@@ -42,6 +42,13 @@
       Bahasa Indonesia maupun Inggris (sisa bahasa lain yang tidak berterima dalam register
       buku); setiap istilah asing yang dipakai adalah istilah domain yang sah dan dicetak
       *miring*. (Catatan: banlist `AGENTS.md` §2 ditujukan untuk chat, bukan untuk manuskrip.)
+- [ ] **Tanpa dash sebagai pemisah klausa di prosa (otomatis):** `" - "` tidak dipakai
+      sebagai pengganti koma, titik dua, atau titik di kalimat naratif, termasuk
+      aposisi ganda ("X - keterangan - Y"); jalankan `python scripts/cek-dash-prosa.py`;
+      exit 0 = bersih. Konteks yang dibolehkan (tidak ditandai): label bernomor
+      ("Bab x -", "Kode x.y -", "Gambar x.y -", "Tabel x.y -"), frontmatter YAML, judul,
+      item daftar (bullet/bernomor), tabel, blok kode/matematika, rentang/operasi angka, URL,
+      dan daftar pustaka.
 
 ### A2. Kalimat & Ragam Akademik
 

@@ -29,7 +29,7 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 ## 10.1 Dari Notebook ke Operasional: Jembatan yang Sering Dilupakan
 
-Membangun model yang akurat di notebook adalah bagian kecil dari pekerjaan. Bagian yang sulit - dan sering luput - adalah **menjaganya tetap berguna** setelah dipakai. Model operasional hidup dalam lingkungan yang berubah: cuaca tidak stasioner, sensor berubah, tata cara institusi berubah. Model yang "hebat" tahun lalu bisa salah tahun ini tanpa ada yang menyadarinya.
+Membangun model yang akurat di notebook adalah bagian kecil dari pekerjaan. Bagian yang sulit, dan sering luput, adalah **menjaganya tetap berguna** setelah dipakai. Model operasional hidup dalam lingkungan yang berubah: cuaca tidak stasioner, sensor berubah, tata cara institusi berubah. Model yang "hebat" tahun lalu bisa salah tahun ini tanpa ada yang menyadarinya.
 
 Tiga pertanyaan yang harus dijawab sebelum sebuah model disebut "produksi":
 
@@ -45,7 +45,7 @@ Anda tidak perlu membangun Kubernetes untuk mengikuti bab ini. Contoh paling sed
 - **Laporan** - output CSV/Excel di email atau folder bersama.
 - **Log** - simpan setiap run (tanggal, input hash, metrik) agar bisa diaudit.
 
-Kerangka ini menjaga prinsip: **model yang berguna adalah model yang dipakai** - dan dipakai secara terkontrol, bukan hanya sekali di eksperimen.
+Kerangka ini menjaga prinsip: **model yang berguna adalah model yang dipakai**, dan dipakai secara terkontrol, bukan hanya sekali di eksperimen.
 
 Buku ini tidak membahas infrastruktur secara mendalam (itu wilayah Bab engineering khusus), tetapi kerangka kerja di bawah ini memberi jalan yang jelas ke arah sana. Kerangka umum model deep learning dibahas di literatur dasar [1]; untuk siklus hidup model operasional dan *technical debt* sistem ML, lihat [2].
 
@@ -74,7 +74,7 @@ Ambang ±2σ pada grafik kendali (Gambar 10.1) hanyalah titik awal. Sesuaikan de
 - **Biaya galat** - bila false alarm monitoring mahal (mis. menghentikan model padahal masih baik), lebih longgarkan; bila risiko nyata, percepat.
 - **Periode evaluasi** - mingguan vs bulanan memberikan sensitivitas berbeda; pilih sesuai seberapa cepat Anda bisa bereaksi.
 
-Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah). Ini semacam *pra-registrasi* ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias* / *overfitting* pada noise monitoring (ingat prinsip evaluasi jujur di Bab 5) - justru akan melewatkan degradation yang seharusnya terdeteksi.
+Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah). Ini semacam *pra-registrasi* ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias* / *overfitting* pada noise monitoring (ingat prinsip evaluasi jujur di Bab 5); justru akan melewatkan degradation yang seharusnya terdeteksi.
 
 ### Contoh penerapan monitoring pada kasus Bab 9
 
@@ -84,7 +84,7 @@ Bayangkan model hujan stasiun (Bab 9) dipakai secara operasional untuk peringata
 - **Setiap bulan**: bandingkan distribusi (histogram) fitur `X` bulan ini vs rata-rata historis (mis. `rmm1`, `mus_sin/cos`).
 - **Tiap kuartal**: tinjau kurva kendali; bila >1 titik keluar batas, selidiki dan nilai apakah perlu kalibrasi/retrain.
 
-Memiliki jadwal dan penanggung jawab sedini mungkin - sebelum model "mulai produksi" - menghindari kejadian model diam-diam rusak (Bab 10.1 membahas "siapa yang menjawab?"). Contoh produksi paling sederhana di sub-bab ini adalah titik awal minimal: institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang seiring kebutuhan.
+Memiliki jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produksi", menghindari kejadian model diam-diam rusak (Bab 10.1 membahas "siapa yang menjawab?"). Contoh produksi paling sederhana di sub-bab ini adalah titik awal minimal: institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang seiring kebutuhan.
 
 
 ## 10.3 Retraining dan Kalibrasi Ulang
@@ -155,11 +155,11 @@ print("Sebaran antar-run (±1σ):", p_std[:5])
 
 > **Apa yang diukur σ ini?** Sebaran antar-*seed* terutama menangkap **variasi inisialisasi/optimisasi**, bukan ketidakpastian prediktif penuh (aleatorik + epistemik). Karena semua anggota berbagi data, arsitektur, dan hyperparameter yang sama, ukuran ini bisa **mengecilkan** ketidakpastian sebenarnya. Perlakuan yang lebih bermakna (opsional, di luar cakupan buku ini) mencakup MC-dropout, *deep ensembles* dengan variasi arsitektur/hyperparameter, regresi kuantil (Kode 10.2), dan *conformal prediction*.
 
-Manfaat tambahan: ensembel juga **menstabilkan angka metrik** - MAE/CSI dari rata-rata ensembel sering lebih rendah variansnya daripada satu run acak. Ini menjadikan ensembel alat ganda: lebih "tenang" dalam laporan dan memberi ukuran kestabilan. Biayanya linear dengan jumlah anggota - untuk 3-5 seed masih sangat wajar di Colab.
+Manfaat tambahan: ensembel juga **menstabilkan angka metrik**; MAE/CSI dari rata-rata ensembel sering lebih rendah variansnya daripada satu run acak. Ini menjadikan ensembel alat ganda: lebih "tenang" dalam laporan dan memberi ukuran kestabilan. Biayanya linear dengan jumlah anggota; untuk 3-5 seed masih sangat wajar di Colab.
 
 ### Interval kuantil
 
-Lapisan akhir memprediksi beberapa kuantil sekaligus, misal median (50%) serta kuantil 10% dan 90% - dengan *pinball loss* / quantile regression. Hasilnya: interval `[q10, q90]` yang memberi rentang "kisaran 80%" prediksi. Ini jauh lebih informatif daripada satu angka.
+Lapisan akhir memprediksi beberapa kuantil sekaligus, misal median (50%) serta kuantil 10% dan 90%, dengan *pinball loss* / quantile regression. Hasilnya: interval `[q10, q90]` yang memberi rentang "kisaran 80%" prediksi. Ini jauh lebih informatif daripada satu angka.
 
 **Kode 10.2 - Latih model regresi kuantil sederhana (3 kuantil dengan satu *loss*).**
 
@@ -187,9 +187,9 @@ preds = m.predict(X_test, verbose=0)                      # (n_test, 3): q10, q5
 q10, q50, q90 = preds[:, 0], preds[:, 1], preds[:, 2]
 ```
 
-Perhatikan: karena semua kuantil keluar dari satu *output layer* (`Dense(3)`), cukup satu *loss* kustom yang menerima `y_pred` berbentuk `(batch, n_kuantil)` dan menghitung *pinball loss* per kuantil - bukan daftar beberapa *loss* yang hanya berlaku untuk model dengan beberapa *output layer* terpisah. Baris `tf.reshape(y_true, (-1, 1))` membuat *loss* kebal terhadap bentuk `y_train`: baik `(n,)` maupun `(n, 1)`.
+Perhatikan: karena semua kuantil keluar dari satu *output layer* (`Dense(3)`), cukup satu *loss* kustom yang menerima `y_pred` berbentuk `(batch, n_kuantil)` dan menghitung *pinball loss* per kuantil; bukan daftar beberapa *loss* yang hanya berlaku untuk model dengan beberapa *output layer* terpisah. Baris `tf.reshape(y_true, (-1, 1))` membuat *loss* kebal terhadap bentuk `y_train`: baik `(n,)` maupun `(n, 1)`.
 
-Catatan penting: ketidakpastian dari model **belum tentu kalibrasi** - interval 80% bisa benar hanya 50% dari waktu bila model terlalu yakin. Kalibrasi (misal *conformal prediction*) adalah topik lanjut yang layak dikejar setelah buku ini (lihat FAQ §10.9).
+Catatan penting: ketidakpastian dari model **belum tentu kalibrasi**; interval 80% bisa benar hanya 50% dari waktu bila model terlalu yakin. Kalibrasi (misal *conformal prediction*) adalah topik lanjut yang layak dikejar setelah buku ini (lihat FAQ §10.9).
 
 ### Kapan melaporkan ketidakpastian?
 
@@ -226,7 +226,7 @@ Interpretasi SHAP harus selalu ditautkan ke **pengetahuan atmosfer**:
 
 ### Contoh interpretasi lokal sederhana
 
-Misal untuk satu prediksi "hujan lebat" hari ini, SHAP menunjukkan kontribusi terbesar dari `hujan_t2` (kemarin hujan besar) dan `rmm1` (fase MJO basah). Jawaban yang bisa disampaikan ke pemangku: "model ini menilai kondisi basah yang berlanjut dan osilasi musiman sebagai pendorong - silakan periksa juga prediksi model dinamik nasional untuk konfirmasi." Ini mengubah "kotak hitam" menjadi bahan diskusi yang transparan - persis tujuan interpretasi.
+Misal untuk satu prediksi "hujan lebat" hari ini, SHAP menunjukkan kontribusi terbesar dari `hujan_t2` (kemarin hujan besar) dan `rmm1` (fase MJO basah). Jawaban yang bisa disampaikan ke pemangku: "model ini menilai kondisi basah yang berlanjut dan osilasi musiman sebagai pendorong; silakan periksa juga prediksi model dinamik nasional untuk konfirmasi." Ini mengubah "kotak hitam" menjadi bahan diskusi yang transparan; persis tujuan interpretasi.
 
 ### Kewaspadaan terhadap kausalitas
 
@@ -252,7 +252,7 @@ Ini penutup penting dan selaras dengan *Risk Management* umbrella. Tiga area:
 
 - Data historis bisa mencerminkan bias (misal stasiun yang terlalu sedikit di wilayah timur membuat model kurang mewakili). Akui dalam laporan dan jangan gegabah menggeneralisasi ke seluruh Indonesia.
 
-Contoh nyata: model hujan yang dilatih hanya pada stasiun Jawa mungkin "berhasil" di sana tetapi miskin transfer ke Papua - bukan karena model buruk, tetapi karena representasi data tidak seimbang. **Jangka waktu & wilayah cakupan harus dinyatakan** sebagai bagian dari laporan - ini termasuk *bias data*, bukan sekadar catatan kecil.
+Contoh nyata: model hujan yang dilatih hanya pada stasiun Jawa mungkin "berhasil" di sana tetapi miskin transfer ke Papua, bukan karena model buruk, tetapi karena representasi data tidak seimbang. **Jangka waktu & wilayah cakupan harus dinyatakan** sebagai bagian dari laporan; ini termasuk *bias data*, bukan sekadar catatan kecil.
 
 ### 4. Komunikasi kepada publik
 
@@ -262,7 +262,7 @@ Ketika hasil dipublikasikan (artikel, media sosial), aturan praktis:
 - Lampirkan tautan/metode agar pembaca bisa memeriksa (transparansi).
 - Bila media menanyakan "apakah akurat?", jawab dengan metrik & batas, bukan sensasi.
 
-Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaan publik - bagian dari *risk management* yang dipakai sepanjang buku.
+Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaan publik, bagian dari *risk management* yang dipakai sepanjang buku.
 
 **Tabel 10.3**: Etika penggunaan yang dianjurkan.
 
@@ -317,7 +317,7 @@ Agar tidak sekadar "selesai dibaca", pakai jadwal sederhana:
 - **60 hari**: ulangi Bab 9 dengan dua stasiun (barat & timur); tambahkan indeks MJO nyata; selesaikan tabel verifikasi per kategori.
 - **90 hari**: pilih satu arah lanjut (Bab 10.7) - misal CNN untuk nowcasting - dan buat prototipe kecil dengan data publik (untuk nowcasting: radar/satelit, mis. SEVIR atau dataset radar; untuk prediksi jangka menengah: WeatherBench [7]).
 
-Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca - dan langkah-langkahnya persis cara penulis membangun buku ini.
+Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca, dan langkah-langkahnya persis cara penulis membangun buku ini.
 
 ## 10.9 FAQ Singkat
 
@@ -329,9 +329,9 @@ Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca -
 
 **SHAP apakah wajib?** Tidak, tapi sangat membantu di institusi yang menuntut penjelasan. Mulai dari permutation importance (Bab 9) bila SHAP terasa berat; naikkan ke SHAP untuk interpretasi lokal.
 
-**Generative model untuk data iklim - apakah sudah siap dipakai?** Beragam. Beberapa telah dipakai untuk *downscaling* (misal super-resolution), tetapi untuk skenario iklim masih riset aktif; perlakukan dengan kehati-hatian dan validasi fisik (Bab 10.6).
+**Apakah *generative model* untuk data iklim sudah siap dipakai?** Beragam. Beberapa telah dipakai untuk *downscaling* (misal super-resolution), tetapi untuk skenario iklim masih riset aktif; perlakukan dengan kehati-hatian dan validasi fisik (Bab 10.6).
 
-**Bagaimana jika institusi saya tidak punya GPU?** Untuk model sekecil studi kasus di buku ini, Colab gratis umumnya cukup dan tidak butuh GPU kuat; namun ketersediaan GPU di Colab gratis **tidak dijamin** (ada batas waktu dan kuota). Bagi yang membutuhkan kapasitas lebih, pertimbangkan Colab Pro atau sumber daya institusi - tapi sesuaikan dengan kebutuhan, bukan gengsi.
+**Bagaimana jika institusi saya tidak punya GPU?** Untuk model sekecil studi kasus di buku ini, Colab gratis umumnya cukup dan tidak butuh GPU kuat; namun ketersediaan GPU di Colab gratis **tidak dijamin** (ada batas waktu dan kuota). Bagi yang membutuhkan kapasitas lebih, pertimbangkan Colab Pro atau sumber daya institusi; sesuaikan dengan kebutuhan, bukan gengsi.
 
 **Apa itu *conformal prediction* yang disebut di §10.4?** Ini teknik kalibrasi yang mengubah skor/interval model menjadi jaminan cakupan dengan asumsi minimum (pertukaran data), sehingga interval yang dilaporkan bisa dipercaya secara statistika. Contoh ringkasnya: dari regresi kuantil (Kode 10.2) dihitung residual pada *calibration set*, lalu batas interval digeser sehingga cakupan empiris mendekati target (mis. 80%). Pembahasan penuh berada di luar buku ini; cukup ketahui bahwa interval "mentah" dari model belum tentu terkalibrasi (lihat §10.4).
 
