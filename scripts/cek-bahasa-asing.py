@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Check for Dutch-origin contamination in the Indonesian manuscripts.
+"""Check for Dutch/Italian-origin contamination in the Indonesian manuscripts.
 
 This book is written in an Indonesian "pengantar" register whose words are
 tanpa, dengan, hanya, untuk, satu, tidak, etc. During long edits, Dutch
 function words (zonder, met, niet, alleen, voor, uit, een, de, het, ...)
-creeped into the text. This script scans all manuscripts for those signal
-words and reports file:line:word so the author can replace them.
+and Italian words (ovvero, già, tutto, altre, finali, ...) creeped into the
+text. This script scans all manuscripts for those signal words and reports
+file:line:word so the author can replace them.
 
 Usage:
     python scripts/cek-bahasa-asing.py
@@ -21,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# Dutch-origin function words that do NOT belong to the register.
+# Dutch/Italian-origin signal words that do NOT belong to the register.
 # Words that DO belong (dan, tidak, di, satu, hanya, untuk, dengan, tanpa)
 # are intentionally NOT in this list.
 # Note: "in" and "op" are omitted to avoid false positives inside terms
@@ -37,6 +38,22 @@ BANNED = {
     "invoer", "uitvoer", "verborgen", "laag", "lagen",
     "nodig", "vroeg", "naar", "goed", "fout", "zelfde", "gewoon",
     "eigenlijk", "komt", "gaat", "zou", "moet", "kan", "wel", "ook",
+    # tokens gevonden in chat-contaminatie (ronda 3): geëvalueerd, deze,
+    # geabsorbeerd, moeten, rechtop, schuin, ter, één, regels, bestanden,
+    # gewijzigd, canonieke, bevestigt, zodra, totaal, kruis, altijd, elke,
+    # keer, volledige, enige, worden, staan
+    "geëvalueerd", "deze", "geabsorbeerd", "moeten", "rechtop", "schuin",
+    "ter", "één", "regels", "bestanden", "gewijzigd", "canonieke",
+    "bevestigt", "zodra", "totaal", "kruis", "altijd", "elke", "keer",
+    "volledige", "enige", "worden", "staan",
+    # tokens gevonden in chat-contaminatie (ronda 4): Italiaans (ovvero, già,
+    # tutto, altre, finali, tutti, rimasto, toccato, misti, vuole, coerenza,
+    # ortografia, grafia, manoscritto, proceda, assorbiti, indonesiani,
+    # attuale, stessa, richiede, ecc)
+    "ovvero", "già", "tutto", "altre", "finali", "tutti", "rimasto",
+    "toccato", "misti", "vuole", "coerenza", "ortografia", "grafia",
+    "manoscritto", "proceda", "assorbiti", "indonesiani", "attuale",
+    "stessa", "richiede", "ecc",
 }
 
 # Keep hyphenated compounds as single tokens so that legitimate domain terms
@@ -87,7 +104,11 @@ def main() -> int:
         if not p.is_file():
             continue
         for lineno, word in scan_file(p):
-            print(f"{p.relative_to(ROOT)}:{lineno}: {word}")
+            try:
+                shown = p.relative_to(ROOT)
+            except ValueError:
+                shown = p
+            print(f"{shown}:{lineno}: {word}")
             total += 1
 
     if total:
@@ -97,7 +118,7 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
-    print("Clean: no Dutch-origin signal words found.")
+    print("Clean: no Dutch/Italian-origin signal words found.")
     return 0
 
 

@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
-"""Check terminologie-consistentie: één concept = één term in heel het boek.
+"""Check terminology consistency: one concept = one term across the whole book.
 
-Canonieke termen (na de terminologie-campagne):
-    error/errors, kesalahan  -> galat           (Engels alleen in *cursieve* expansies
-                                                  en referentie-titels)
-    station/stations         -> stasiun          (behalve in eigennamen en titels)
+Canonical terms (after the terminology campaign):
+    error/errors, kesalahan  -> galat           (English only in *italic* expansions
+                                                  and reference titles)
+    station/stations         -> stasiun          (except in proper names and titles)
     prakiraan                -> prediksi
-    forecast (proza)         -> prediksi         (behalve *cursieve* termen,
-                                                  bestandsnamen en titels)
+    forecast (prose)         -> prediksi         (except *italic* terms,
+                                                  filenames and titles)
     patokan                  -> *baseline*
-    training (proza)         -> pelatihan        (behalve *training set* en titels)
+    training (prose)         -> pelatihan        (except *training set* and titles)
 
-De check negeert opzettelijk: code-fences, inline code, *...*-spannen (Engelse
-termen), markdown-link-bestandsnamen, URL's, bibliografie-regels en vaste
-keep-frases (referentie-titels, eigennamen zoals "Sea Level Station Monitoring
-Facility"). "retraining" is een vaste Engelse term en wordt niet gevlagd.
+The check deliberately ignores: code fences, inline code, *...* spans (English
+terms), markdown link filenames, URLs, bibliography lines and fixed
+keep-phrases (reference titles, proper names such as "Sea Level Station
+Monitoring Facility"). "retraining" is a fixed English term and is not flagged.
 
 Usage:
     python scripts/cek-terminologie.py
     python scripts/cek-terminologie.py --file manuscripts/ch-02-regresi-neural-network/master.md
 
-Exit code: 0 = schoon, 1 = hits gevonden.
+Exit code: 0 = clean, 1 = hits found.
 """
 
 import argparse
@@ -30,7 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# verouderd woord (ci) -> canonieke term
+# deprecated word (ci) -> canonical term
 DEPRECATED = {
     "error": "galat",
     "errors": "galat",
@@ -44,7 +44,7 @@ DEPRECATED = {
 }
 WORD_RE = re.compile(r"\b(?:%s)\b" % "|".join(DEPRECATED), re.I)
 
-# vaste frases/eigennamen die legitiem de verouderde vorm bevatten
+# fixed phrases/proper names that legitimately contain the deprecated form
 KEEP_PHRASES = [
     "mean absolute error",
     "mean squared error",
@@ -56,7 +56,7 @@ KEEP_PHRASES = [
     "retraining",
 ]
 
-# bibliografie-regel: geciteerde titel + venster-detail
+# bibliography line: cited title + window detail
 REFS_RE = re.compile(
     r"et al\.|available:|doi:|arxiv|\bproc\.\b|neurips|iclr|vol\.|\bpp\.\b",
     re.I,
@@ -66,7 +66,7 @@ CODE_FENCE = re.compile(r"^\s*(```|~~~)")
 
 
 def backtick_spans(line: str) -> list[tuple[int, int]]:
-    """Paren van inline-code `...`."""
+    """Pairs of inline-code `...`."""
     spans = []
     idxs = [i for i, c in enumerate(line) if c == "`"]
     for k in range(0, len(idxs) - 1, 2):
@@ -75,7 +75,7 @@ def backtick_spans(line: str) -> list[tuple[int, int]]:
 
 
 def link_spans(line: str) -> list[tuple[int, int]]:
-    """Doelen van ](...) en URL's."""
+    """Targets of ](...) and URLs."""
     spans = []
     for m in re.finditer(r"\]\((.*?)\)", line):
         spans.append((m.start(), m.end()))
@@ -85,7 +85,7 @@ def link_spans(line: str) -> list[tuple[int, int]]:
 
 
 def italic_spans(masked: str) -> list[tuple[int, int]]:
-    """Samenvoegingen op basis van *-toggle (benadering)."""
+    """Merged spans based on *-toggle (approximation)."""
     spans = []
     on = None
     for i, ch in enumerate(masked):
@@ -115,7 +115,7 @@ def scan_text(text: str) -> list[tuple[int, str]]:
             continue
         if in_fence:
             continue
-        # bibliografie-regels: heel de regel overslaan
+        # bibliography lines: skip the whole line
         if REFS_RE.search(raw) or ('"' in raw and re.search(r"\b(19|20)\d\d\b", raw)):
             continue
         prot = backtick_spans(raw) + link_spans(raw)
@@ -154,7 +154,7 @@ def scan_file(path: Path) -> list[tuple[int, str, str]]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--file", help="scan één bestand in plaats van het hele boek")
+    ap.add_argument("--file", help="scan one file instead of the whole book")
     args = ap.parse_args()
 
     if args.file:
@@ -170,17 +170,21 @@ def main() -> int:
         if not p.is_file():
             continue
         for lineno, word, canon in scan_file(p):
-            print(f"{p.relative_to(ROOT)}:{lineno}: {word}  -> gebruik '{canon}'")
+            try:
+                shown = p.relative_to(ROOT)
+            except ValueError:
+                shown = p
+            print(f"{shown}:{lineno}: {word}  -> use '{canon}'")
             total += 1
 
     if total:
         print(
-            f"\n{total} hit(s) gevonden. Eén concept = één term: vervang met de "
-            f"canonieke vorm (zie docstring).",
+            f"\n{total} hit(s) found. One concept = one term: replace with the "
+            f"canonical form (see docstring).",
             file=sys.stderr,
         )
         return 1
-    print("Schoon: canonieke terminologie consistent in heel het boek.")
+    print("Clean: canonical terminology consistent across the whole book.")
     return 0
 
 

@@ -79,8 +79,8 @@ function rewriteFigurePaths(body, ch) {
 }
 
 function rewriteDisplayMath(body) {
-	// remark-math v6 interprenten `$$...$$` satu baris sebagai inline math, sehingga
-	// `\tag{}` gaagal render di web (KaTeX: "\tag works only in display equations").
+	// remark-math v6 menginterpretasi `$$...$$` satu baris sebagai inline math, sehingga
+	// `\tag{}` gagal render di web (KaTeX: "\tag works only in display equations").
 	// Pandoc menghandles dua-dua bentuk, jadi nomalisasi hanya di output blog:
 	// converti blok satu-baris menjadi blok multi-baris -> display math proper.
 	return body.replace(/^[ \t]*\$\$([^\n]+?)\$\$[ \t]*\r?$/gm, (m, content) => `$$\n${content.trim()}\n$$`);

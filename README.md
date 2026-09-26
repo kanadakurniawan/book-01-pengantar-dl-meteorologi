@@ -31,11 +31,11 @@ Setiap **bab adalah satu artikel blog** yang:
    ```
 
 **Satu buku = satu DOI Zenodo.** PDF/DOCX utuh buku dirilis di `releases/` per versi.
-Build lokal tadi preview (cuma liat format, 1 file PDF naar `preview/`, tidak rilis):
+Build lokal tadi preview (hanya format liat, 1 file PDF ke `preview/`, bukan rilis):
 ```
 npm run preview
 ```
-Rilis resmi (bundel volledig naar `releases/<versie>/`):
+Rilis resmi (bundel utuh ke `releases/<versi>/`):
 ```
 npm run generate -- --version=v2.0.0
 ```
@@ -78,10 +78,10 @@ sitasi — versi baru naik di Zenodo, concept DOI tetap sama.
 │   └── 06-kolofon.md
 ├── notebooks/               # notebook Colab (nama berawalan bab: ch-01-*.ipynb)
 ├── releases/
-│   └── v2.0.0/              # snapshot tiap rilis (PDF+DOCX) → voor Zenodo
-├── preview/                 # preview build (1 PDF, steeds overschreven, geen rilis)
+│   └── v2.0.0/              # snapshot tiap rilis (PDF+DOCX) → untuk Zenodo
+├── preview/                 # preview build (1 PDF, selalu diganti, bukan rilis)
 └── build/
-    ├── generate.mjs         # 2 modi: zonder --version → preview/; met --version=vX → releases/vX/
+    ├── generate.mjs         # 2 modi: tanpa --version → preview/; dengan --version=vX → releases/vX/
     └── sync-to-blog.mjs     # sinkronkan master+figures+notebooks → blog (site/src/content/book)
 ```
 

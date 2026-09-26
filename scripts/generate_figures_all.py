@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 
 ROOT = Path(__file__).resolve().parent.parent
 MANS = ROOT / "manuscripts"
@@ -181,19 +182,62 @@ def fig_3_1():
 
 # ---------------------------------------------------------------- fig-3-2
 def fig_3_2():
-    cm = np.array([[970, 20], [8, 2]])
-    fig, ax = plt.subplots(figsize=(6, 4.6))
-    im = ax.imshow(cm, cmap="Blues")
-    ax.set_xticks([0, 1]); ax.set_yticks([0, 1])
-    ax.set_xticklabels(["Prediksi: tidak", "Prediksi: hujan"])
-    ax.set_yticklabels(["Aktual: tidak", "Aktual: hujan"])
+    # Tabel 3.3: model selalu memprediksi "tidak hujan deras", rekaman Cilacap
+    # 1960-2024 (5904 hari): TP=0, FP=0, FN=166, TN=5738.
+    # LogNorm(vmin=1): sel 0 dirender paling terang; colorbar log supaya
+    # intensitas warna bisa dibaca.
+    cm = np.array([[5738, 0], [166, 0]])
+    labels = [["TN", "FP"], ["FN", "TP"]]
+    fig, ax = plt.subplots(figsize=(6.8, 4.6))
+    im = ax.imshow(cm, cmap="Blues", norm=LogNorm(vmin=1))
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(["Prediksi:\nTidak Hujan Deras", "Prediksi:\nHujan Deras"])
+    ax.set_yticks([0, 1])
+    ax.set_yticklabels(["Aktual:\nTidak Hujan Deras", "Aktual:\nHujan Deras"])
     for i in range(2):
         for j in range(2):
-            ax.text(j, i, f"{cm[i, j]}", ha="center", va="center",
-                    fontsize=16, color="white" if cm[i, j] > 400 else "black")
+            ax.text(j, i, f"{cm[i, j]}\n({labels[i][j]})", ha="center", va="center",
+                    fontsize=13, color="white" if cm[i, j] > 400 else "black")
     ax.set_xlabel("Prediksi")
     ax.set_ylabel("Aktual")
+    cbar = fig.colorbar(im, ax=ax, shrink=0.85)
+    cbar.set_label("jumlah hari")
     save(fig, MANS / "ch-03-klasifikasi-neural-network/figures/fig-3-2-confusion-matrix.png")
+
+
+# ---------------------------------------------------------------- fig-3-3
+def fig_3_3():
+    # Kontras ROC vs precision-recall untuk kelas langka (proporsi 2,8%,
+    # sesuai Tabel 3.3): ROC terlihat cukup baik, PR menyingkap precision
+    # yang rendah.
+    rng = np.random.default_rng(7)
+    fpr = np.linspace(0.0, 1.0, 200)
+    tpr = fpr ** 0.43
+    tpr = tpr + rng.normal(0, 0.004, fpr.size)
+    tpr = np.clip(tpr, 0.0, 1.0)
+    tpr[0] = 0.0
+    auc = np.sum((tpr[1:] + tpr[:-1]) / 2 * np.diff(fpr))
+    prev = 0.028  # proporsi hujan deras (Tabel 3.3)
+    prec = (tpr * prev) / (tpr * prev + fpr * (1 - prev) + 1e-12)
+    fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.2))
+    ax = axes[0]
+    ax.plot(fpr, tpr, color="#1f4e79", lw=2.4, label=f"model (AUC ≈ {auc:.2f})")
+    ax.plot([0, 1], [0, 1], ls="--", color="#999", lw=1.2, label="baseline acak")
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate (recall)")
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1.05)
+    ax.legend(loc="lower right")
+    ax.grid(alpha=0.25)
+    ax = axes[1]
+    ax.plot(tpr, prec, color="#1f4e79", lw=2.4, label="model")
+    ax.plot([0, 1], [prev, prev], ls="--", color="#999", lw=1.2,
+            label="baseline acak (2,8%)")
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1.05)
+    ax.legend(loc="upper right")
+    ax.grid(alpha=0.25)
+    save(fig, MANS / "ch-03-klasifikasi-neural-network/figures/fig-3-3-roc-pr.png")
 
 
 # ---------------------------------------------------------------- fig-4-1 / 5-1
@@ -378,7 +422,7 @@ def fig_10_1():
 
 
 def main():
-    fig_2_1(); fig_2_2(); fig_3_1(); fig_3_2()
+    fig_2_1(); fig_2_2(); fig_3_1(); fig_3_2(); fig_3_3()
     fig_4_1(); fig_5_1(); fig_6_1(); fig_7_1()
     fig_8_1(); fig_9_1(); fig_9_2(); fig_10_1()
     print("Semua gambar diregenerasi tanpa judul.")

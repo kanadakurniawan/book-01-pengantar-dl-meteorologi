@@ -7,7 +7,11 @@
     "sync": "node build/sync-to-blog.mjs",
     "watch": "node build/watch.mjs",
     "preview": "node build/generate.mjs",
-    "generate": "node build/generate.mjs"
+    "generate": "node build/generate.mjs",
+    "cek": "python scripts/cek-kualitas.py",
+    "cek:bahasa": "python scripts/cek-bahasa-asing.py",
+    "cek:terminologi": "python scripts/cek-terminologie.py",
+    "cek:dash": "python scripts/cek-dash-prosa.py"
   },
   "description": "Buku 'Pengantar Deep Learning untuk Meteorologi' — manuscript, release, dan sinkronisasi ke blog."
 }

@@ -22,11 +22,11 @@ function hasTool(name) {
 }
 
 // --- Mode -----------------------------------------------------------------
-// Zonder `--version`     -> PREVIEW: cuma 1 file PDF buku utuh naar `preview/`,
-//                           folder wordt elke keer overschreven. Geen versie,
-//                           geen MANIFEST, geen 'rilis'.
-// Met `--version=vX.Y.Z` -> RELEASE: volledige bundel naar `releases/<versie>/`
-//                           (PDF+DOCX buku utuh, per bab, MANIFEST.md).
+// Tanpa `--version`       -> PREVIEW: hanya 1 file PDF buku utuh ke `preview/`,
+//                            folder diganti setiap kali. Bukan versi,
+//                            bukan MANIFEST, bukan 'rilis'.
+// Dengan `--version=vX.Y.Z` -> RELEASE: bundel utuh ke `releases/<versi>/`
+//                            (PDF+DOCX buku utuh, per bab, MANIFEST.md).
 const args = process.argv.slice(2);
 const versionArg = args.find((a) => a.startsWith('--version='));
 const bareVersionFlag = args.includes('--version');
@@ -35,11 +35,11 @@ let version = null;
 if (versionArg) {
 	version = versionArg.split('=')[1].trim();
 	if (!/^v\d+\.\d+\.\d+$/.test(version)) {
-		console.error('Usage: node build/generate.mjs --version=vX.Y.Z (of zonder --version voor preview)');
+		console.error('Usage: node build/generate.mjs --version=vX.Y.Z (atau tanpa --version untuk preview)');
 		process.exit(1);
 	}
 } else if (bareVersionFlag) {
-	console.error('--version vereist een waarde: --version=vX.Y.Z (of laat --version weg voor preview)');
+	console.error('--version butuh nilai: --version=vX.Y.Z (atau hilangkan --version untuk preview)');
 	process.exit(1);
 }
 const outDir = isPreview ? previewDir : join(releasesDir, version);
@@ -53,7 +53,7 @@ const hasPandoc = hasTool('pandoc');
 const hasLatex = hasTool('pdflatex') || hasTool('xelatex') || hasTool('lualatex');
 
 console.log(
-	`Generating ${isPreview ? `PREVIEW (cuma liat format, naar ${outDir})` : `RELEASE ${version} (naar ${outDir})`}`,
+	`Generating ${isPreview ? `PREVIEW (hanya format liat, ke ${outDir})` : `RELEASE ${version} (ke ${outDir})`}`,
 );
 console.log(`  pandoc: ${hasPandoc ? 'OK' : 'TIDAK ADA'} | LaTeX: ${hasLatex ? 'OK' : 'TIDAK ADA'}`);
 
@@ -100,9 +100,9 @@ if (chapterDirs.length === 0) {
 	process.exit(0);
 }
 
-// Daftar Isi disimpan sebagai berkas `02-daftar-isi.md` en disertakan pada
-// posisi die correct is (na hak cipta & lisensi). Voor edisi cetak die
-// paginanummers nodig heeft, voeg `--toc` toe aan het pandoc-commando.
+// Daftar Isi disimpan sebagai berkas `02-daftar-isi.md` dan disertakan pada
+// posisi yang correct (na hak cipta & lisensi). Untuk edisi cetak yang
+// butuh nomor pagina, tambahkan `--toc` ke komando pandoc.
 const frontMatter = loadSectionFiles(frontMatterDir);
 const backMatter = loadSectionFiles(backMatterDir);
 
@@ -135,7 +135,7 @@ const orderedFiles = [
 const bookMd = join(outDir, '_buku-utuh.md');
 writeFileSync(bookMd, orderedFiles.join('\n\n'), 'utf8');
 
-// --- Buku utuh PDF (altijd; bij preview de enige output) --------------------
+// --- Buku utuh PDF (diba; di preview ini output tunggal) --------------------
 
 if (hasLatex) {
 	try {
@@ -173,7 +173,7 @@ try {
 	console.error(`  GAGAL docx buku utuh: ${e.message}`);
 }
 
-// --- RELEASE only: output per bab (met citeproc bila er refs.bib is) ---------
+// --- RELEASE only: output per bab (dengan citeproc bila refs.bib ada) ---------
 
 for (const ch of chapters) {
 	const bib = join(manuscriptsDir, ch.name, 'refs.bib');

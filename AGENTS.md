@@ -50,16 +50,28 @@ Jika masalah kambuh, tambahkan token baru ke dalam daftar ini.
    proyek ini): `zonder`, `met`, `en`, `niet`, `alleen`, `voor`, `uit`, `een`,
    `de`, `het`, `van`, `wordt`, `zijn`, `heeft`, `maar`, `als`, `omdat`, `veel`,
    `goed`, `ook`, `opnieuw`, `terug`, `blijft`, `gegenereerd`, `gebruikt`,
-   `gemaakt`, `wel`, `toch`, `geen`, `nog`, `weer`. Bila token itu muncul di teks
-   chat → ganti dengan Bahasa Indonesia standar atau tulis ulang kalimat (langkah 2-3).
-6. **Saat penyuntingan manuskrip**: jalankan `python scripts/cek-bahasa-asing.py` DAN
-   `python scripts/cek-terminologie.py` pada berkas yang disunting (atau seluruh
-   buku) SEBELUM melaporkan "selesai"; laporkan hanya "bersih" bila KEDUA exit code 0.
-   Jalankan juga `python scripts/cek-dash-prosa.py` (exit 0 = tidak ada `" - "` sebagai
-   pemisah klausa di prosa) pada setiap penyuntingan yang menyentuh prosa.
-7. Jaga kalimat chat tetap pendek; bila ragu soal satu kata, tulis ulang kalimat
+   `gemaakt`, `wel`, `toch`, `geen`, `nog`, `weer`, `geëvalueerd`, `deze`,
+   `geabsorbeerd`, `moeten`, `rechtop`, `schuin`, `ter`, `één`, `regels`,
+   `bestanden`, `gewijzigd`, `canonieke`, `bevestigt`, `zodra`, `totaal`,
+   `kruis`, `altijd`, `elke`, `keer`, `volledige`, `enige`, `worden`, `staan`,
+   `ovvero`, `già`, `tutto`, `altre`, `finali`, `tutti`, `rimasto`,
+   `toccato`, `misti`, `vuole`, `coerenza`, `ortografia`, `grafia`,
+   `manoscritto`, `proceda`, `assorbiti`, `indonesiani`, `attuale`,
+   `stessa`, `richiede`, `ecc` (ronda 4: Italiaans).
+   Bila token itu muncul di teks chat → ganti dengan Bahasa Indonesia standar
+   atau tulis ulang kalimat (langkah 2-3).
+6. **Pindai otomatis respons chat**: simpan draft respons ke berkas temp lalu
+   jalankan `python scripts/cek-bahasa-asing.py --file <draft.md>`; exit 0 wajib
+   SEBELUM dikirim. Ini mencakup langkah 1 dan 5 dengan cara yang mekanis.
+7. **Saat penyuntingan manuskrip**: jalankan cek kualitas terpadu
+   `python scripts/cek-kualitas.py` (atau `npm run cek`) pada berkas yang
+   disunting (atau seluruh buku) SEBELUM melaporkan "selesai"; laporkan hanya
+   "bersih" bila exit code 0. Cek terpadu ini menjalankan `cek-bahasa-asing.py`,
+   `cek-terminologie.py`, dan `cek-dash-prosa.py` sekaligus. Untuk berkas
+   tunggal di luar root, gunakan `--file <path>`.
+8. Jaga kalimat chat tetap pendek; bila ragu soal satu kata, tulis ulang kalimat
    daripada menebak register.
-8. **Semua berkas proyek** (AGENTS.md, CHECKLIST, dokumentasi) ditulis dalam Bahasa
+9. **Semua berkas proyek** (AGENTS.md, CHECKLIST, dokumentasi) ditulis dalam Bahasa
    Indonesia atau Bahasa Inggris. Jangan memakai bahasa Belanda sebagai bahasa
    pengantar, karena bahasa berkas menular ke bahasa respons chat.
 
