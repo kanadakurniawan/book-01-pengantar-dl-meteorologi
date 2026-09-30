@@ -36,6 +36,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | *Early stopping* | Menghentikan pelatihan saat validasi berhenti membaik | 5 |
 | *Walk-forward* / *blocked* | Validasi silang deret waktu dengan urutan waktu dijaga | 5, 8, 9 |
 | *Leakage* | Kebocoran informasi masa depan ke data latih | 5, 8 |
+| *i.i.d.* | *Independent and identically distributed*: tiap sampel saling bebas dan berasal dari distribusi yang sama | 5, 7 |
 | *Reanalysis* | Data cuaca historis gabungan model + observasi (mis. ERA5) | 6, 9 |
 | Nilai hilang / *gap* | Data yang tidak terekam; ditangani dengan imputasi/pemotongan | 6, 8 |
 | *Outlier* / pencilan | Nilai ekstrem yang menyimpang dari pola; potensi galat pengukuran | 6 |
@@ -101,6 +102,7 @@ Konvensi notasi di seluruh buku:
 | KGE | *Kling–Gupta Efficiency* |
 | POD / FAR / CSI / TS | *Probability of Detection* / *False Alarm Ratio* / *Critical Success Index* / *Threat Score* |
 | SS | *Skill Score* |
+| i.i.d. | *independent and identically distributed* (independen dan berdistribusi identik) |
 | GHCND | *Global Historical Climatology Network - Daily* (NOAA) |
 | CHIRPS | *Climate Hazards Group InfraRed Precipitation with Station data* |
 | BIG | Badan Informasi Geospasial |

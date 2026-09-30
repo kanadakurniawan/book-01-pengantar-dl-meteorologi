@@ -29,13 +29,13 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 ## 10.1 Dari Notebook ke Operasional: Jembatan yang Sering Dilupakan
 
-Membangun model yang akurat di notebook adalah bagian kecil dari pekerjaan. Bagian yang sulit, dan sering luput, adalah **menjaganya tetap berguna** setelah dipakai. Model operasional hidup dalam lingkungan yang berubah: cuaca tidak stasioner, sensor berubah, tata cara institusi berubah. Model yang "hebat" tahun lalu bisa salah tahun ini tanpa ada yang menyadarinya.
+Membangun model yang akurat di notebook adalah bagian kecil dari pekerjaan. Bagian yang sulit, dan sering luput, adalah **menjaganya tetap berguna** setelah digunakan. Model operasional hidup dalam lingkungan yang berubah: cuaca tidak stasioner, sensor berubah, tata cara institusi berubah. Model yang "unggul" tahun lalu bisa salah tahun ini tanpa ada yang menyadarinya.
 
 Tiga pertanyaan yang harus dijawab sebelum sebuah model disebut "produksi":
 
 1. **Bagaimana model dipanggil?** - REST API, batch harian, notebook terjadwal?
 2. **Bagaimana model dipantau?** - pesan ketika metrik menurun?
-3. **Siapa yang bertanggung jawab?** - ada penanggung jawab & prosedur saat model gagal?
+3. **Siapa yang bertanggung jawab?** - ada penanggung jawab dan prosedur saat model gagal?
 
 ### Contoh "praktik produksi paling sederhana" untuk buku ini
 
@@ -45,22 +45,22 @@ Anda tidak perlu membangun Kubernetes untuk mengikuti bab ini. Contoh paling sed
 - **Laporan** - output CSV/Excel di email atau folder bersama.
 - **Log** - simpan setiap run (tanggal, input hash, metrik) agar bisa diaudit.
 
-Kerangka ini menjaga prinsip: **model yang berguna adalah model yang dipakai**, dan dipakai secara terkontrol, bukan hanya sekali di eksperimen.
+Kerangka ini menjaga prinsip: **model yang berguna adalah model yang digunakan**, dan digunakan secara terkontrol, bukan hanya sekali di eksperimen.
 
-Buku ini tidak membahas infrastruktur secara mendalam (itu wilayah Bab engineering khusus), tetapi kerangka kerja di bawah ini memberi jalan yang jelas ke arah sana. Kerangka umum model deep learning dibahas di literatur dasar [1]; untuk siklus hidup model operasional dan *technical debt* sistem ML, lihat [2].
+Buku ini tidak membahas infrastruktur secara mendalam (itu wilayah Bab engineering khusus), tetapi kerangka kerja di bawah ini memberi jalan yang jelas ke arah sana. Kerangka umum model deep learning dibahas di literatur dasar [1]. Untuk siklus hidup model operasional dan *technical debt* sistem ML, lihat [2].
 
 ## 10.2 Monitoring *Drift*
 
 Atmosfer **tidak stasioner**: distribusi cuaca bergeser seiring musim, tahunan, dan dekade (perubahan iklim). Karena itu model yang dilatih pada 2010-2020 bisa "usang" pada 2025. Kerangka peramalan dan evaluasi berkala mengikuti prinsip pada literatur *forecasting* [3] dan pedoman verifikasi WMO [4]. Dua bentuk *drift* yang perlu diketahui:
 
 - ***Data drift*** - distribusi *masukan* `X` berubah (misal stasiun pindah lokasi, kalibrasi sensor berubah, atau pola musim bulanan bergeser).
-- ***Concept drift*** - hubungan `X → y` berubah (misal indeks MJO→hujan melemah karena perubahan iklim regional; atau relasi suhu-hujan bergeser).
+- ***Concept drift*** - hubungan `X → y` berubah (misal indeks MJO→hujan melemah karena perubahan iklim regional, atau relasi suhu-hujan bergeser).
 
 **Cara mendeteksi secara praktis:**
 
-1. **Pantau metrik operasional** - untuk model *regresi* pakai metrik kontinu (MAE/RMSE); untuk model *klasifikasi* pakai metrik kategorikal (CSI/POD/FAR). Hitung secara *periodik* (mingguan/bulanan) terhadap data terbaru yang sudah diverifikasi. Jika metrik menurun melebihi ambang, picu peringatan.
-2. **Bandingkan distribusi fitur** - misal histogram `X` bulan ini vs rata-rata historis; pergeseran besar menandakan *data drift*.
-3. **Grafik kendali sederhana** - gunakan rata-rata bergerak + batas 2σ untuk melacak metrik; titik di luar batas = sinyal. Untuk data meteorologi yang autokorelasi dan musiman, batas 2σ bisa memicu banyak *false alarm*; metode yang lebih tangguh (EWMA/CUSUM, dekomposisi musiman) layak dipertimbangkan setelah tahap awal ini.
+1. **Pantau metrik operasional** - untuk model *regresi* gunakan metrik kontinu (MAE/RMSE), sedangkan untuk model *klasifikasi* gunakan metrik kategorikal (CSI/POD/FAR). Hitung secara *periodik* (mingguan/bulanan) terhadap data terbaru yang sudah diverifikasi. Jika metrik menurun melebihi ambang, picu peringatan.
+2. **Bandingkan distribusi fitur** - misal histogram `X` bulan ini vs rata-rata historis. Pergeseran besar menandakan *data drift*.
+3. **Grafik kendali sederhana** - gunakan rata-rata bergerak + batas 2σ untuk melacak metrik. Titik di luar batas = sinyal. Untuk data meteorologi yang autokorelasi dan musiman, batas 2σ bisa memicu banyak *false alarm*. Metode yang lebih tangguh (EWMA/CUSUM, dekomposisi musiman) layak dipertimbangkan setelah tahap awal ini.
 
 ![Gambar 10.1 - Grafik kendali metrik operasional](figures/fig-10-1-control-chart.png)
 
@@ -70,19 +70,19 @@ Atmosfer **tidak stasioner**: distribusi cuaca bergeser seiring musim, tahunan, 
 
 Ambang ±2σ pada grafik kendali (Gambar 10.1) hanyalah titik awal. Sesuaikan dengan:
 
-- **Volatilitas alami metrik** - pada hujan, MAE/CSI berfluktuasi antar musim; ambang yang terlalu ketat akan sering "berbunyi" tanpa masalah nyata.
-- **Biaya galat** - bila false alarm monitoring mahal (mis. menghentikan model padahal masih baik), lebih longgarkan; bila risiko nyata, percepat.
-- **Periode evaluasi** - mingguan vs bulanan memberikan sensitivitas berbeda; pilih sesuai seberapa cepat Anda bisa bereaksi.
+- **Volatilitas alami metrik** - pada hujan, MAE/CSI berfluktuasi antar musim. Ambang yang terlalu ketat akan sering "berbunyi" tanpa masalah nyata.
+- **Biaya galat** - bila false alarm monitoring mahal (mis. menghentikan model padahal masih baik), lebih longgarkan. Bila risiko nyata, percepat.
+- **Periode evaluasi** - mingguan vs bulanan memberikan sensitivitas berbeda. Pilih sesuai seberapa cepat Anda bisa bereaksi.
 
-Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah). Ini semacam *pra-registrasi* ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias* / *overfitting* pada noise monitoring (ingat prinsip evaluasi jujur di Bab 5); justru akan melewatkan degradation yang seharusnya terdeteksi.
+Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah). Ini semacam *pra-registrasi* ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias* / *overfitting* pada noise monitoring (ingat prinsip evaluasi jujur di Bab 5). Justru akan melewatkan degradation yang seharusnya terdeteksi.
 
 ### Contoh penerapan monitoring pada kasus Bab 9
 
-Bayangkan model hujan stasiun (Bab 9) dipakai secara operasional untuk peringatan dini. Monitoring praktisnya:
+Bayangkan model hujan stasiun (Bab 9) digunakan secara operasional untuk peringatan dini. Monitoring praktisnya:
 
-- **Setiap 1 bulan**: hitung CSI/POD/FAR terhadap data yang sudah dikonfirmasi selama bulan itu; simpan ke tabel.
+- **Setiap 1 bulan**: hitung CSI/POD/FAR terhadap data yang sudah dikonfirmasi selama bulan itu. Simpan ke tabel.
 - **Setiap bulan**: bandingkan distribusi (histogram) fitur `X` bulan ini vs rata-rata historis (mis. `rmm1`, `mus_sin/cos`).
-- **Tiap kuartal**: tinjau kurva kendali; bila >1 titik keluar batas, selidiki dan nilai apakah perlu kalibrasi/retrain.
+- **Tiap kuartal**: tinjau kurva kendali. Bila >1 titik keluar batas, selidiki dan nilai apakah perlu kalibrasi/retrain.
 
 Memiliki jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produksi", menghindari kejadian model diam-diam rusak (Bab 10.1 membahas "siapa yang menjawab?"). Contoh produksi paling sederhana di sub-bab ini adalah titik awal minimal: institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang seiring kebutuhan.
 
@@ -91,15 +91,15 @@ Memiliki jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produk
 
 Ketika *drift* terdeteksi, pilihan tindakan (dari yang paling ringan):
 
-1. **Kalibrasi ulang output** - sesuaikan threshold (Bab 9) tanpa melatih ulang; cepat dan murah.
-2. **Retraining berkala terjadwal** - misal tahunan/musiman; jadwalkan, jangan menunggu darurat.
-3. **Retraining berbasis sinyal** - pemicu saat metrik turun (Bab 10.2); lebih responsif tetapi perlu disiplin evaluasi.
+1. **Kalibrasi ulang output** - sesuaikan threshold (Bab 9) tanpa melatih ulang. Cepat dan murah.
+2. **Retraining berkala terjadwal** - misal tahunan/musiman. Jadwalkan, jangan menunggu darurat.
+3. **Retraining berbasis sinyal** - pemicu saat metrik turun (Bab 10.2). Lebih responsif tetapi perlu disiplin evaluasi.
 4. **Migrasi model baru** - jika data/fitur berubah besar, kembangkan model baru dengan proses studi kasus kembali.
 
 ### Aturan retraining yang jujur
 
-- **Jangan mencampur data lama & baru sembarangan** - retraining harus menaikkan metrik pada *walk-forward* yang benar, bukan hanya pada pelatihan.
-- **Simpan versi model** - riwayat rilis dan *baseline* lama (Bab 8-9) untuk perbandingan & rollback.
+- **Jangan mencampur data lama dan baru sembarangan** - retraining harus menaikkan metrik pada *walk-forward* yang benar, bukan hanya pada pelatihan.
+- **Simpan versi model** - riwayat rilis dan *baseline* lama (Bab 8-9) untuk perbandingan dan rollback.
 - **Catat muatan latih** - tanggal data, preprocessing, seed, versi (Bab 6 §6.9).
 
 Retraining bukan perbaikan otomatis: ia menjalankan kembali seluruh disiplin evaluasi buku ini pada data yang lebih baru.
@@ -112,7 +112,7 @@ Model **regresi** (mis. tinggi muka air, Bab 8):
 |---|---|---|
 | MAE naik 10% dalam 1 bulan | cek distribusi X, cek data baru | kalibrasi output (interval/kuantil) dulu |
 | Fitur `rmm1` bergeser jauh | bandingkan dokumentasi | jadwalkan retrain + cek baseline |
-| Metrik turun drastis (>20%) | periksa data & sensor | model baru dengan studi kasus kembali |
+| Metrik turun drastis (>20%) | periksa data dan sensor | model baru dengan studi kasus kembali |
 
 Model **klasifikasi** (mis. hujan/level bahaya, Bab 9):
 
@@ -120,11 +120,11 @@ Model **klasifikasi** (mis. hujan/level bahaya, Bab 9):
 |---|---|---|
 | CSI turun 10% dalam 1 bulan | cek distribusi X, cek label baru | kalibrasi *threshold* (Bab 9) dulu |
 | Distribusi kelas bergeser | bandingkan dokumentasi | jadwalkan retrain + cek baseline |
-| POD/FAR berubah drastis | periksa data & sensor | model baru dengan studi kasus kembali |
+| POD/FAR berubah drastis | periksa data dan sensor | model baru dengan studi kasus kembali |
 
 **Tabel 10.2**: Alur keputusan saat *drift* terdeteksi.
 
-Tabel 10.2 (dipisah untuk model regresi dan klasifikasi) menekankan: **investigasi sebelum bertindak**. Tidak semua kenaikan metrik adalah masalah model; bisa jadi masalah data baru atau definisi yang berubah.
+Tabel 10.2 (dipisah untuk model regresi dan klasifikasi) menekankan: **investigasi sebelum bertindak**. Tidak semua kenaikan metrik adalah masalah model. Bisa menjadi masalah data baru atau definisi yang berubah.
 
 ## 10.4 Ketidakpastian Prediksi
 
@@ -132,7 +132,7 @@ Prediksi tunggal (satu angka MAE, satu angka mm) menyesatkan: operasional butuh 
 
 ### Ensembel multi-seed
 
-Latih model yang sama dengan beberapa `seed` berbeda; prediksi = rata-rata, sebaran (σ) antar anggota sebagai indikator kestabilan. Sederhana dan langsung:
+Latih model yang sama dengan beberapa `seed` berbeda. Prediksi = rata-rata, sebaran (σ) antar anggota sebagai indikator kestabilan. Sederhana dan langsung:
 
 **Kode 10.1 - Ensembel multi-seed.**
 
@@ -155,7 +155,7 @@ print("Sebaran antar-run (±1σ):", p_std[:5])
 
 > **Apa yang diukur σ ini?** Sebaran antar-*seed* terutama menangkap **variasi inisialisasi/optimisasi**, bukan ketidakpastian prediktif penuh (aleatorik + epistemik). Karena semua anggota berbagi data, arsitektur, dan hyperparameter yang sama, ukuran ini bisa **mengecilkan** ketidakpastian sebenarnya. Perlakuan yang lebih bermakna (opsional, di luar cakupan buku ini) mencakup MC-dropout, *deep ensembles* dengan variasi arsitektur/hyperparameter, regresi kuantil (Kode 10.2), dan *conformal prediction*.
 
-Manfaat tambahan: ensembel juga **menstabilkan angka metrik**; MAE/CSI dari rata-rata ensembel sering lebih rendah variansnya daripada satu run acak. Ini menjadikan ensembel alat ganda: lebih "tenang" dalam laporan dan memberi ukuran kestabilan. Biayanya linear dengan jumlah anggota; untuk 3-5 seed masih sangat wajar di Colab.
+Manfaat tambahan: ensembel juga **menstabilkan angka metrik**. MAE/CSI dari rata-rata ensembel sering lebih rendah variansnya daripada satu run acak. Ini menjadikan ensembel alat ganda: lebih "tenang" dalam laporan dan memberi ukuran kestabilan. Biayanya linear dengan jumlah anggota. Untuk 3-5 seed masih sangat wajar di Colab.
 
 ### Interval kuantil
 
@@ -187,15 +187,15 @@ preds = m.predict(X_test, verbose=0)                      # (n_test, 3): q10, q5
 q10, q50, q90 = preds[:, 0], preds[:, 1], preds[:, 2]
 ```
 
-Perhatikan: karena semua kuantil keluar dari satu *output layer* (`Dense(3)`), cukup satu *loss* kustom yang menerima `y_pred` berbentuk `(batch, n_kuantil)` dan menghitung *pinball loss* per kuantil; bukan daftar beberapa *loss* yang hanya berlaku untuk model dengan beberapa *output layer* terpisah. Baris `tf.reshape(y_true, (-1, 1))` membuat *loss* kebal terhadap bentuk `y_train`: baik `(n,)` maupun `(n, 1)`.
+Perhatikan: karena semua kuantil keluar dari satu *output layer* (`Dense(3)`), cukup satu *loss* kustom yang menerima `y_pred` berbentuk `(batch, n_kuantil)` dan menghitung *pinball loss* per kuantil, bukan daftar beberapa *loss* yang hanya berlaku untuk model dengan beberapa *output layer* terpisah. Baris `tf.reshape(y_true, (-1, 1))` membuat *loss* kebal terhadap bentuk `y_train`: baik `(n,)` maupun `(n, 1)`.
 
-Catatan penting: ketidakpastian dari model **belum tentu kalibrasi**; interval 80% bisa benar hanya 50% dari waktu bila model terlalu yakin. Kalibrasi (misal *conformal prediction*) adalah topik lanjut yang layak dikejar setelah buku ini (lihat FAQ §10.9).
+Catatan penting: ketidakpastian dari model **belum tentu kalibrasi**. Interval 80% bisa benar hanya 50% dari waktu bila model terlalu yakin. Kalibrasi (misal *conformal prediction*) adalah topik lanjut yang layak dikejar setelah buku ini (lihat FAQ §10.9).
 
 ### Kapan melaporkan ketidakpastian?
 
-Tidak semua output harus selengkap itu; atur sesuai dampak:
+Tidak semua output harus selengkap itu. Atur sesuai dampak:
 
-- **Peringatan dini / keputusan risiko** → sangat dianjurkan menyertakan interval & ensembel.
+- **Peringatan dini / keputusan risiko** → sangat dianjurkan menyertakan interval dan ensembel.
 - **Informasi rutin** → satu angka + toleransi sudah cukup.
 - **Publikasi/replikasi** → minimal ensembel multi-seed agar ada ukuran kestabilan.
 
@@ -205,7 +205,7 @@ Kapan pun ketidakpastian dimaknai sebagai "kisaran", nyatakan juga **konteks kal
 
 Bab 9 mulai dengan *permutation importance*. Bab ini melengkapinya dengan **SHAP** (SHapley Additive exPlanations, [6]) yang memberi:
 
-- **Importance global** - kontribusi rata-rata tiap fitur terhadap prediksi (memberi gambaran lebih kaya daripada permutation importance; tetapi pada fitur yang berkorelasi kuat, pembagian kredit SHAP juga bisa menyesatkan - bandingkan dengan permutation importance dan pengetahuan fisis).
+- **Importance global** - kontribusi rata-rata tiap fitur terhadap prediksi (memberi gambaran lebih kaya daripada permutation importance. Tetapi pada fitur yang berkorelasi kuat, pembagian kredit SHAP juga bisa menyesatkan - bandingkan dengan permutation importance dan pengetahuan fisis).
 - **Interpretasi lokal** - mengapa *satu* prediksi tertentu bernilai X (misal "hari ini diprediksi lebat").
 
 **Kode 10.3 - SHAP pada model Keras (ringkas).**
@@ -220,13 +220,13 @@ shap.plots.beeswarm(nilai_shap)
 
 Interpretasi SHAP harus selalu ditautkan ke **pengetahuan atmosfer**:
 
-- Fitur yang "penting" tapi secara fisis tidak masuk akal → perlu investigasi: cek kebocoran data, fitur proksi, atau interaksi non-linear yang tak terduga (belum tentu berarti data "rusak").
+- Fitur yang "penting" tetapi secara fisis tidak masuk akal → perlu investigasi: cek kebocoran data, fitur proksi, atau interaksi non-linear yang tak terduga (belum tentu berarti data "rusak").
 - Fitur yang fisis masuk akal dan penting → menaikkan kepercayaan praktisi (misal `hujan_t1`, `rmm1` untuk hujan barat).
 - Interpretasi lokal membantu menjawab "kenapa peringatan dikeluarkan hari ini?" - pertanyaan yang hampir selalu diajukan di ruang operasional.
 
 ### Contoh interpretasi lokal sederhana
 
-Misal untuk satu prediksi "hujan lebat" hari ini, SHAP menunjukkan kontribusi terbesar dari `hujan_t2` (kemarin hujan besar) dan `rmm1` (fase MJO basah). Jawaban yang bisa disampaikan ke pemangku: "model ini menilai kondisi basah yang berlanjut dan osilasi musiman sebagai pendorong; silakan periksa juga prediksi model dinamik nasional untuk konfirmasi." Ini mengubah "kotak hitam" menjadi bahan diskusi yang transparan; persis tujuan interpretasi.
+Misal untuk satu prediksi "hujan lebat" hari ini, SHAP menunjukkan kontribusi terbesar dari `hujan_t2` (kemarin hujan besar) dan `rmm1` (fase MJO basah). Jawaban yang bisa disampaikan ke pemangku: "model ini menilai kondisi basah yang berlanjut dan osilasi musiman sebagai pendorong. Silakan periksa juga prediksi model dinamik nasional untuk konfirmasi." Ini mengubah "kotak hitam" menjadi bahan diskusi yang transparan. Inilah tujuan interpretasi.
 
 ### Kewaspadaan terhadap kausalitas
 
@@ -238,37 +238,37 @@ Ini penutup penting dan selaras dengan *Risk Management* umbrella. Tiga area:
 
 ### 1. Anti-overhype
 
-- Jangan mengklaim "menggantikan peramal"; klaim yang benar: "memberi probabilitas terkalibrasi tambahan (untuk model klasifikasi) atau skor/interval yang diverifikasi dengan metrik tertentu".
-- Sertakan *baseline* & metrik jujur (skill score, CSI) serta keterbatasan (Bab 8-9).
+- Jangan mengklaim "menggantikan peramal". Klaim yang benar: "memberi probabilitas terkalibrasi tambahan (untuk model klasifikasi) atau skor/interval yang diverifikasi dengan metrik tertentu".
+- Sertakan *baseline* dan metrik jujur (skill score, CSI) serta keterbatasan (Bab 8-9).
 - Hindari kata "akurasi 99%" tanpa konteks fenomena langka.
 
-### 2. Tanggung jawab & keamanan
+### 2. Tanggung jawab dan keamanan
 
-- Model tidak berhak mengambil keputusan akhir untuk keselamatan publik; ia alat bantu.
-- Pastikan ada manusia yang lalu memverifikasi & bertanggung jawab atas keputusan.
-- Data pribadi/lokasi sensitif: patuhi aturan institusi & perundang-undangan.
+- Model tidak berhak mengambil keputusan akhir untuk keselamatan publik. Ia alat bantu.
+- Pastikan ada manusia yang lalu memverifikasi dan bertanggung jawab atas keputusan.
+- Data pribadi/lokasi sensitif: patuhi aturan institusi dan perundang-undangan.
 
 ### 3. Bias data
 
 - Data historis bisa mencerminkan bias (misal stasiun yang terlalu sedikit di wilayah timur membuat model kurang mewakili). Akui dalam laporan dan jangan gegabah menggeneralisasi ke seluruh Indonesia.
 
-Contoh nyata: model hujan yang dilatih hanya pada stasiun Jawa mungkin "berhasil" di sana tetapi miskin transfer ke Papua, bukan karena model buruk, tetapi karena representasi data tidak seimbang. **Jangka waktu & wilayah cakupan harus dinyatakan** sebagai bagian dari laporan; ini termasuk *bias data*, bukan sekadar catatan kecil.
+Contoh nyata: model hujan yang dilatih hanya pada stasiun Jawa mungkin "berhasil" di sana tetapi miskin transfer ke Papua, bukan karena model buruk, tetapi karena representasi data tidak seimbang. **Jangka waktu dan wilayah cakupan harus dinyatakan** sebagai bagian dari laporan. Ini termasuk *bias data*, bukan sekadar catatan kecil.
 
 ### 4. Komunikasi kepada publik
 
 Ketika hasil dipublikasikan (artikel, media sosial), aturan praktis:
 
-- Gunakan kalimat yang tenang, berbasis data; hindari kata "menggantikan".
+- Gunakan kalimat yang tenang, berbasis data. Hindari kata "menggantikan".
 - Lampirkan tautan/metode agar pembaca bisa memeriksa (transparansi).
-- Bila media menanyakan "apakah akurat?", jawab dengan metrik & batas, bukan sensasi.
+- Bila media menanyakan "apakah akurat?", jawab dengan metrik dan batas, bukan sensasi.
 
-Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaan publik, bagian dari *risk management* yang dipakai sepanjang buku.
+Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaan publik, bagian dari *risk management* yang digunakan sepanjang buku.
 
 **Tabel 10.3**: Etika penggunaan yang dianjurkan.
 
 | Lakukan | Hindari |
 |---|---|
-| Laporkan metrik & baseline | Klaim tanpa verifikasi |
+| Laporkan metrik dan baseline | Klaim tanpa verifikasi |
 | Beri tahu ketidakpastian | Prediksi tunggal "pasti" |
 | Manusia memutuskan | Otomatisasi keputusan berisiko |
 | Akui keterbatasan data | Menggeneralisasi dari sedikit stasiun |
@@ -280,15 +280,15 @@ Di sinilah pembaca melebarkan sayapnya. Tiga arah besar yang paling relevan untu
 
 ### 1. CNN dan data spasial
 
-- **Nowcasting** (prediksi 0-6 jam) - memakai radar/satelit (urutan gambar) dengan ConvLSTM atau model *vision*; aplikasi langsung untuk peringatan sangat pendek.
-- **Downscaling** - meningkatkan resolusi *reanalysis*/model iklim ke skala lokal dengan saraf konvolusi; penting untuk proyeksi iklim di Indonesia.
+- **Nowcasting** (prediksi 0-6 jam) - menggunakan radar/satelit (urutan gambar) dengan ConvLSTM atau model *vision*. Aplikasi langsung untuk peringatan sangat pendek.
+- **Downscaling** - meningkatkan resolusi *reanalysis*/model iklim ke skala lokal dengan saraf konvolusi. Penting untuk proyeksi iklim di Indonesia.
 - **Benchmark** - *dataset* standar seperti WeatherBench [7] (prediksi global jangka menengah) memudahkan membandingkan metode secara adil. Catatan: untuk *nowcasting* 0-6 jam, gunakan *dataset* radar/satelit (mis. radar lokal, SEVIR, MeteoNet), karena WeatherBench tidak dirancang untuk horizon itu.
 
-### 2. Transfer learning & model pra-latih
+### 2. Transfer learning dan model pra-latih
 
 Pindahkan pengetahuan model yang dilatih pada tugas/domain besar (misal model cuaca global, *reanalysis*, citra satelit, atau model pra-latih spatiotemporal) untuk masalah lokal dengan data terbatas. Untuk meteorologi, *pretraining* lintas stasiun bisa menghemat data.
 
-### 3. *Generative model* untuk pengisian data & skenario
+### 3. *Generative model* untuk pengisian data dan skenario
 
 - **Imputasi data hilang** dengan model generatif (di sisi data, lihat Bab 6).
 - **Skenario iklim** atau sintesis kondisi ekstrem untuk stress-test sistem.
@@ -297,8 +297,8 @@ Pandangan luas tentang deep learning untuk sains kebumian (termasuk arah-arah di
 
 Sumber belajar lanjut yang direkomendasikan (di luar buku ini):
 
-- Dataset & benchmark publik (misal WeatherBench, dataset radar).
-- Literatur per topik (lihat daftar berikut & Bab 6-9 referensi).
+- Dataset dan benchmark publik (misal WeatherBench, dataset radar).
+- Literatur per topik (lihat daftar berikut dan Bab 6-9 referensi).
 
 ## 10.8 Komunitas dan Peta Belajar
 
@@ -307,17 +307,17 @@ Buku ini selesai, tetapi belajar tidak. Rekomendasi berjenjang:
 1. **Membaca** - literatur pada Referensi bab ini + bab 6-9.
 2. **Berlatih** - kerjakan ulang Bab 8-9 dengan data nyata stasiun sendiri.
 3. **Terhubung** - komunitas (misal grup ML Indonesia, komunitas data meteorologi/akademik), konferensi (misal *IDEA* / *Indonesia AI Day*), dan *open-source* (GitHub proyek sejenis).
-4. **Publikasikan** - tulis catatan singkat (blog/notebook publik), dapatkan umpan balik - persis seperti siklus buku ini (bab per blog, DOI, dll).
+4. **Publikasikan** - tulis catatan singkat (blog/notebook publik), dapatkan umpan balik - tepat seperti siklus buku ini (bab per blog, DOI, dan lain-lain).
 
 ### Rencana 30-60-90 hari setelah membaca buku ini
 
-Agar tidak sekadar "selesai dibaca", pakai jadwal sederhana:
+Agar tidak sekadar "selesai dibaca", gunakan jadwal sederhana:
 
-- **30 hari**: ulangi Bab 8 dengan data nyata satu stasiun pasang surut; tulis laporan satu halaman (konteks, metode, hasil, keterbatasan).
-- **60 hari**: ulangi Bab 9 dengan dua stasiun (barat & timur); tambahkan indeks MJO nyata; selesaikan tabel verifikasi per kategori.
-- **90 hari**: pilih satu arah lanjut (Bab 10.7) - misal CNN untuk nowcasting - dan buat prototipe kecil dengan data publik (untuk nowcasting: radar/satelit, mis. SEVIR atau dataset radar; untuk prediksi jangka menengah: WeatherBench [7]).
+- **30 hari**: ulangi Bab 8 dengan data nyata satu stasiun pasang surut. Tulis laporan satu halaman (konteks, metode, hasil, keterbatasan).
+- **60 hari**: ulangi Bab 9 dengan dua stasiun (barat dan timur). Tambahkan indeks MJO nyata. Selesaikan tabel verifikasi per kategori.
+- **90 hari**: pilih satu arah lanjut (Bab 10.7) - misal CNN untuk nowcasting - dan buat prototipe kecil dengan data publik (untuk nowcasting: radar/satelit, mis. SEVIR atau dataset radar, sedangkan untuk prediksi jangka menengah: WeatherBench [7]).
 
-Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca, dan langkah-langkahnya persis cara penulis membangun buku ini.
+Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca, dan langkah-langkahnya sama dengan cara penulis membangun buku ini.
 
 ## 10.9 FAQ Singkat
 
@@ -325,26 +325,26 @@ Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca, 
 
 **Bagaimana saya tahu model "rusak" tanpa menunggu keluhan?** Justru gunakan monitoring (Bab 10.2): metrik berkala + grafik kendali. Jangan menunggu pengguna menyadari.
 
-**Retraining setiap musim itu melelahkan; adakah cara ringan?** Mulai dari kalibrasi threshold (murah), lalu retraining hanya bila sinyal menuntut. Jadwalkan juga retraining tahunan ringan sebagai "asuransi".
+**Retraining setiap musim itu melelahkan. Adakah cara ringan?** Mulai dari kalibrasi threshold (murah), lalu retraining hanya bila sinyal menuntut. Jadwalkan juga retraining tahunan ringan sebagai "asuransi".
 
-**SHAP apakah wajib?** Tidak, tapi sangat membantu di institusi yang menuntut penjelasan. Mulai dari permutation importance (Bab 9) bila SHAP terasa berat; naikkan ke SHAP untuk interpretasi lokal.
+**SHAP apakah wajib?** Tidak, tetapi sangat membantu di institusi yang menuntut penjelasan. Mulai dari permutation importance (Bab 9) bila SHAP terasa berat. Naikkan ke SHAP untuk interpretasi lokal.
 
-**Apakah *generative model* untuk data iklim sudah siap dipakai?** Beragam. Beberapa telah dipakai untuk *downscaling* (misal super-resolution), tetapi untuk skenario iklim masih riset aktif; perlakukan dengan kehati-hatian dan validasi fisik (Bab 10.6).
+**Apakah *generative model* untuk data iklim sudah siap digunakan?** Beragam. Beberapa telah digunakan untuk *downscaling* (misal super-resolution), tetapi untuk skenario iklim masih riset aktif. Perlakukan dengan kehati-hatian dan validasi fisik (Bab 10.6).
 
-**Bagaimana jika institusi saya tidak punya GPU?** Untuk model sekecil studi kasus di buku ini, Colab gratis umumnya cukup dan tidak butuh GPU kuat; namun ketersediaan GPU di Colab gratis **tidak dijamin** (ada batas waktu dan kuota). Bagi yang membutuhkan kapasitas lebih, pertimbangkan Colab Pro atau sumber daya institusi; sesuaikan dengan kebutuhan, bukan gengsi.
+**Bagaimana jika institusi saya tidak punya GPU?** Untuk model sekecil studi kasus di buku ini, Colab gratis umumnya cukup dan tidak butuh GPU kuat. Namun ketersediaan GPU di Colab gratis **tidak dijamin** (ada batas waktu dan kuota). Bagi yang membutuhkan kapasitas lebih, pertimbangkan Colab Pro atau sumber daya institusi. Sesuaikan dengan kebutuhan, bukan gengsi.
 
-**Apa itu *conformal prediction* yang disebut di §10.4?** Ini teknik kalibrasi yang mengubah skor/interval model menjadi jaminan cakupan dengan asumsi minimum (pertukaran data), sehingga interval yang dilaporkan bisa dipercaya secara statistika. Contoh ringkasnya: dari regresi kuantil (Kode 10.2) dihitung residual pada *calibration set*, lalu batas interval digeser sehingga cakupan empiris mendekati target (mis. 80%). Pembahasan penuh berada di luar buku ini; cukup ketahui bahwa interval "mentah" dari model belum tentu terkalibrasi (lihat §10.4).
+**Apa itu *conformal prediction* yang disebut di §10.4?** Ini teknik kalibrasi yang mengubah skor/interval model menjadi jaminan cakupan dengan asumsi minimum (pertukaran data), sehingga interval yang dilaporkan bisa dipercaya secara statistika. Contoh ringkasnya: dari regresi kuantil (Kode 10.2) dihitung residual pada *calibration set*, lalu batas interval digeser sehingga cakupan empiris mendekati target (mis. 80%). Pembahasan penuh berada di luar buku ini. Cukup ketahui bahwa interval "mentah" dari model belum tentu terkalibrasi (lihat §10.4).
 
 ## 10.10 Penutup: Dari Pembaca Menjadi Praktisi
 
 Sepuluh bab telah membawa Anda dari "apa itu deep learning?" hingga "bagaimana model dijalankan secara bertanggung jawab". Inti yang ingin ditanamkan bukanlah kumpulan rumus atau kode, melainkan **sikap praktisi**:
 
-- Mulai dari masalah dan *baseline*, bukan dari keinginan memakai "model keren".
+- Mulai dari masalah dan *baseline*, bukan dari keinginan menggunakan "model canggih".
 - Selalu ukur dengan metrik yang benar dan konteks operasional.
 - Jujur tentang keterbatasan - itu yang membangun kepercayaan.
 - Terus belajar dengan data nyata dan berbagi kepada komunitas.
 
-Buku ini adalah permulaan, bukan akhir. Jadikan studi kasus Cilacap (pasang surut) dan prediksi hujan (Bab 9) sebagai batu loncatan; jadikan setiap masalah lokal sebagai latihan berikutnya. Selama Anda memegang disiplin "ukur dulu, klaim kemudian", Anda sudah berada di jalur yang benar.
+Buku ini adalah permulaan, bukan akhir. Jadikan studi kasus Cilacap (pasang surut) dan prediksi hujan (Bab 9) sebagai batu loncatan. Jadikan setiap masalah lokal sebagai latihan berikutnya. Selama Anda memegang disiplin "ukur dulu, klaim kemudian", Anda sudah berada di jalur yang benar.
 
 ## 10.11 Latihan
 
@@ -358,17 +358,17 @@ Buku ini adalah permulaan, bukan akhir. Jadikan studi kasus Cilacap (pasang suru
 
 **Latihan praktik (notebook `ch-10-09_operasional_arah_riset.ipynb`)**
 
-6. Ambil salah satu model Bab 8/9; hitung grafik kendali sederhana MAE mingguan dan tandai titik yang keluar batas (simulasikan satu periode dengan galat tinggi).
-7. Latih ensembel multi-seed (Kode 10.1); bandingkan MAE rata-rata vs MAE model tunggal; laporkan sebaran antar-run (bukan klaim ketidakpastian statistika penuh).
+6. Ambil salah satu model Bab 8/9. Hitung grafik kendali sederhana MAE mingguan dan tandai titik yang keluar batas (simulasikan satu periode dengan galat tinggi).
+7. Latih ensembel multi-seed (Kode 10.1). Bandingkan MAE rata-rata vs MAE model tunggal. Laporkan sebaran antar-run (bukan klaim ketidakpastian statistika penuh).
 8. Terapkan regresi kuantil sederhana (Kode 10.2) dan hitung cakupan interval 80% pada data uji.
-9. Jalankan SHAP (Kode 10.3) pada model Bab 9; tampilkan 5 fitur teratas dan kaitkan dengan pengetahuan atmosfer.
+9. Jalankan SHAP (Kode 10.3) pada model Bab 9. Tampilkan 5 fitur teratas dan kaitkan dengan pengetahuan atmosfer.
 10. (Proyek) Tulis "rencana operasional singkat" untuk salah satu studi kasus: monitoring, retraining, ketidakpastian, interpretasi, batas etika - satu halaman.
 
 ## Ringkasan
 
-- Model operasional butuh monitoring drift (data & concept) via metrik & grafik kendali.
-- Retraining: kalibrasi → jadwal → sinyal → model baru; simpan versi & muatan latih; investigasi sebelum bertindak (Tabel 10.2).
-- Ketidakpastian: ensembel multi-seed dan interval kuantil; waspadai kalibrasi.
+- Model operasional butuh monitoring drift (data dan concept) via metrik dan grafik kendali.
+- Retraining: kalibrasi → jadwal → sinyal → model baru. Simpan versi dan muatan latih. Investigasi sebelum bertindak (Tabel 10.2).
+- Ketidakpastian: ensembel multi-seed dan interval kuantil. Waspadai kalibrasi.
 - Interpretasi: SHAP (global + lokal), selalu ditautkan ke fisis, bukan kausal.
 - Etika: anti-overhype, tanggung jawab keputusan pada manusia, akui bias data, komunikasi publik yang tenang dan transparan (Tabel 10.3).
 - Arah lanjut: CNN (nowcasting, downscaling), transfer learning, generative model, didukung benchmark (WeatherBench) dan literatur (Reichstein).

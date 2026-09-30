@@ -57,12 +57,29 @@ Jika masalah kambuh, tambahkan token baru ke dalam daftar ini.
    `ovvero`, `già`, `tutto`, `altre`, `finali`, `tutti`, `rimasto`,
    `toccato`, `misti`, `vuole`, `coerenza`, `ortografia`, `grafia`,
    `manoscritto`, `proceda`, `assorbiti`, `indonesiani`, `attuale`,
-   `stessa`, `richiede`, `ecc` (ronda 4: Italiaans).
+   `stessa`, `richiede`, `ecc` (ronda 4: bahasa Italia).
+   Ronda 5 (kontaminasi chat setelah sitasi dari register buku): `zorg`,
+   `zitten`, `laten`, `struikelen`, `nergens`, `legger`, `precies`,
+   `overslaan`, `vloeiend`, `stapelen`, `geankerd`, `leest`, `betekent`,
+   `groter`, `groot`, `ankert`, `wisselt`, `uitleg`, `verandert`, `denkt`,
+   `voorstel`, `herschrijven`, `gereed`, `hoeft`, `erna`, `leg`, `zit`,
+   `aanloop`, `ervoor`, `blijft`, `identiek`, `ontbrekende`, `bruggen`,
+   `noot`, `toepassen`, `grootte`, `stap`, `langzaam`, `springt`, `beetje`,
+   `groeit`, `haalt`, `weg`, `barrière`, `heel`, `klein`, `hoeveel`,
+   `vóór`, `héél`, `te`, `aan`.
+   Ronda 6 (tokens Belanda baru dari draft chat): `lijst`,
+   `uitgebreid`, `gecheckt`, `hieronder`, `binnen`, `kort`, `doorlaten`,
+   `telkens`, `achter`, `vanaf`, `tot`, `zelf`, `liep`, `verder`, `stel`,
+   `stelt`, `vind`, `vindt`, `weet`, `zeg`, `zei`, `leek`.
    Bila token itu muncul di teks chat → ganti dengan Bahasa Indonesia standar
    atau tulis ulang kalimat (langkah 2-3).
 6. **Pindai otomatis respons chat**: simpan draft respons ke berkas temp lalu
-   jalankan `python scripts/cek-bahasa-asing.py --file <draft.md>`; exit 0 wajib
-   SEBELUM dikirim. Ini mencakup langkah 1 dan 5 dengan cara yang mekanis.
+   jalankan `python scripts/cek-bahasa-asing.py --chat --file <draft.md>`;
+   exit 0 wajib SEBELUM dikirim. Flag `--chat` ikut melacak banlist §2
+   (rincian, persis, perbanding, dst.) yang sah dipakai di dalam register buku
+   tetapi terlarang di prosa chat. Cara ini satu-satunya jaminan yang andal:
+   pemindaian manual saja terbukti tidak cukup. Ini mencakup langkah 1 dan 5
+   secara mekanis.
 7. **Saat penyuntingan manuskrip**: jalankan cek kualitas terpadu
    `python scripts/cek-kualitas.py` (atau `npm run cek`) pada berkas yang
    disunting (atau seluruh buku) SEBELUM melaporkan "selesai"; laporkan hanya
@@ -75,6 +92,35 @@ Jika masalah kambuh, tambahkan token baru ke dalam daftar ini.
    Indonesia atau Bahasa Inggris. Jangan memakai bahasa Belanda sebagai bahasa
    pengantar, karena bahasa berkas menular ke bahasa respons chat.
 
+## 3a. Hard language gate for chat responses (incident 2026-09-28)
+
+An incident on 2026-09-28: a chat response was sent entirely in Dutch
+(`Kwaliteitscheck voor bab 5 is voltooid. Ik heb ... uitgevoerd ...`).
+The automated check flags that exact draft (17 hits), so the failure was
+procedural, not technical. Root causes found:
+
+1. The mandatory pre-send check (rule 6 in section 3) was skipped.
+2. The context is saturated with Dutch tokens: the banlist itself, Dutch words
+   in this file's prose (cleaned in this revision), and the "pengantar"
+   register that sounds close to Dutch. While trying to write Indonesian, the
+   response drifted into Dutch instead.
+3. The thinking process also ran in Dutch (violating section 1 rule 4) and
+   leaked into the final text.
+
+Prevention rules (hard requirements):
+
+1. EVERY chat response draft must be saved to a temp file and checked with
+   `python scripts/cek-bahasa-asing.py --chat --file <draft.md>` before
+   sending. Exit 0 is required. Never skip this step, even for short replies.
+2. If the check fails, or if there is any doubt about the language of a
+   sentence, rewrite the WHOLE sentence in plain English (safe fallback).
+   Do NOT repair a sentence word by word in a language you are unsure of:
+   that is exactly how the Dutch draft of 2026-09-28 was produced.
+3. Deleting only the flagged word is not enough: Dutch word order and grammar
+   stay behind. Rewrite the sentence.
+4. Keep the thinking process in English or Indonesian. If it drifts into
+   Dutch, restart the thinking in English before composing the response.
+
 ## 4. Pelaporan
 
 - Jika dalam pengeditan teks manuskrip saya mengusulkan kata asing baru yang bukan
@@ -82,3 +128,15 @@ Jika masalah kambuh, tambahkan token baru ke dalam daftar ini.
   bisa menilainya.
 - Jika saya melihat masalah bahasa pada teks manuskrip, laporkan sebagai catatan
   (observasi internal) — jangan diam-diam mengubah konvensi ejaan, itu keputusan pengarang.
+
+## 5. Slide Presentasi (PPT) per Bab
+
+- Setiap bab punya satu deck di `slides/ch-NN/slides.md`. Aturan lengkap ada di
+  `PANDUAN-PPT.md`; kerangka awal dari `slides/_template/slides.md`.
+- Warna, font, dan ukuran hanya diubah lewat `slides/theme/tokens.json`, lalu
+  jalankan `npm run slide:tema`. Jangan menyunting `reference-doc.pptx` atau
+  `theme.css` secara manual karena akan tertimpa.
+- Gambar diambil dari `manuscripts/ch-NN-*/figures/` lewat rujukan `figures/...`,
+  dan istilah serta sitasi mengikuti naskah.
+- Sebelum melaporkan deck selesai, jalankan `npm run slide:build` dan pastikan
+  exit code 0 (`cek-slide.py` dijalankan otomatis di dalamnya).

@@ -1,6 +1,9 @@
 # Build artifacts (regenerate via node build/generate.mjs)
 releases/
 
+# Hasil render slide (regenerate via npm run slide:build)
+slides/build/
+
 # OS
 .DS_Store
 Thumbs.db
@@ -8,6 +11,9 @@ Thumbs.db
 # Editors
 .idea/
 .vscode/
+
+# State lokal Kilo / Agent Manager (jangan di-commit)
+.kilo/
 
 # Node
 node_modules/

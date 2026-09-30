@@ -35,11 +35,11 @@ Banyak pertanyaan meteorologi yang jawabannya berupa **angka**:
 
 Masalah seperti ini disebut **regresi**, memprediksi nilai kontinu dari pola di data. Kata "kontinu" penting: keluarannya adalah bilangan nyata (mis. `26.5°C`, `34 mm`), bukan kategori. Ini kontras dengan **klasifikasi** (Bab 3) yang memprediksi label, misalnya "hujan" atau "tidak hujan".
 
-Mengapa regresi sering menjadi tempat pertama belajar *neural network*? Karena cara kerja sel sarafnya sama persis dengan klasifikasi; perbedaannya hanya di bagian ujung: lapisan keluaran dan fungsi *loss* yang dipakai. Jika Anda menguasai regresi, setengah jalan menuju klasifikasi sudah terlewati.
+Mengapa regresi sering menjadi tempat pertama belajar *neural network*? Karena cara kerja sel sarafnya identik dengan klasifikasi. Perbedaannya hanya di bagian ujung: lapisan keluaran dan fungsi *loss* yang digunakan. Jika Anda menguasai regresi, setengah jalan menuju klasifikasi sudah terlewati.
 
-Ada jenis pertanyaan yang terlihat seperti angka tetapi sebenarnya bukan regresi. Test sederhana: bertanya pada diri sendiri, "apakah setiap bilangan nyata masih bermakna sebagai jawaban?" Untuk "berapa hari hujan bulan depan?" jawabannya adalah bilangan bulat (0, 1, 2, ...); -1 hari tidak bermakna. Model regresi dilatih untuk memprediksi nilai kontinu, sehingga tanpa restriksi tambahan ia dapat mengeluarkan jawaban yang tidak bermakna seperti (-3 hari atau 3,7 hari). Karena itu, pertanyaan seperti ini lebih baik diperlakukan sebagai masalah *count* atau dibentuk ulang sebagai deret waktu bulanan (*windowing*: Bab 7).
+Ada jenis pertanyaan yang terlihat seperti angka tetapi sebenarnya bukan regresi. Test sederhana: bertanya pada diri sendiri, "apakah setiap bilangan nyata masih bermakna sebagai jawaban?" Untuk "berapa hari hujan bulan depan?" jawabannya adalah bilangan bulat (0, 1, 2, ...), sedangkan nilai -1 hari tidak bermakna. Model regresi dilatih untuk memprediksi nilai kontinu, sehingga tanpa restriksi tambahan ia dapat mengeluarkan jawaban yang tidak bermakna seperti (-3 hari atau 3,7 hari). Karena itu, pertanyaan seperti ini lebih baik diperlakukan sebagai masalah *count* atau dibentuk ulang sebagai deret waktu bulanan (*windowing*: Bab 7).
 
-Contoh yang jelas bukan regresi: "apakah akan berpotensi banjir?". Pertanyaan ini tampak berhubungan dengan angka, seperti tinggi air, tetapi jawaban yang dimaksud adalah **kategori**: ya atau tidak. Regresi memprediksi nilai (misal tinggi air 2.3 m); klasifikasi memprediksi label (banjir atau tidak). Di klasifikasi, galat diukur bukan dengan jarak angka, tetapi apakah label tepat atau keliru; dan fungsi *loss* yang dipakai (*cross-entropy*) berbeda dari *loss *regresi (Bab 3). Bab 1 Bagian 1.8 sudah melatih Anda membedakan keduanya; di Bab 2 kita fokus pada regresi sungguhan.
+Contoh yang jelas bukan regresi: "apakah akan berpotensi banjir?". Pertanyaan ini tampak berhubungan dengan angka, seperti tinggi air, tetapi jawaban yang dimaksud adalah **kategori**: ya atau tidak. Regresi memprediksi nilai (misal tinggi air 2.3 m). Klasifikasi memprediksi label (banjir atau tidak). Di klasifikasi, galat diukur bukan dengan jarak angka, tetapi apakah label tepat atau keliru, dan fungsi *loss* yang digunakan (*cross-entropy*) berbeda dari *loss *regresi (Bab 3). Bab 1 Bagian 1.8 sudah melatih Anda membedakan keduanya. Di Bab 2 kita fokus pada regresi sungguhan.
 
 ### Contoh target regresi dalam meteorologi
 
@@ -52,7 +52,7 @@ Contoh yang jelas bukan regresi: "apakah akan berpotensi banjir?". Pertanyaan in
 | Tinggi pasang surut   | m      | Periodik, deterministik kuat                |
 | Kecepatan angin       | m/s    | Berubah, tergantung musim/lokal             |
 
-Tabel 2.1 menunjukkan bahwa "regresi meteo" bukan satu jenis data yang sama: hujan berbeda jauh dari suhu. Tiap jenis data memiliki sifat yang berbeda, perhatikan kolom sifat data pada tabel di atas. Sifat yang berbeda membutuhkan pilihan pengaturan yang berbeda. Fungsi *loss*, metrik, dan arsitektur model tergantung pada sifat tersebut (*loss* dan metrik dibahas di Bagian 2.6; arsitektur di Bab 4 saat *tuning* dibahas).
+Tabel 2.1 menunjukkan bahwa "regresi meteo" bukan satu jenis data yang sama: hujan berbeda jauh dari suhu. Tiap jenis data memiliki sifat yang berbeda, perhatikan kolom sifat data pada tabel di atas. Sifat yang berbeda membutuhkan pilihan pengaturan yang berbeda. Fungsi *loss*, metrik, dan arsitektur model tergantung pada sifat tersebut (*loss* dan metrik dibahas di Bagian 2.6, sedangkan arsitektur di Bab 4 saat *tuning* dibahas).
 
 ## 2.2 Anatomi Neuron: Bobot, Bias, dan Fungsi Aktivasi
 
@@ -68,7 +68,7 @@ $$
 a = f(z) \tag{2.2}
 $$
 
-Bobot `w` mencerminkan **seberapa penting** tiap masukan; bias `b` adalah "ambang" yang memungkinkan neuron aktif bahkan ketika semua masukan nol. Keduanya adalah **parameter**: istilah untuk seluruh angka dalam model yang nilainya dipelajari dari data selama pelatihan, bukan ditetapkan manusia. Saat awal, nilainya acak kecil; melalui ribuan contoh, model menyesuaikan bobot agar prediksinya semakin akurat.
+Bobot `w` mencerminkan **seberapa penting** tiap masukan, sedangkan bias `b` adalah "ambang" yang memungkinkan neuron aktif bahkan ketika semua masukan nol. Keduanya adalah **parameter**: istilah untuk seluruh angka dalam model yang nilainya dipelajari dari data selama pelatihan, bukan ditetapkan manusia. Saat awal, nilainya acak kecil. Melalui ribuan contoh, model menyesuaikan bobot agar prediksinya semakin akurat.
 
 Contoh paling sederhana adalah *perceptron* yang diperkenalkan Rosenblatt pada 1958 [1]: neuron dengan fungsi aktivasi berbentuk aturan, misalnya `a = 1` jika `z > 0`, dan `a = 0` sebaliknya. Perceptron penting karena menunjukkan bahwa mesin bisa belajar, tetapi terbatas pada masalah yang *linearly separable*. Dalam bab ini kita menggunakan versi modern: neuron **tanpa aktivasi di lapisan keluaran** untuk regresi (nilai bebas, bukan 0/1).
 
@@ -76,7 +76,7 @@ Contoh paling sederhana adalah *perceptron* yang diperkenalkan Rosenblatt pada 1
 
 **Gambar 2.1**: Struktur neuron buatan.
 
-Persamaan (2.1) dan (2.2) diilustrasikan pada Gambar 2.1: setiap panah masukan membawa satu komponen `x_i` yang dikalikan `w_i`; semua hasil dijumlahkan bersama bias menjadi `z` (nilai sebelum aktivasi); lalu `f` menghasilkan keluaran `a`.
+Persamaan (2.1) dan (2.2) diilustrasikan pada Gambar 2.1: setiap panah masukan membawa satu komponen `x_i` yang dikalikan `w_i`, semua hasil dijumlahkan bersama bias menjadi `z` (nilai sebelum aktivasi), lalu `f` menghasilkan keluaran `a`.
 
 ### Contoh numerik sederhana
 
@@ -107,13 +107,13 @@ Catatan ini penting: "sama" berlaku hanya untuk kasus dasar di Bagian 2.3. Karen
 
 Mengapa kita tetap mempelajari regresi linear di buku *deep learning*? Tiga alasan:
 
-1. **Interpretasi**: `w` memiliki arti langsung ("kenaikan satu unit x menaikkan y sebesar w"). Ini sangat berharga di meteorologi, di mana rekan kerja bertanya "kenapa model bilang begini?".
+1. **Interpretasi**: `w` memiliki arti langsung ("kenaikan satu unit x menaikkan y sebesar w"). Ini sangat berharga di meteorologi, di mana rekan kerja bertanya "mengapa model memprediksi demikian?".
 2. ***Baseline* wajib**: hampir semua Bab 8-9 membandingkan LSTM/MLP dengan *baseline* linear. Tanpa memahami *baseline*, kita tidak bisa menilai "apakah DL benar-benar menambah nilai?".
-3. **Blok bangunan**: regresi linear adalah neuron tunggal tanpa fungsi aktivasi; jaringan saraf adalah kumpulan neuron yang dihubungkan. Semua konsep (bobot, bias, loss) muncul di sini.
+3. **Blok bangunan**: regresi linear adalah neuron tunggal tanpa fungsi aktivasi, sedangkan jaringan saraf adalah kumpulan neuron yang dihubungkan. Semua konsep (bobot, bias, loss) muncul di sini.
 
 ## 2.4 Kebutuhan Non-linearitas: Perkenalan ReLU
 
-Data meteorologi jarang linear sempurna. Hubungan antara variabel seperti kelembapan, suhu, dan curah hujan tidak bisa diwakili hanya oleh garis lurus: hujan tidak meningkat terus-menerus seiring kelembapan; ada ambang, jenuh, dan interaksi. Contoh sederhana: hubungan suhu dan laju penguapan mungkin kurva, bukan garis.
+Data meteorologi jarang linear sempurna. Hubungan antara variabel seperti kelembapan, suhu, dan curah hujan tidak bisa diwakili hanya oleh garis lurus: hujan tidak meningkat terus-menerus seiring kelembapan. Ada ambang, jenuh, dan interaksi. Contoh sederhana: hubungan suhu dan laju penguapan mungkin kurva, bukan garis.
 
 Masalahnya: jika kita menyusun beberapa neuron **linear** berlapis, seluruh jaringan tetap linear, karena jumlah fungsi linear adalah fungsi linear. Komposisi `linear(linear(x))` tidak menghasilkan kemampuan baru: seberapa dalam pun, model tetap "garis lurus" dalam ruang berdimensi banyak.
 
@@ -148,15 +148,15 @@ model = tf.keras.Sequential([
 model.summary()
 ```
 
-Kode 2.1 terlihat pendek, tetapi di dalamnya ada tiga jenis lapisan dengan tugas berbeda. Mari kita bedah satu per satu, karena pembagian ini berlaku untuk hampir semua jaringan di bab-bab selanjutnya.
+Kode 2.1 terlihat pendek, tetapi di dalamnya ada tiga jenis lapisan dengan tugas berbeda. Bedah satu per satu, karena pembagian ini berlaku untuk hampir semua jaringan di bab-bab selanjutnya.
 
 **Lapisan masukan (*input layer*).** Tugasnya hanya menerima data, bukan menghitung: lapisan ini tidak punya bobot dan tidak belajar apa pun. Ia hanya mendefinisikan bentuk masukan lewat `input_shape=(1,)`, satu fitur per sampel, yaitu suhu kemarin. Di *library* Keras lapisan ini implisit: Anda tidak menuliskannya di `Sequential`, karena Keras membuatnya otomatis dari argumen tersebut. Jika fitur bertambah (misalnya suhu, kelembapan, dan tekanan udara), cukup diubah menjadi `input_shape=(3,)`.
 
-**Lapisan tersembunyi (*hidden layer*).** Di sinilah komputasi terjadi: dua baris `Dense(8, activation="relu")`. `Dense` berarti setiap neuron terhubung ke seluruh keluaran lapisan sebelumnya (*fully connected*), dan angka 8 adalah jumlah neuron. Setiap neuron adalah neuron di Bagian 2.2 (persamaan (2.1)-(2.2)): jumlah berbobot masukan ditambah bias, lalu lewat fungsi aktivasi dalam hal ini ReLU, yang mengubah hasil negatif menjadi nol. ReLU inilah yang mencegah dua lapisan berturut-turut jatuh kembali menjadi satu fungsi linear (Bagian 2.4). Karena masukannya hanya satu, tiap neuron di lapisan pertama bekerja seperti sakelar pada ambang tertentu (efek ReLU); lapisan kedua menggabungkan sakelar-sakelar itu menjadi pola yang lebih fleksibel. Jumlah 8 dan banyaknya lapisan (2) bukan angka ajaib, melainkan keputusan desain; tuningnya dibahas di Bab 4.
+**Lapisan tersembunyi (*hidden layer*).** Di sinilah komputasi terjadi: dua baris `Dense(8, activation="relu")`. `Dense` berarti setiap neuron terhubung ke seluruh keluaran lapisan sebelumnya (*fully connected*), dan angka 8 adalah jumlah neuron. Setiap neuron adalah neuron di Bagian 2.2 (persamaan (2.1)-(2.2)): jumlah berbobot masukan ditambah bias, lalu lewat fungsi aktivasi dalam hal ini ReLU, yang mengubah hasil negatif menjadi nol. ReLU inilah yang mencegah dua lapisan berturut-turut jatuh kembali menjadi satu fungsi linear (Bagian 2.4). Karena masukannya hanya satu, tiap neuron di lapisan pertama bekerja seperti sakelar pada ambang tertentu (efek ReLU). Lapisan kedua menggabungkan sakelar-sakelar itu menjadi pola yang lebih fleksibel. Jumlah 8 dan banyaknya lapisan (2) bukan angka ajaib, melainkan keputusan desain. Tuningnya dibahas di Bab 4.
 
-**Lapisan keluaran (*output layer*).** Baris terakhir, `Dense(1)`, ditulis tanpa argumen `activation`. Tanpa aktivasi berarti identitas: keluaran neuron terakhir langsung menjadi prediksi `ŷ`. Ini disengaja untuk regresi, karena prediksi suhu boleh bernilai bebas (misalnya `22.7°C` atau `-1.5°C`); ReLU akan membuang semua nilai negatif, sedangkan sigmoid/tanh menjepit keluaran ke rentang tetap. Satu neuron berarti satu angka keluaran: suhu besok.
+**Lapisan keluaran (*output layer*).** Baris terakhir, `Dense(1)`, ditulis tanpa argumen `activation`. Tanpa aktivasi berarti identitas: keluaran neuron terakhir langsung menjadi prediksi `ŷ`. Ini disengaja untuk regresi, karena prediksi suhu boleh bernilai bebas (misalnya `22.7°C` atau `-1.5°C`). ReLU akan membuang semua nilai negatif, sedangkan sigmoid/tanh menjepit keluaran ke rentang tetap. Satu neuron berarti satu angka keluaran: suhu besok.
 
-Alur seluruh jaringan bisa ditulis satu baris (persamaan (2.5); tiap `h` adalah vektor 8 angka):
+Alur seluruh jaringan bisa ditulis satu baris. Pada persamaan (2.5), tiap `h` adalah vektor 8 angka:
 
 $$
 x \to h_1 = \text{ReLU}(W_1 x + b_1) \to h_2 = \text{ReLU}(W_2 h_1 + b_2) \to \hat{y} = W_3 h_2 + b_3 \tag{2.5}
@@ -171,9 +171,9 @@ dense_1 (Dense)   (None, 8)      72      # W₂ (8×8) + b₂ (8)
 dense_2 (Dense)   (None, 1)      9       # W₃ (8×1) + b₃ (1)
 ```
 
-Cara membacanya sederhana. Kolom Param # menghitung berapa banyak parameter yang harus dipelajari tiap lapisan: lapisan tersembunyi pertama butuh 16 (8 bobot + 8 bias), lapisan kedua 72 (64 bobot + 8 bias), dan lapisan keluaran 9 (8 bobot + 1 bias) = total 97. Bukan kita yang menentukan angka 97 itu; pelatihan yang menemukannya dari data lewat *gradient descent* (Bab 4). Lalu, apa arti `None` di kolom Output Shape? Itu adalah jumlah data yang diproses sekaligus dalam satu kelompok (*batch*); angkanya baru ditentukan saat pelatihan, jadi untuk sekarang pustaka Keras menuliskannya kosong. Versi Keras yang lebih baru kadang juga menampilkan satu baris `InputLayer` bernilai 0 di bagian atas, itulah lapisan masukan implisit tadi, yang memang tidak punya parameter untuk dipelajari.
+Cara membacanya sederhana. Kolom Param # menghitung berapa banyak parameter yang harus dipelajari tiap lapisan: lapisan tersembunyi pertama butuh 16 (8 bobot + 8 bias), lapisan kedua 72 (64 bobot + 8 bias), dan lapisan keluaran 9 (8 bobot + 1 bias) = total 97. Bukan kita yang menentukan angka 97 itu. Pelatihan yang menemukannya dari data lewat *gradient descent* (Bab 4). Lalu, apa arti `None` di kolom Output Shape? Itu adalah jumlah data yang diproses sekaligus dalam satu kelompok (*batch*), angkanya baru ditentukan saat pelatihan, sehingga untuk sekarang pustaka Keras menuliskannya kosong. Versi Keras yang lebih baru kadang juga menampilkan satu baris `InputLayer` bernilai 0 di bagian atas, itulah lapisan masukan implisit tadi, yang memang tidak punya parameter untuk dipelajari.
 
-Kesimpulan arsitekturnya: 1 lapisan masukan + 2 lapisan tersembunyi + 1 lapisan keluaran, bukan 1 + 1 + 1. Tiga baris `Dense` di Kode 2.1 adalah dua lapisan tersembunyi plus satu lapisan keluaran; lapisan masukan tak tampak karena ia hanya bentuk data, bukan baris kode. Resep yang sama dipakai lagi di Kode 2.3, hanya `input_shape=(2,)` karena fiturnya dua: tinggi pasang surut dua hari dan satu hari sebelumnya.
+Kesimpulan arsitekturnya: 1 lapisan masukan + 2 lapisan tersembunyi + 1 lapisan keluaran, bukan 1 + 1 + 1. Tiga baris `Dense` di Kode 2.1 adalah dua lapisan tersembunyi plus satu lapisan keluaran. Lapisan masukan tak tampak karena ia hanya bentuk data, bukan baris kode. Resep yang sama digunakan lagi di Kode 2.3, hanya `input_shape=(2,)` karena fiturnya dua: tinggi pasang surut dua hari dan satu hari sebelumnya.
 
 ### Berapa banyak lapisan yang diperlukan?
 
@@ -181,21 +181,21 @@ Aturan praktis soal "berapa banyak lapisan": mulailah dari yang kecil, tambah ko
 
 ### ReLU dan variannya
 
-ReLU sederhana dan efektif, tetapi punya satu kelemahan: untuk masukan negatif, keluarannya persis nol dan gradiennya juga nol. Neuron yang "mati" (selalu memberi nol) tidak ikut belajar lagi; fenomena ini disebut *dying ReLU*. Dalam praktik ringan (regresi sederhana, jaringan kecil) masalah ini jarang berpengaruh besar, tetapi di jaringan yang dalam (banyak lapisannya) bisa muncul masalah fatal.
+ReLU sederhana dan efektif, tetapi punya satu kelemahan: untuk masukan negatif, keluarannya tepat nol dan gradiennya juga nol. Neuron yang "mati" (selalu memberi nol) tidak ikut belajar lagi. Fenomena ini disebut *dying ReLU*. Dalam praktik ringan (regresi sederhana, jaringan kecil) masalah ini jarang berpengaruh besar, tetapi di jaringan yang dalam (banyak lapisannya) bisa muncul masalah fatal.
 
-Beberapa varian yang sering dipakai sebagai pengganti:
+Beberapa varian yang sering digunakan sebagai pengganti:
 
 - **Leaky ReLU**: `max(0.01x, x)` - memberi kemiringan kecil untuk nilai negatif sehingga neuron tidak pernah sepenuhnya mati.
 - **ELU**: versi mulus dengan perilaku asimtotik untuk nilai sangat negatif.
-- **tanh** dan **sigmoid**: fungsi *S*-kurva yang lebih tua; relevan untuk klasifikasi (Bab 3) dan beberapa kasus lain.
+- **tanh** dan **sigmoid**: fungsi *S*-kurva yang lebih tua, relevan untuk klasifikasi (Bab 3) dan beberapa kasus lain.
 
-Untuk Bab 2-9, ReLU (atau Leaky ReLU) adalah pilihan *default* yang aman untuk lapisan tersembunyi. Anda tidak perlu menghafal semua varian sekarang; yang penting memahami *mengapa* non-linearitas dibutuhkan dan bahwa ada beberapa pilihan dengan *trade-off*.
+Untuk Bab 2-9, ReLU (atau Leaky ReLU) adalah pilihan *default* yang aman untuk lapisan tersembunyi. Anda tidak perlu menghafal semua varian sekarang. Yang penting memahami *mengapa* non-linearitas dibutuhkan dan bahwa ada beberapa pilihan dengan *trade-off*.
 
 ## 2.5 Memprediksi Tinggi Pasang Surut Sederhana
 
 Pasang surut bersifat periodik dan di sebagian besar perairan Indonesia bertipe semi-diurnal atau diurnal campuran [3] sehingga cocok untuk regresi sederhana: ada pola yang bisa dipelajari, cukup deterministik.
 
-Pendekatan paling dasar: memprediksi tinggi air **besok** berdasarkan tinggi air hari ini dan kemarin (dua fitur). Ini contoh *autoregressive*: target (besok) dijelaskan oleh nilai-nilai sebelumnya. Data nyata pasang surut akan dibahas penuh di Bab 8; di sini kita mengenalkan alurnya saja:
+Pendekatan paling dasar: memprediksi tinggi air **besok** berdasarkan tinggi air hari ini dan kemarin (dua fitur). Ini contoh *autoregressive*: target (besok) dijelaskan oleh nilai-nilai sebelumnya. Data nyata pasang surut akan dibahas penuh di Bab 8, sedangkan di sini kita mengenalkan alurnya saja:
 
 ```text
 input: [tinggi(t-2), tinggi(t-1)]  →  Dense+ReLU  →  output: tinggi(t)
@@ -203,7 +203,7 @@ input: [tinggi(t-2), tinggi(t-1)]  →  Dense+ReLU  →  output: tinggi(t)
 
 ### Langkah 1 - Bentuk data (*windowing*)
 
-Model neural network tidak menerima deret waktu sebagai satu blok; ia menerima **pasangan fitur-target**, seperti di semua contoh sebelumnya. Pertanyaan desain pertama: apa yang jadi fitur dan apa yang jadi target? Untuk prediksi tinggi besok, fitur yang paling natural adalah **nilai beberapa langkah sebelumnya**. Kami menyebut bentuk data ini *windowing*.
+Model neural network tidak menerima deret waktu sebagai satu blok. Ia menerima **pasangan fitur-target**, seperti di semua contoh sebelumnya. Pertanyaan desain pertama: apa yang menjadi fitur dan apa yang menjadi target? Untuk prediksi tinggi besok, fitur yang paling natural adalah **nilai beberapa langkah sebelumnya**. Kami menyebut bentuk data ini *windowing*.
 
 Lihat dulu datanya (nilai ilustratif, jam demi jam):
 
@@ -217,7 +217,7 @@ Lihat dulu datanya (nilai ilustratif, jam demi jam):
 | 4            | 1.05            |
 | 5            | 1.12            |
 
-Metode *windowing* dua langkah memakai data berisi dua nilai yang bergeser **satu langkah demi langkah**. Untuk tiap posisi: **fiturnya** adalah dua nilai `tinggi(t-2)` dan `tinggi(t-1)`. **Targetnya** adalah nilai baru `tinggi(t)`. Catatan: angka *raw* yang sama tampil di beberapa *window*; hanya posisinya yang berubah.
+Metode *windowing* dua langkah memakai data berisi dua nilai yang bergeser **satu langkah demi langkah**. Untuk tiap posisi: **fiturnya** adalah dua nilai `tinggi(t-2)` dan `tinggi(t-1)`. **Targetnya** adalah nilai baru `tinggi(t)`. Catatan: angka *raw* yang sama tampil di beberapa *window*. Hanya posisinya yang berubah.
 
 Urutan fiturnya sengaja dicocokkan dengan Kode 2.2: kolom pertama `[t-2]`, kolom kedua `[t-1]`. Setiap baris contoh:
 
@@ -229,13 +229,13 @@ Urutan fiturnya sengaja dicocokkan dengan Kode 2.2: kolom pertama `[t-2]`, kolom
 
 **Tabel 2.3**: Contoh *windowing* dua langkah pasang surut.
 
-Cara membangun *windowing* ini dijelaskan di Bab 7 secara mendalam; di Bab 2 kita cukup memakai bentuk tabel di atas sebagai ilustrasi konsep.
+Cara membangun *windowing* ini dijelaskan di Bab 7 secara mendalam, sedangkan di Bab 2 kita cukup memakai bentuk tabel di atas sebagai ilustrasi konsep.
 
 ### Langkah 2 - *Baseline*
 
 Sebelum menantang neural network, ukur *baseline* sederhana. Untuk deret periodik seperti pasang surut, *baseline* paling natural adalah *persistence*: "prediksi tinggi besok = tinggi hari ini" (`ŷ(t) = y(t-1)`). Tabel 2.3 memberi kita *baseline*: berapa MAE yang dihasilkan model yang selalu menebak nilai kemarin?
 
-Prinsip di Bab 1 menuntut: *neural network* layak dipakai hanya jika **mengalahkan** ***persistence***. Jika tidak, lebih baik kita memakai *persistence*: sederhana, tanpa pelatihan, tanpa pemeliharaan.
+Prinsip di Bab 1 menuntut: *neural network* layak digunakan hanya jika **mengalahkan** ***persistence***. Jika tidak, lebih baik kita memakai *persistence*: sederhana, tanpa pelatihan, tanpa pemeliharaan.
 
 ### Langkah 3 - Latih jaringan
 
@@ -293,7 +293,7 @@ print("MAE persistence:", round(mae(y_test, base_pred), 4))
 print("MAE neural network:", round(mae(y_test, pred), 4))
 ```
 
-Jalankan Kode 2.3 di notebook `ch-02-01_regresi_pasang_surut.ipynb`. Anda akan melihat dua angka MAE. Jika MAE jaringan **lebih kecil** daripada *persistence*, model bekerja; jika tidak, tinjau ulang (Bab 7).
+Jalankan Kode 2.3 di notebook `ch-02-01_regresi_pasang_surut.ipynb`. Anda akan melihat dua angka MAE. Jika MAE jaringan **lebih kecil** daripada *persistence*, model bekerja. Jika tidak, tinjau ulang (Bab 7).
 
 ### Interpretasi hasil, bukan hanya angka
 
@@ -307,10 +307,10 @@ Dua angka itu, misalnya:
 Nilai MAE *Persistence* lebih besar dari MLP. Tetapi walaupun MLP "lebih kecil", belum berarti "lebih berguna": angka MAE tidak menginterpretasi sendiri. Tiga lensa membantu menilai:
 
 1. **Lensa operasional: apakah selisih mengubah keputusan?** Selisih = 0.030 - 0.020 = 0.010 m = 1 cm. Jika toleransi operasional tinggi pasang ±0.10 m (10 cm), perbaikan 1 cm tidak mengubah keputusan navigasi atau peringatan: model "lebih akurat", tetapi dampak operasionalnya minimal. Pertanyaan praktisnya seperti "apakah selisih ini mengubah keputusan pelabuhan?" - jika MAE jauh di bawah toleransi yang disyaratkan, model sudah cukup.
-2. **Lensa statistik: menang atau hanya kebetulan?** Selisih kecil belum tentu berarti suatu model lebih baik; bisa saja perbedaan itu muncul karena *noise* pada data uji. Uji statistik seperti **Diebold-Mariano** menentukan apakah selisih tersebut signifikan atau hanya kebetulan. Selain itu, periksa konsistensi antar-periode: model yang menang minggu ini bisa kalah minggu depan, jadi evaluasi yang *robust* memakai beberapa periode uji (Bab 5 membahas metode; Bab 8-9 menjalan konsep).
+2. **Lensa statistik: menang atau hanya kebetulan?** Selisih kecil belum tentu berarti suatu model lebih baik. Bisa saja perbedaan itu muncul karena *noise* pada data uji. Uji statistik seperti **Diebold-Mariano** menentukan apakah selisih tersebut signifikan atau hanya kebetulan. Selain itu, periksa konsistensi antar-periode: model yang menang minggu ini bisa kalah minggu depan, sehingga evaluasi yang *robust* memakai beberapa periode uji (Bab 5 membahas metode, sedangkan Bab 8-9 menjalankan konsep).
 3. **Lensa pragmatis: apakah model sederhana sudah cukup?** Apakah memakai *neural network* dapat menambah nilai yang signifikan hingga mampu mengubah keputusan? Jika Anda tidak yakin, maka *baseline* sederhana seperti ARIMA atau *persistence* bisa menjadi pilihan yang lebih baik (kembali ke prinsip Bab 1).
 
-**Kesimpulan:** angka MAE saja belum cukup untuk menentukan kualitas model. Kita perlu melihat juga ***baseline* operasional, uji statistik, konsistensi antar-periode, serta biaya untuk menjalankan dan memelihara model**. Tidak ada model "sempurna"; yang dicari adalah model yang **cukup baik untuk tujuan** dan **lebih baik dari *baseline* sederhana**. Sikap ini yang membedakan praktisi dari sekadar pengguna *library*.
+**Kesimpulan:** angka MAE saja belum cukup untuk menentukan kualitas model. Kita perlu melihat juga ***baseline* operasional, uji statistik, konsistensi antar-periode, serta biaya untuk menjalankan dan memelihara model**. Tidak ada model "sempurna". Yang dicari adalah model yang **cukup baik untuk tujuan** dan **lebih baik dari *baseline* sederhana**. Sikap ini yang membedakan praktisi dari sekadar pengguna *library*.
 
 ## 2.6 Mengukur Galat: MAE vs MSE
 
@@ -323,7 +323,7 @@ Setelah model menghasilkan prediksi, kita perlu mengukur **seberapa besar galat 
 | **MAE** (*mean absolute error*) | rata-rata `          | selisih                                          |
 | **MSE** (*mean squared error*)  | rata-rata `selisih²` | Memberi hukuman besar pada galat besar (kuadrat) |
 
-Keduanya dipakai (Tabel 2.4); data seperti curah hujan memiliki distribusi dengan ekor kanan (kadang nilai sangat besar), sehingga pilihan *loss* bisa memengaruhi perilaku model. Prinsip: pilih sesuai skala & tujuan, dan selalu bandingkan dengan *baseline* (Bab 7).
+Keduanya digunakan (Tabel 2.4). Data seperti curah hujan memiliki distribusi dengan ekor kanan (kadang nilai sangat besar), sehingga pilihan *loss* bisa memengaruhi perilaku model. Prinsip: pilih sesuai skala dan tujuan, dan selalu bandingkan dengan *baseline* (Bab 7).
 
 ### Contoh numerik sederhana
 
@@ -345,29 +345,29 @@ Perhatikan: pada MSE satu galat `3` "menyumbang" nilai 9 karena 3 kuadrat. Hal i
 - Jika data mengandung pencilan (sensor rusak, hujan ekstrem sesekali) dan Anda tidak ingin model "dibuat sibuk" oleh satu nilai besar, MAE lebih tenang.
 - Dalam praktik, umumnya MAE dan RMSE dilaporkan bersama, karena keduanya memberi gambaran berbeda: MAE untuk galat khas, RMSE untuk bobot galat ekstrem.
 
-Di Bab 5 kita tambah metrik domain (KGE, CSI, dsb.), tetapi MAE/RMSE tetap fondasi untuk regresi.
+Di Bab 5 kita tambah metrik domain (KGE, CSI, dan seterusnya), tetapi MAE/RMSE tetap fondasi untuk regresi.
 
 ### Memahami loss sebagai "jarak" dan "hukuman"
 
 Pandangan yang membantu: ***loss* adalah ukuran seberapa buruk prediksi model** dalam satu angka, yang diminimalkan selama pelatihan. Ketika Anda menulis `loss="mse"`, *optimizer* menyesuaikan bobot dengan tujuan memperkecil rata-rata kuadrat selisih antara aktual dan prediksi. Bayangkan data suhu: jika model menebak `28.0°C` padahal aktual `30.0°C`, selisih `2.0`. MSE mengkuadratkannya menjadi `4.0`, "hukuman" ini lebih besar dari gabungan dua galat `1.0` (yang hanya `2.0`). Sifat ini membuat model yang dilatih dengan MSE cenderung menghindari galat besar, kadang mengorbankan presisi pada galat kecil.
 
-MAE tidak mengkuadratkan, sehingga semua galat diberi bobot sama. Untuk data dengan pencilan (misal satu hari hujan ekstrem `150 mm` di tengah ratusan hari `0-20 mm`), model MSE bisa "terganggu" oleh satu nilai besar itu dan mempengaruhi semuanya; model MAE lebih tahan terhadap nilai ekstrem. Namun MAE memiliki *gradien* konstan (biasanya ±1) untuk hampir semua nilai galat, yang membuat optimasi sedikit berbeda: karena *gradien-*nya tidak mengecil saat model mendekati minimum, konvergensi bisa menjadi lambat atau berosilasi di sekitar solusi. Berbeda dengan MSE, yang gradiennya bervariasi dengan galat (gradien kecil saat galat kecil), sehingga konvergensi lebih halus di sekitar minimum. Detail optimasi ini dibahas di Bab 4.
+MAE tidak mengkuadratkan, sehingga semua galat diberi bobot sama. Untuk data dengan pencilan (misal satu hari hujan ekstrem `150 mm` di tengah ratusan hari `0-20 mm`), model MSE bisa "terganggu" oleh satu nilai besar itu dan mempengaruhi semuanya. Model MAE lebih tahan terhadap nilai ekstrem. Namun MAE memiliki *gradien* konstan (biasanya ±1) untuk hampir semua nilai galat, yang membuat optimasi sedikit berbeda: karena *gradien-*nya tidak mengecil saat model mendekati minimum, konvergensi bisa menjadi lambat atau berosilasi di sekitar solusi. Berbeda dengan MSE, yang gradiennya bervariasi dengan galat (gradien kecil saat galat kecil), sehingga konvergensi lebih halus di sekitar minimum. Detail optimasi ini dibahas di Bab 4.
 
 ### Metrik *versus loss*
 
 Penting membedakan dua peran:
 
-- ***Loss*** - dipakai selama pelatihan (*optimizer* meminimalkannya).
+- ***Loss*** - digunakan selama pelatihan (*optimizer* meminimalkannya).
 - **Metrik** - dilaporkan kepada pembaca untuk menilai kualitas (bisa sama atau berbeda).
 
-Di Kode 2.3 kita menggunakan `loss="mse"` tetapi `metrics=["mae"]`. Ini wajar: melatih dengan MSE (agar galat besar dihukum) sambil melaporkan MAE (lebih mudah diinterpretasi dalam satuan °C/m). Praktik seperti ini umum; yang penting sadar bahwa keduanya tidak harus identik.
+Di Kode 2.3 kita menggunakan `loss="mse"` tetapi `metrics=["mae"]`. Ini wajar: melatih dengan MSE (agar galat besar dihukum) sambil melaporkan MAE (lebih mudah diinterpretasi dalam satuan °C/m). Praktik seperti ini umum. Yang penting sadar bahwa keduanya tidak harus identik.
 
 ## 2.7 Adam, *Learning Rate*, dan *Split* Waktu
 
 Setelah model dibentuk dan *loss* dipilih, kita melatihnya dengan ***optimizer***. Dua istilah yang perlu dikenal sekarang:
 
-- **Adam** adalah algoritma optimasi modern (turunan dari *gradient descent*) yang mengatur besar langkah penyesuaian bobot per iterasi secara adaptif. Kode 2.3 memakainya cukup dengan satu baris `optimizer="adam"`. Detail cara kerja & alternatifnya dibahas di Bab 4.
-- ***Learning rate*** mengontrol seberapa besar tiap langkah: terlalu besar → model melompat dan tidak konvergen; terlalu kecil → belajar sangat lambat. Adam sudah "cerdas" memilih ukuran langkah adaptif, tetapi nilai awal *learning rate* tetap perlu masuk akal (*default* Keras biasanya aman untuk pemula).
+- **Adam** adalah algoritma optimasi modern (turunan dari *gradient descent*) yang mengatur besar langkah penyesuaian bobot per iterasi secara adaptif. Kode 2.3 memakainya cukup dengan satu baris `optimizer="adam"`. Detail cara kerja dan alternatifnya dibahas di Bab 4.
+- ***Learning rate*** mengontrol seberapa besar tiap langkah: terlalu besar → model melompat dan tidak konvergen. Terlalu kecil → belajar sangat lambat. Adam sudah "cerdas" memilih ukuran langkah adaptif, tetapi nilai awal *learning rate* tetap perlu masuk akal (*default* Keras biasanya aman untuk pemula).
 
 ### Kenapa *split* tidak boleh acak untuk data waktu?
 
@@ -377,21 +377,21 @@ Untuk data **deret waktu meteorologi**, pembagian data menjadi latih/validasi/uj
 train (2015-2021) | validation (2022) | test (2023)
 ```
 
-Alasannya adalah ***leakage*** (kebocoran informasi). Bagi acak berarti sampel uji bisa berasal dari tanggal yang berdekatan atau di antara data latih; informasi dari masa depan "bocor" ke masa latih, sehingga performa terlihat terlalu bagus. Di dunia nyata, saat model dipakai operasional, ia hanya punya data hingga hari ini: menguji dengan data masa lalu yang dicampur acak tidak merepresentasikan kondisi itu.
+Alasannya adalah ***leakage*** (kebocoran informasi). Bagi acak berarti sampel uji bisa berasal dari tanggal yang berdekatan atau di antara data latih. Informasi dari masa depan "bocor" ke masa latih, sehingga performa terlihat terlalu bagus. Di dunia nyata, saat model digunakan secara operasional, ia hanya punya data hingga hari ini: menguji dengan data masa lalu yang dicampur acak tidak merepresentasikan kondisi itu.
 
 Bayangkan memprediksi pasang surut besok. Jika data uji mencakup tanggal yang juga ada di data latih (hanya beda beberapa hari), model bisa "meniru". Itu bukan keterampilan prediksi masa depan, itu menyontek. *Split* berbasis waktu memaksa model memprediksi periode yang benar-benar belum pernah dilihat, sama seperti kondisi nyata.
 
 ### Validasi untuk *tuning*
 
-Data **validasi** digunakan selama pelatihan untuk memantau kinerja (misalnya lewat `validation_data` di Kode 2.3) dan bisa dipakai memilih *hyperparameter* (jumlah neuron, *learning rate*). Setelah semua keputusan selesai, model diuji **sekali** di data `test` supaya tidak curang: memakai tes berkali-kali untuk menyetel model sama saja dengan "membocorkan" tes ke latihan. Bab 5 dan Bab 7 akan mengulang dan memperdalam aturan ini.
+Data **validasi** digunakan selama pelatihan untuk memantau kinerja (misalnya lewat `validation_data` di Kode 2.3) dan bisa digunakan untuk memilih *hyperparameter* (jumlah neuron, *learning rate*). Setelah semua keputusan selesai, model diuji **sekali** di data `test` supaya tidak curang: memakai tes berkali-kali untuk menyetel model sama saja dengan "membocorkan" tes ke latihan. Bab 5 dan Bab 7 akan mengulang dan memperdalam aturan ini.
 
 ### Ringkas alur mini-kasus
 
 1. Bentuk *windowing* (Tabel 2.3, Kode 2.2).
 2. Ukur *baseline* *persistence*.
-3. Bangun & latih MLP (Kode 2.1-2.3).
+3. Bangun dan latih MLP (Kode 2.1-2.3).
 4. Bandingkan MAE dengan *baseline*.
-5. Jika *neural networks* tidak kalah, pakai; jika sebanding, gunakan *baseline*.
+5. Jika *neural networks* tidak kalah, gunakan jaringan tersebut. Jika sebanding, gunakan *baseline*.
 
 ## 2.8 Latihan
 
@@ -421,7 +421,7 @@ Beberapa jebakan yang sering muncul saat pertama kali membangun model regresi, b
 
 **2. *Split* acak untuk data waktu.** Memakai `train_test_split` *default* (acak) pada deret waktu menyebabkan *leakage*. Solusi: potong berurutan berdasarkan waktu (Bagian 2.7).
 
-**3. Melihat data tes berulang kali.** Menyetel model terhadap tes sampai "jadi" adalah bentuk bocor. Solusi: simpan tes untuk evaluasi akhir; pakai validasi untuk *tuning* (Bagian 2.7).
+**3. Melihat data tes berulang kali.** Menyetel model terhadap tes berulang kali sampai hasilnya tampak baik adalah bentuk kebocoran data. Solusi: simpan tes untuk evaluasi akhir, lalu gunakan validasi untuk *tuning* (Bagian 2.7).
 
 **4. Mengubah skala tanpa menyimpan statistiknya.** Jika Anda menormalisasi fitur, Anda harus menyimpan rata-rata/deviasi dari *train* dan menerapkannya pada *tes* dan produksi. Menerapkan statistik dari seluruh data (termasuk tes) adalah *leakage*. (Normalisasi dibahas di Bab 6.)
 
@@ -435,10 +435,10 @@ Menghindari galat di atas menghemat banyak waktu dan, lebih penting, menjauhkan 
 
 ## Ringkasan
 
-- Regresi = memprediksi besaran kontinu; neuron = bobot + bias + fungsi aktivasi.
-- 1 neuron linear identik regresi linear; non-linearitas (ReLU) diperlukan untuk pola yang tidak lurus.
-- Mini-kasus pasang surut memperkenalkan penggunaan langsung pada data laut Indonesia; *baseline* *persistence* selalu dipakai sebagai pembanding.
-- MAE vs MSE: pilih sesuai skala & tujuan; Adam & learning rate; split berbasis waktu untuk melawan *leakage*.
+- Regresi = memprediksi besaran kontinu. Neuron = bobot + bias + fungsi aktivasi.
+- 1 neuron linear identik regresi linear, sedangkan non-linearitas (ReLU) diperlukan untuk pola yang tidak lurus.
+- Mini-kasus pasang surut memperkenalkan penggunaan langsung pada data laut Indonesia, sedangkan *baseline* *persistence* selalu digunakan sebagai pembanding.
+- MAE vs MSE: pilih sesuai skala dan tujuan, Adam dan learning rate, serta split berbasis waktu untuk melawan *leakage*.
 - Proyek ML selalu: bentuk data → *baseline* → model → bandingkan → putuskan.
 
 ## References

@@ -14,7 +14,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 
 ## 1. Buku Teks dan Referensi Rujukan Umum
 
-1. I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. Cambridge, MA, USA: MIT Press, 2016. [Online]. Available: https://www.deeplearningbook.org
+1. I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. Cambridge, MA, USA: MIT Press, 2016. ISBN 978-0-262-03561-3. [Online]. Available: https://www.deeplearningbook.org
 2. S. Russell and P. Norvig, *Artificial Intelligence: A Modern Approach*, 4th ed. Harlow, UK: Pearson, 2021. ISBN 978-0134610993.
 3. T. M. Mitchell, *Machine Learning*. New York, NY, USA: McGraw-Hill, 1997. ISBN 978-0070428072.
 4. R. J. Hyndman and G. Athanasopoulos, *Forecasting: Principles and Practice*, 3rd ed. Melbourne, Australia: OTexts, 2021. [Online]. Available: https://otexts.com/fpp3/
@@ -32,7 +32,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 13. N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, and R. Salakhutdinov, "Dropout: A simple way to prevent neural networks from overfitting," *Journal of Machine Learning Research*, vol. 15, no. 1, pp. 1929–1958, 2014.
 14. M. C. Wheeler and H. H. Hendon, "An all-season real-time multivariate MJO index: Development of an index for monitoring and prediction," *Monthly Weather Review*, vol. 132, no. 8, pp. 1917–1932, 2004. doi: 10.1175/1520-0493(2004)132<1917:AARMMI>2.0.CO;2.
 15. C. J. Willmott, "On the validation of models," *Physical Geography*, vol. 2, no. 2, pp. 184–194, 1981.
-16. C. J. Willmott, S. M. Robeson, and K. Matsuura, "A refined index of model performance," *International Journal of Climatology*, vol. 32, no. 6, pp. 573–580, 2012.
+16. C. J. Willmott, S. M. Robeson, and K. Matsuura, "A refined index of model performance," *International Journal of Climatology*, vol. 32, no. 13, pp. 2088–2094, 2012. doi: 10.1002/joc.2419.
 17. H. V. Gupta, H. Kling, K. K. Yilmaz, and G. F. Martinez, "Decomposition of the mean squared error and NSE performance criteria: Implications for improving hydrological modelling," *Journal of Hydrology*, vol. 377, no. 1–2, pp. 80–91, 2009. doi: 10.1016/j.jhydrol.2009.08.003.
 18. S. Lestari, A. King, C. Vincent, D. Karoly, and A. Protat, "Seasonal dependence of rainfall extremes in and around Jakarta, Indonesia," *Weather and Climate Extremes*, vol. 24, Art. no. 100202, 2019. doi: 10.1016/j.wace.2019.100202.
 19. H. Hersbach et al., "The ERA5 global reanalysis," *Quarterly Journal of the Royal Meteorological Society*, vol. 146, no. 730, pp. 1999–2049, 2020. doi: 10.1002/qj.3803.
@@ -52,8 +52,8 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 30. S. M. Lundberg and S.-I. Lee, "A unified approach to interpreting model predictions," in *Proc. Advances in Neural Information Processing Systems (NeurIPS)*, 2017, pp. 4765–4774. (Preprint: arXiv:1705.07874.)
 31. N. S. Keskar et al., "On large-batch training for deep learning: Generalization gap and sharp minima," in *Proc. Int. Conf. Learning Representations (ICLR)*, 2017. (Preprint: arXiv:1609.04836.)
 32. A. C. Wilson, R. Roelofs, M. Stern, N. Srebro, and B. Recht, "The marginal value of adaptive gradient methods in machine learning," in *Proc. Int. Conf. Machine Learning (ICML)*, ser. PMLR, vol. 70, 2017. (Preprint: arXiv:1705.08292.)
-33. H. Li, Z. Xu, G. Taylor, C. Studer, and T. Goldstein, "Visualizing the loss landscape of neural nets," in *Proc. Advances in Neural Information Processing Systems (NeurIPS)*, 2018. (Preprint: arXiv:1712.09913.)
-34. I. Loshchilov and F. Hutter, "Decoupled weight decay regularization," in *Proc. Int. Conf. Learning Representations (ICLR)*, 2019. (Preprint: arXiv:1711.05101.)
+33. A. Choromanska, M. Henaff, M. Mathieu, G. B. Arous, and Y. LeCun, "The loss surfaces of multilayer networks," in *Proc. 18th Int. Conf. Artificial Intelligence and Statistics (AISTATS)*, ser. PMLR, vol. 38, 2015, pp. 192–204. (Preprint: arXiv:1412.0233.)
+34. I. Loshchilov and F. Hutter, "Decoupled weight decay regularization," in *Proc. Int. Conf. Learning Representations (ICLR)*, 2019. [Online]. Available: https://arxiv.org/abs/1711.05101 (diakses: September 2026).
 35. K. Wolter and M. S. Timlin, "Monitoring ENSO in COADS with a seasonally adjusted principal component index," in *Proc. 17th Climate Diagnostics Workshop*, Norman, OK, USA, 1993, pp. 52–57.
 
 ## 4. Laporan Teknis dan Perangkat Lunak

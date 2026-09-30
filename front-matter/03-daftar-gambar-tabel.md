@@ -20,7 +20,9 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Gambar 2.2 | Arsitektur MLP contoh (1 → 8 ReLU → 8 ReLU → 1) | 2 |
 | Gambar 3.1 | Kurva sigmoid memetakan z ke (0, 1) | 3 |
 | Gambar 3.2 | *Confusion matrix* contoh data tidak seimbang | 3 |
-| Gambar 4.1 | Contoh *learning curve* (*train* turun, *val* naik → *overfit*) | 4 |
+| Gambar 4.1 | Gradien sebagai kemiringan *loss*; langkah *gradient descent* | 4 |
+| Gambar 4.2 | Permukaan *loss landscape* (minimum global, lokal, *saddle*) | 4 |
+| Gambar 4.3 | Contoh *learning curve* (*train* turun, *val* naik → *overfit*) | 4 |
 | Gambar 5.1 | *Learning curve overfit* | 5 |
 | Gambar 6.1 | Distribusi curah hujan harian (ekor panjang) | 6 |
 | Gambar 7.1 | Ilustrasi RNN *unrolled* (state h) | 7 |

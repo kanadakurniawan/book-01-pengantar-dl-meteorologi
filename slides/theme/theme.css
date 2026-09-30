@@ -1,0 +1,70 @@
+/* AUTO-GENERATED dari slides/theme/tokens.json. Jangan sunting manual.
+   Jalankan ulang: npm run slide:tema */
+:root {
+  --brand-primary: #006CAC;
+  --brand-secondary: #08A88A;
+  --brand-accent: #1178C4;
+  --brand-bg: #FDFDFD;
+  --brand-fg: #282728;
+  --brand-muted: #E6E6E6;
+  --brand-muted-fg: #6B7280;
+  --brand-border: #ECE9E9;
+  --font-body: "Google Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "Google Sans Code", Consolas, "Courier New", monospace;
+  --slide-min-font: 18pt;
+}
+
+.reveal {
+  font-family: var(--font-body);
+  color: var(--brand-fg);
+  background: var(--brand-bg);
+  font-size: 26px;
+}
+.reveal .slides { text-align: left; }
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+  font-family: var(--font-body);
+  color: var(--brand-primary);
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+.reveal h1 { font-size: 2.0em; }
+.reveal h2 { font-size: 1.45em; }
+.reveal h3 { font-size: 1.1em; color: var(--brand-secondary); }
+.reveal a { color: var(--brand-accent); }
+.reveal strong { color: var(--brand-primary); }
+.reveal code, .reveal pre {
+  font-family: var(--font-mono);
+  background: var(--brand-muted);
+  color: var(--brand-fg);
+  border-radius: 6px;
+}
+.reveal pre code { padding: 1rem; }
+.reveal section img {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  max-height: 58vh;
+  max-width: 100%;
+}
+.reveal table { font-size: 0.7em; border-collapse: collapse; }
+.reveal table th {
+  background: var(--brand-primary);
+  color: var(--brand-bg);
+  padding: 6px 10px;
+}
+.reveal table td { border-bottom: 1px solid var(--brand-border); padding: 6px 10px; }
+.reveal .progress { color: var(--brand-secondary); }
+.reveal .slide-number {
+  color: var(--brand-muted-fg);
+  font-family: var(--font-mono);
+  font-size: 0.6em;
+}
+.reveal .footer {
+  position: absolute;
+  bottom: 12px;
+  left: 24px;
+  font-size: 0.45em;
+  color: var(--brand-muted-fg);
+}

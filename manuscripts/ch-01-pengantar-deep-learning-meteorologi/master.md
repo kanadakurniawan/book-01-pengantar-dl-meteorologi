@@ -1,6 +1,6 @@
 ---
 title: "Pengantar Deep Learning untuk Meteorologi"
-description: "Bab pertama, memahami posisi deep learning dalam machine learning dan kebumian, peta aplikasi meteo yang dibahas di buku ini, kapan DL layak dipakai, serta panduan menyiapkan lingkungan Google Colab + TensorFlow."
+description: "Bab pertama, memahami posisi deep learning dalam machine learning dan kebumian, peta aplikasi meteo yang dibahas di buku ini, kapan DL layak digunakan, serta panduan menyiapkan lingkungan Google Colab + TensorFlow."
 pubDate: 2026-09-01
 categories: ["Deep Learning", "Meteorologi"]
 tags: ["deep learning", "meteorologi", "tensorflow", "colab", "pengantar"]
@@ -13,7 +13,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 
 Buku ini ditujukan sebagai **materi pengenalan**, bukan hasil riset baru. Seluruh isi merupakan ringkasan dan penyusunan ulang dari literatur klasik *machine learning*, dengan contoh-contoh yang dekat dengan dunia meteorologi Indonesia.
 
-> **Prasyarat bab ini:** tidak ada, ini titik awal. Bab berikutnya mengasumsikan Bab 1 dikuasai. Jika Anda sudah terbiasa dengan dasar TensorFlow, Anda boleh melompat ke Bab 2, tetapi baca Bagian 1.6-1.8 untuk memahami notasi yang dipakai buku ini.
+> **Prasyarat bab ini:** tidak ada, ini titik awal. Bab berikutnya mengasumsikan Bab 1 dikuasai. Jika Anda sudah terbiasa dengan dasar TensorFlow, Anda boleh melompat ke Bab 2, tetapi baca Bagian 1.6-1.8 untuk memahami notasi yang digunakan buku ini.
 
 ## 1.0 Mengapa Buku Ini, dan Mengapa Sekarang untuk Pembaca Indonesia
 
@@ -23,7 +23,7 @@ Sebelum masuk ke definisi, ada baiknya kita berhenti sejenak: **mengapa sebuah b
 
 Ada dua alasan praktis.
 
-**1. Materi DL berbahasa Indonesia masih jarang, dan yang ada jarang yang kontekstual.** Sebagian besar referensi fundamental *deep learning* (kursus daring, buku teks, makalah) ditulis dalam bahasa Inggris dan dengan contoh dari belahan dunia lain [1]. Mahasiswa S1 kebumian di Indonesia yang ingin belajar DL biasanya harus menerjemahkan dua hal sekaligus: bahasa dan konteks. Buku ini ditulis dalam bahasa Indonesia dan dengan contoh-contoh yang dekat dengan dunia meteorologi Indonesia, sehingga mengatasi kedua hambatan itu sekaligus. Kami tidak menggantikan sumber primer; kami menyediakan **jembatan** ke sumber tersebut.
+**1. Materi DL berbahasa Indonesia masih jarang, dan yang ada jarang yang kontekstual.** Sebagian besar referensi fundamental *deep learning* (kursus daring, buku teks, makalah) ditulis dalam bahasa Inggris dan dengan contoh dari belahan dunia lain [1]. Mahasiswa S1 kebumian di Indonesia yang ingin belajar DL biasanya harus menerjemahkan dua hal sekaligus: bahasa dan konteks. Buku ini ditulis dalam bahasa Indonesia dan dengan contoh-contoh yang dekat dengan dunia meteorologi Indonesia, sehingga mengatasi kedua hambatan itu sekaligus. Kami tidak menggantikan sumber primer. Kami menyediakan **jembatan** ke sumber tersebut.
 
 **2. Data lokal, notebook yang dapat dijalankan, dan evaluasi yang jujur.** Kami sengaja tidak menulis bab ini sebagai esai filosofis: konsep dijelaskan dengan intuisi + kode. Tiap bab membawa notebook Colab yang dapat dijalankan langsung dan dataset kecil, yaitu data sintetis atau data publik terbuka seperti ERA5, CHIRPS, atau pasang surut dengan sumber yang dicantumkan. Evaluasi disajikan jujur: model selalu dibandingkan dengan *baseline*. Anda tidak hanya membaca, tetapi juga menjalankan ulang.
 
@@ -35,7 +35,7 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Membedakan** *artificial intelligence*, *machine learning*, dan *deep learning* beserta contoh aplikasinya di meteorologi.
 2. **Memetakan** aplikasi *deep learning* meteorologi ke bab yang relevan dan membedakan mana yang dibahas buku ini vs literatur lanjut.
-3. **Menilai** secara kritis kapan *deep learning* layak dipakai dibanding *baseline* statistik (ukuran data, non-linearitas, konteks operasional).
+3. **Menilai** secara kritis kapan *deep learning* layak digunakan dibanding *baseline* statistik (ukuran data, non-linearitas, konteks operasional).
 4. **Menyiapkan** lingkungan kerja Google Colab + TensorFlow/Keras dan membuat tensor pertama dari contoh data cuaca mini.
 
 ## 1.1 *Artificial Intelligence*, *Machine Learning*, dan *Deep Learning*
@@ -54,7 +54,7 @@ Sebagaimana dilihat pada Gambar 1.1, *artificial intelligence* adalah payung ter
 
 Secara praktis, perbedaan utamanya adalah cara model memproses pola data. Model *machine learning* konvensional seperti regresi linear, *decision tree*, atau SVM bekerja dengan fungsi atau logika pemisahan data yang spesifik. Pendekatan ini efektif untuk pola dasar, tetapi sering kesulitan menghadapi dinamika atmosfer yang kompleks. Sebaliknya, *deep learning* dirancang untuk mengenali hubungan data yang rumit menggunakan struktur jaringan saraf. Komponen dasar jaringan ini meliputi neuron, *perceptron*, dan fungsi aktivasi, yang akan dibahas lebih rinci pada Bab 2.
 
-Kapan Anda memakai yang mana? Ringkasnya: untuk data kecil dan pola yang relatif sederhana, model ML klasik biasanya lebih stabil dan lebih mudah dijelaskan; *deep learning* baru layak dicoba saat data besar atau polanya kompleks dan non-linear. Perbandingan ini bukan hitam-putih, dan aturan praktis yang lebih rinci (termasuk *baseline*, model berbasis pohon, serta biaya dan pemeliharaan) kita bahas dalam Bagian 1.4.
+Kapan Anda memakai yang mana? Ringkasnya: untuk data kecil dan pola yang relatif sederhana, model ML klasik biasanya lebih stabil dan lebih mudah dijelaskan, sedangkan *deep learning* baru layak dicoba saat data besar atau polanya kompleks dan non-linear. Perbandingan ini bukan hitam-putih, dan aturan praktis yang lebih rinci (termasuk *baseline*, model berbasis pohon, serta biaya dan pemeliharaan) kita bahas dalam Bagian 1.4.
 
 ## 1.2 Mengapa Deep Learning Relevan Sekarang
 
@@ -62,7 +62,7 @@ Kapan Anda memakai yang mana? Ringkasnya: untuk data kecil dan pola yang relatif
 
 1. **Data besar**, sensor otomatis, *reanalysis* seperti ERA5 (data cuaca historis dari gabungan model dan observasi), dan arsip klimatologi menyediakan data meteorologi dalam jumlah besar (Bab 6 membahas sumber datanya). Model DL baru bersinar saat volume datanya besar.
 2. **Komputasi murah**, GPU (kartu grafis untuk komputasi paralel) dan *cloud notebook* gratis seperti **Google Colab** membuat pelatihan jaringan saraf dapat dilakukan tanpa server mahal. Sebuah GPU modern bisa berisi ribuan inti yang memproses data secara paralel, mempercepat matematika jaringan saraf puluhan hingga ratusan kali.
-3. ***Tooling* matang**, TensorFlow/Keras dan PyTorch menyediakan API yang relatif mudah dipelajari [6]. Tidak perlu lagi menulis kode matematika dari nol untuk tiap proyek; Anda tinggal merakit blok yang sudah tersedia.
+3. ***Tooling* matang**, TensorFlow/Keras dan PyTorch menyediakan API yang relatif mudah dipelajari [6]. Tidak perlu lagi menulis kode matematika dari nol untuk tiap proyek. Anda tinggal merakit blok yang sudah tersedia.
 
 Kombinasi ini membuat *deep learning* dapat diadopsi oleh mahasiswa dan praktisi kebumian, bukan hanya peneliti ilmu komputer [7]. Ini kunci filosofi buku ini: Anda tidak perlu gelar di bidang komputer untuk mulai menggunakan DL, asalkan punya data, perangkat, dan kemauan belajar.
 
@@ -90,7 +90,7 @@ Anda tidak perlu hafal tahun-tahun ini, tetapi memahami bahwa DL bukan "keajaiba
 | *Nowcasting* (prediksi kini-6 jam) | Apa yang terjadi kini hingga 6 jam ke depan (radar/satelit)? | Bab 10 (arah riset) |
 | *Downscaling* / data spasial | Dari skala *reanalysis* ke skala lokal | Bab 10 (arah riset) |
 | Model generatif (*generative*) | Membuat skenario iklim, imputasi realistis, super-resolusi | Bab 10 (arah riset) |
-| Verifikasi & *post-processing* | Mengoreksi bias model cuaca, kalibrasi probabilistik | Bab 10 (singkat) |
+| Verifikasi dan *post-processing* | Mengoreksi bias model cuaca, kalibrasi probabilistik | Bab 10 (singkat) |
 
 Fokus buku ini sengaja dibatasi pada **dua aplikasi inti** (lihat baris pertama dan kedua Tabel 1.1): prediksi besaran (regresi) dan klasifikasi kejadian, pada data deret waktu meteorologi Indonesia. Ada tiga alasan pembatasan ini:
 
@@ -98,9 +98,9 @@ Fokus buku ini sengaja dibatasi pada **dua aplikasi inti** (lihat baris pertama 
 2. **Aplikasi paling dekat dengan praktisi.** Regresi dan klasifikasi adalah dua hal pertama yang Anda butuhkan untuk tugas prediksi dan pengambilan keputusan harian.
 3. **Bekal yang portabel.** Penguasaan analisis regresi, klasifikasi, dan deret waktu berbasis TensorFlow mempermudah pemahaman arsitektur tingkat lanjut, seperti CNN untuk citra radar maupun model *diffusion* untuk imputasi data.
 
-Tiga aplikasi berikutnya dalam Tabel 1.1 — *nowcasting*, *downscaling*, dan model generatif adalah arah yang kami promosikan di Bab 10 sebagai peta jalan riset. Buku ini tidak mengupasnya secara mendalam karena (a) membutuhkan data spasial/grid yang volumenya jauh lebih besar dan (b) arsitekturnya (U-Net, Transformer, difusi) berada di luar cakupan buku pengantar ini. Khusus verifikasi & *post-processing*, buku ini hanya menyebutnya singkat di Bab 10.
+Tiga aplikasi berikutnya dalam Tabel 1.1 — *nowcasting*, *downscaling*, dan model generatif adalah arah yang kami promosikan di Bab 10 sebagai peta jalan riset. Buku ini tidak mengupasnya secara mendalam karena (a) membutuhkan data spasial/grid yang volumenya jauh lebih besar dan (b) arsitekturnya (U-Net, Transformer, difusi) berada di luar cakupan buku pengantar ini. Khusus verifikasi dan *post-processing*, buku ini hanya menyebutnya singkat di Bab 10.
 
-### Apa yang TIDAK dibahas buku ini (secara sengaja)
+### Apa yang tidak dibahas buku ini (secara sengaja)
 
 Untuk kejelasan, kami juga mendaftar yang **tidak** akan Anda temui di sini, agar Anda memiliki ekspektasi yang tepat:
 
@@ -111,29 +111,29 @@ Untuk kejelasan, kami juga mendaftar yang **tidak** akan Anda temui di sini, aga
 
 ## 1.4 Kapan Deep Learning Layak, Kapan Tidak
 
-*Deep learning* bukan solusi untuk semua masalah. Aturan praktis yang akan dipakai di seluruh buku:
+*Deep learning* bukan solusi untuk semua masalah. Aturan praktis yang akan digunakan di seluruh buku:
 
 - **Gunakan model statistik klasik dulu sebagai pembanding (*baseline*).** Regresi linear, ARIMA (model statistik untuk deret waktu), atau *persistence* ("keadaan besok = keadaan hari ini") sering kali lebih dari cukup untuk data pendek atau pola sederhana. *Deep learning* hanya layak jika **mengalahkan *baseline*** dengan data yang cukup. Prinsip ini menjadi tulang punggung Bab 7-9. Jika model sederhana sudah cukup, tidak perlu menambah kompleksitas.
 - **Ingat *baseline* non-linear: model berbasis pohon.** Untuk data tabular dan deret waktu, algoritma seperti **Random Forest** atau **XGBoost** sering mengalahkan jaringan saraf dari segi kecepatan, akurasi, dan keterbacaan. Buku ini fokus pada jaringan saraf, tetapi praktisi wajib tahu bahwa model-model itu bisa menjadi pembanding yang sangat kuat sebelum beralih ke *deep learning*, yang benar-benar unggul saat data masif atau melibatkan data spasial (citra radar/satelit, grid).
-- **Perhatikan ukuran data.** Jaringan saraf besar membutuhkan banyak data untuk belajar. Untuk deret waktu stasiun dengan puluhan ribu pengamatan, model sekuensial (*sequence*) seperti LSTM (Bab 7) adalah pilihan yang masuk akal, tetapi jangan langsung melompat ke arsitektur masif yang dirancang untuk miliaran parameter (angka-angka yang dipelajari model dari data; butuh data jauh lebih besar). Catatan penting: sejak beberapa tahun terakhir, ***transfer learning*** dan model terlatih (*pre-trained model*) memungkinkan *deep learning* tetap berguna meskipun data kita terbatas. Misalnya mengambil model yang dilatih pada data reanalisis global lalu menyesuaikannya (*fine-tuning*) dengan data stasiun lokal. Poin "data besar" di atas tidak lagi mutlak; Bab 10 membahas *transfer learning* singkat sebagai salah satu arah riset.
+- **Perhatikan ukuran data.** Jaringan saraf besar membutuhkan banyak data untuk belajar. Untuk deret waktu stasiun dengan puluhan ribu pengamatan, model sekuensial (*sequence*) seperti LSTM (Bab 7) adalah pilihan yang masuk akal, tetapi jangan langsung melompat ke arsitektur masif yang dirancang untuk miliaran parameter (angka-angka yang dipelajari model dari data, sehingga butuh data jauh lebih besar). Catatan penting: sejak beberapa tahun terakhir, ***transfer learning*** dan model terlatih (*pre-trained model*) memungkinkan *deep learning* tetap berguna meskipun data kita terbatas. Misalnya mengambil model yang dilatih pada data reanalisis global lalu menyesuaikannya (*fine-tuning*) dengan data stasiun lokal. Poin "data besar" di atas tidak lagi mutlak. Bab 10 membahas *transfer learning* singkat sebagai salah satu arah riset.
 - **Utamakan keterbacaan dan kepercayaan di konteks operasional.** Di lingkungan layanan meteorologi, model sederhana yang dapat dijelaskan kadang lebih diterima daripada model "kotak hitam". Bab 10 membahas interpretasi dan keterbatasan. Tidak semua pengguna akhir (kepala stasiun, pengguna data, pengambil keputusan) nyaman dengan hasil yang tidak bisa dijelaskan.
-- **Perhatikan biaya dan pemeliharaan.** Model DL perlu dijalankan, dimonitor, dan dilatih ulang secara berkala. Jika model klasik yang sederhana bisa bertahan lama tanpa perawatan, itu bisa jadi pilihan yang lebih cerdas di lingkungan dengan sumber daya terbatas.
+- **Perhatikan biaya dan pemeliharaan.** Model DL perlu dijalankan, dimonitor, dan dilatih ulang secara berkala. Jika model klasik yang sederhana bisa bertahan lama tanpa perawatan, itu bisa menjadi pilihan yang lebih cerdas di lingkungan dengan sumber daya terbatas.
 
 Kesimpulannya: anggap *deep learning* sebagai **satu alat di dalam kotak peralatan**, bukan pengganti semua metode. Cara pandang ini menjaga pembaca dari *overhype*, kecenderungan percaya bahwa model bisa menyelesaikan semua masalah. Sebagai uji cepat: jika data Anda sedikit, hasilnya harus bisa dijelaskan kepada pengguna non-teknis, atau hubungan yang perlu dimodelkan ternyata sederhana, sangat mungkin jawabannya ada pada model statistik, bukan *deep learning*.
 
 ### Karakteristik Data Meteorologi Indonesia (dan Mengapa Ini Penting untuk DL)
 
-Sebelum masuk ke kode, pahami **ciri khas data meteorologi tropis** yang akan Anda temui di sepanjang buku. Ciri-ciri ini bukan sekadar latar belakang; mereka menentukan kapan *deep learning* benar-benar dibutuhkan dan kapan model sederhana sudah cukup.
+Sebelum masuk ke kode, pahami **ciri khas data meteorologi tropis** yang akan Anda temui di sepanjang buku. Ciri-ciri ini bukan sekadar latar belakang. Mereka menentukan kapan *deep learning* benar-benar dibutuhkan dan kapan model sederhana sudah cukup.
 
 **1. Variabilitas tinggi dan rezim ganda.** Curah hujan di Indonesia dipengaruhi monsun Australia-Asia, *Madden-Julian Oscillation* (MJO) [10], *El Niño-Southern Oscillation* (ENSO), dan siklus diurnal laut-darat. Pola yang sama bisa muncul dengan amplitudo sangat berbeda antara musim kemarau dan musim hujan. Model yang belajar dari satu rezim saja akan gagal saat rezim berganti. Bab 6 membahas bagaimana membagi dan menyeimbangkan data sehingga model tidak "lupa" pada satu musim.
 
-**2. Ekor kanan (*right tail*) yang berat pada curah hujan.** Distribusi hujan harian di sebagian besar wilayah Indonesia memiliki banyak hari tanpa hujan (nol) dan sedikit hari dengan hujan ekstrem (>50 mm/hari), dengan ekor distribusi yang lebih berat daripada distribusi Gaussian [11]. Ini membuat metrik rata-rata seperti RMSE tidak cukup; Bab 5 memperkenalkan metrik kejadian (CSI, FAR, POD) untuk menilai performa pada hari ekstrem.
+**2. Ekor kanan (*right tail*) yang berat pada curah hujan.** Distribusi hujan harian di sebagian besar wilayah Indonesia memiliki banyak hari tanpa hujan (nol) dan sedikit hari dengan hujan ekstrem (>50 mm/hari), dengan ekor distribusi yang lebih berat daripada distribusi Gaussian [11]. Ini membuat metrik rata-rata seperti RMSE tidak cukup. Bab 5 memperkenalkan metrik kejadian (CSI, FAR, POD) untuk menilai performa pada hari ekstrem.
 
-**3. Data hilang, *outlier*, dan inhomogenitas.** Jaringan pengamatan meteorologi berkembang bertahap: beberapa stasiun memiliki catatan puluhan tahun, sebagian lain baru beberapa tahun. Sensor dapat diganti, dikalibrasi ulang, atau catatan digital dihitung ulang; inhomogenitas seperti ini adalah salah satu tantangan utama yang disoroti dalam literatur pembelajaran mesin untuk sains kebumian [7]. Bab 6 membahas imputasi dasar dan eksplorasi data yang hati-hati.
+**3. Data hilang, *outlier*, dan inhomogenitas.** Jaringan pengamatan meteorologi berkembang bertahap: beberapa stasiun memiliki catatan puluhan tahun, sebagian lain baru beberapa tahun. Sensor dapat diganti, dikalibrasi ulang, atau catatan digital dihitung ulang. Inhomogenitas seperti ini adalah salah satu tantangan utama yang disoroti dalam literatur pembelajaran mesin untuk sains kebumian [7]. Bab 6 membahas imputasi dasar dan eksplorasi data yang hati-hati.
 
 **4. Sinyal pasang surut yang kuat tetapi nonstasioner.** Di stasiun pesisir seperti Cilacap (Bab 8), sinyal pasang surut memiliki komponen harmonik yang kuat (semi-diurnal, diurnal, dan campuran) tetapi amplitudo dan fase dipengaruhi faktor non-astronomis: cuaca (angin, tekanan), variabilitas laut regional, dan debit sungai (di muara sungai seperti Kapuas). Ini menjadikannya kasus menarik untuk model sekuensial: pola periodik yang bisa dipelajari, dengan komponen residual yang menantang.
 
-**5. Keterbatasan data latih untuk kejadian ekstrem.** Hujan ekstrem (basis peringatan dini) dan pasang surut rob adalah **ekor distribusi**, persis bagian yang paling ingin kita prediksi dengan baik, tetapi paling jarang ada datanya [7], [11]. Bab 3, 5, dan 9 membahas cara menghadapi *class imbalance* dan verifikasi operasional untuk kejadian langka.
+**5. Keterbatasan data latih untuk kejadian ekstrem.** Hujan ekstrem (basis peringatan dini) dan pasang surut rob adalah **ekor distribusi**, tepat bagian yang paling ingin kita prediksi dengan baik, tetapi paling jarang ada datanya [7], [11]. Bab 3, 5, dan 9 membahas cara menghadapi *class imbalance* dan verifikasi operasional untuk kejadian langka.
 
 Implikasi untuk *deep learning*:
 
@@ -161,7 +161,7 @@ Konsep ***baseline*** akan menjadi teman sepanjang buku. Sebelum menantang denga
 
 ### Catatan tentang iterasi
 
-Gambaran di atas adalah penyederhanaan: dalam praktik, Anda akan bolak-balik antar langkah. Model Anda *underfit*? Kembali ke persiapan data atau tambah kapasitas model. Data ternyata memiliki *outlier* yang merusak pelatihan? Kembali ke langkah 3. Evaluasi menunjukkan model *overfit*? Kembali ke regularisasi (Bab 5) atau pengumpulan data tambahan. Iterasi bukan tanda kegagalan; ini adalah proses normal dalam setiap proyek ML.
+Gambaran di atas adalah penyederhanaan: dalam praktik, Anda akan bolak-balik antar langkah. Model Anda *underfit*? Kembali ke persiapan data atau tambah kapasitas model. Data ternyata memiliki *outlier* yang merusak pelatihan? Kembali ke langkah 3. Evaluasi menunjukkan model *overfit*? Kembali ke regularisasi (Bab 5) atau pengumpulan data tambahan. Iterasi bukan tanda kegagalan. Ini adalah proses normal dalam setiap proyek ML.
 
 ### Tentang versi dan dokumentasi
 
@@ -193,7 +193,7 @@ Jika kolom "GPU tersedia" kosong, pilih menu *Runtime > Change runtime type > Ha
 
 Notebook pendamping bab ini, `ch-01-00_fondasi_tensorflow.ipynb` (folder `notebooks/` di repo), berisi langkah verifikasi lingkungan dan pengenalan tensor dengan contoh data cuaca mini. Pastikan versi TensorFlow yang terinstal sesuai dengan versi yang tercantum pada metadata bab, agar hasil dapat direproduksi.
 
-**Catatan versi & reproduksibilitas** (aturan konsisten sepanjang buku):
+**Catatan versi dan reproduksibilitas** (aturan konsisten sepanjang buku):
 
 - Selalu catat versi library utama (mis. `print(tf.__version__)`).
 - Gunakan nilai *seed* tetap (`np.random.seed`, `tf.random.set_seed`) agar hasil dapat direproduksi.
@@ -226,9 +226,9 @@ Semua data yang masuk ke jaringan saraf direpresentasikan sebagai **tensor**, ge
 | Contoh | Bentuk | Dimensi (rank) |
 |---|---|---|
 | Suhu satu pengamatan, `26.5` | skalar (tensor 0D) | 0 |
-| Suhu min & max satu hari, `[26.5, 31.0]` | vektor (tensor 1D) | 1 |
-| Suhu min & max 3 hari, `[[26.5, 31.0], [26.8, 30.5], [27.2, 32.1]]` | matriks (tensor 2D) | 2 |
-| Suhu min & max di 3 stasiun selama 3 hari | tensor 3D | 3 |
+| Suhu min dan max satu hari, `[26.5, 31.0]` | vektor (tensor 1D) | 1 |
+| Suhu min dan max 3 hari, `[[26.5, 31.0], [26.8, 30.5], [27.2, 32.1]]` | matriks (tensor 2D) | 2 |
+| Suhu min dan max di 3 stasiun selama 3 hari | tensor 3D | 3 |
 
 Tabel 1.2 merangkum contoh-contoh yang akan kita gunakan di notebook. Dalam TensorFlow, tensor dibuat dengan `tf.constant` atau `tf.Variable`:
 
@@ -245,12 +245,12 @@ Bentuk (`shape`) tensor inilah yang nantinya menentukan bentuk masukan (*input s
 
 ### Mini-challenge: Prediksi *Persistence* vs. Rata-rata Klimatologis
 
-Sebelum kita bicara tentang model yang *sophisticated*, mari kita lihat dua *baseline* yang akan menjadi "lawan tanding" *deep learning* di sepanjang buku. Keduanya dipakai luas dalam verifikasi prediksi cuaca sebagai rujukan keterampilan model [12]:
+Sebelum kita bicara tentang model yang *sophisticated*, lihat dua *baseline* yang akan menjadi "lawan tanding" *deep learning* di sepanjang buku. Keduanya digunakan luas dalam verifikasi prediksi cuaca sebagai rujukan keterampilan model [12]:
 
-- ***Persistence*** (prediksi-beku): $\hat{y}_{t+1} = y_t$. Prediksi besok sama dengan pengamatan terakhir yang kita punya. Secara intuitif: "asumsinya tidak berubah". Untuk data yang berubah pelan (pasang surut, suhu harian), *persistence* sering kali sudah cukup baik; untuk data yang berfluktuasi cepat, *persistence* kalah. Istilah *persistence* dipakai di seluruh literatur verifikasi prediksi internasional (WMO WWRP/WGNE, [12]).
-- **Rata-rata klimatologis**: $\hat{y}_{t+1} = \bar{y}_{\text{bulan}, \text{stasiun}}$, prediksi besok = rata-rata historis untuk hari yang sama di bulan dan lokasi tersebut. Cocok untuk pola musiman yang kuat; gagal saat rezim menyimpang dari klimatologis (mis. El Niño kuat).
+- ***Persistence*** (prediksi-beku): $\hat{y}_{t+1} = y_t$. Prediksi besok sama dengan pengamatan terakhir yang kita punya. Secara intuitif: "asumsinya tidak berubah". Untuk data yang berubah pelan (pasang surut, suhu harian), *persistence* sering kali sudah cukup baik, sedangkan untuk data yang berfluktuasi cepat, *persistence* kalah. Istilah *persistence* digunakan di seluruh literatur verifikasi prediksi internasional (WMO WWRP/WGNE, [12]).
+- **Rata-rata klimatologis**: $\hat{y}_{t+1} = \bar{y}_{\text{bulan}, \text{stasiun}}$, prediksi besok = rata-rata historis untuk hari yang sama di bulan dan lokasi tersebut. Cocok untuk pola musiman yang kuat, tetapi gagal saat rezim menyimpang dari klimatologis (mis. El Niño kuat).
 
-Mari kita uji pada data sintetis sederhana (variasi harian menyerupai suhu):
+Uji pada data sintetis sederhana (variasi harian menyerupai suhu):
 
 **Kode 1.3 - Mini-challenge: membandingkan *persistence* dan klimatologis.**
 
@@ -288,11 +288,11 @@ plt.title("Dua baseline pada data sintetis")
 plt.show()
 ```
 
-Pada data seperti ini, **klimatologis biasanya mengalahkan *persistence*** karena kita sengaja membuat pola yang periodik. Untuk fenomena dengan *persistence* tinggi (pasang surut, suhu harian), *persistence* sering menang. Untuk fenomena periodik (curah hujan musiman), klimatologis sering lebih baik. *Deep learning* baru layak jika bisa mengalahkan keduanya secara konsisten; kita akan kembali ke prinsip ini di setiap studi kasus (Bab 8-9).
+Pada data seperti ini, **klimatologis biasanya mengalahkan *persistence*** karena kita sengaja membuat pola yang periodik. Untuk fenomena dengan *persistence* tinggi (pasang surut, suhu harian), *persistence* sering menang. Untuk fenomena periodik (curah hujan musiman), klimatologis sering lebih baik. *Deep learning* baru layak jika bisa mengalahkan keduanya secara konsisten. Kita akan kembali ke prinsip ini di setiap studi kasus (Bab 8-9).
 
 ## 1.8 Latihan Mini: Mengenali Jenis Masalah
 
-Sebelum Bab 2, mari latih naluri memetakan masalah ke jenis model. Ingat pedoman dari Bagian 1.5: **regresi** menjawab "berapa?" dengan angka (mis. tinggi pasang besok), sedangkan **klasifikasi** menjawab "yang mana?" dengan kategori (mis. hujan lebat atau tidak, level bahaya apa). Untuk masing-masing pertanyaan berikut, tentukan (a) regresi atau klasifikasi, dan (b) apakah *deep learning* layak dicoba (asumsikan data tersedia cukup):
+Sebelum Bab 2, latih naluri memetakan masalah ke jenis model. Ingat pedoman dari Bagian 1.5: **regresi** menjawab "berapa?" dengan angka (mis. tinggi pasang besok), sedangkan **klasifikasi** menjawab "yang mana?" dengan kategori (mis. hujan lebat atau tidak, level bahaya apa). Untuk masing-masing pertanyaan berikut, tentukan (a) regresi atau klasifikasi, dan (b) apakah *deep learning* layak dicoba (asumsikan data tersedia cukup):
 
 1. Prediksi suhu minimum besok di Pontianak.
 2. Deteksi apakah hari ini akan hujan deras (>50 mm/24 jam) ya atau tidak.
@@ -301,10 +301,10 @@ Sebelum Bab 2, mari latih naluri memetakan masalah ke jenis model. Ingat pedoman
 
 **Jawaban singkat:**
 
-1. **Regresi** (nilai kontinu: suhu minimum). DL bisa; mulai dari *baseline*.
-2. **Klasifikasi biner** (dua kelas: hujan deras / tidak). DL bisa; perhatikan data tidak seimbang (jarang hujan deras), Bab 3, 5.
-3. **Klasifikasi multi-kelas** (tiga level). DL bisa; pastikan metrik sesuai kejadian ekstrem, Bab 3, 5.
-4. **Regresi** (satu angka), tapi mungkin lebih baik menggunakan rata-rata klimatologis sebagai *baseline* dulu. DL tidak selalu jawaban, Bagian 1.4.
+1. **Regresi** (nilai kontinu: suhu minimum). DL bisa. Mulai dari *baseline*.
+2. **Klasifikasi biner** (dua kelas: hujan deras / tidak). DL bisa. Perhatikan data tidak seimbang (jarang hujan deras), Bab 3, 5.
+3. **Klasifikasi multi-kelas** (tiga level). DL bisa. Pastikan metrik sesuai kejadian ekstrem, Bab 3, 5.
+4. **Regresi** (satu angka), tetapi mungkin lebih baik menggunakan rata-rata klimatologis sebagai *baseline* dulu. DL tidak selalu jawaban, Bagian 1.4.
 
 Latihan semacam ini (yang muncul di setiap bab) melatih Anda berpikir seperti praktisi: definisikan masalah dulu, baru pilih alat.
 
@@ -312,23 +312,23 @@ Latihan semacam ini (yang muncul di setiap bab) melatih Anda berpikir seperti pr
 
 Banyak calon pembaca khawatir buku ini berisi matematika berat. Kabar baiknya: untuk **menggunakan** DL secara bertanggung jawab, Anda cukup menguasai tiga hal:
 
-1. **Aljabar linear dasar**, vektor dan matriks (Perkalian matriks adalah inti neuron). Bab ini sudah mengenalkan tensor; kita hanya akan memakai sedikit notasi di Bab 2-4.
+1. **Aljabar linear dasar**, vektor dan matriks (Perkalian matriks adalah inti neuron). Bab ini sudah mengenalkan tensor. Kita hanya akan memakai sedikit notasi di Bab 2-4.
 2. **Kalkulus dasar**, konsep turunan untuk memahami *gradient descent* (Bab 4). Anda tidak perlu menurunkan rumus, cukup paham intuisi kemiringan.
 3. **Statistika deskriptif**, rata-rata, varians, korelasi, dan sedikit probabilitas (untuk klasifikasi di Bab 3).
 
 Jika Anda sudah lama tidak berurusan dengan matematika, jangan khawatir. Buku ini selalu mendekati rumus dengan **intuisi + kode**, bukan derivasi formal. Setiap rumus yang muncul dijelaskan dengan bahasa sehari-hari dan contoh konkret meteorologi, sehingga Anda tetap bisa mengikuti.
 
-**Kapan harus berhenti dan belajar lebih dalam?** Jika Anda berencana meneliti atau mengembangkan arsitektur baru, Anda perlu matematika lebih dalam; untuk itu kami sarankan [1]. Tetapi untuk penggunaan praktis (membangun model, mengevaluasi, menerapkan), bekal di atas cukup.
+**Kapan harus berhenti dan belajar lebih dalam?** Jika Anda berencana meneliti atau mengembangkan arsitektur baru, Anda perlu matematika lebih dalam. Untuk itu kami sarankan [1]. Tetapi untuk penggunaan praktis (membangun model, mengevaluasi, menerapkan), bekal di atas cukup.
 
 ## 1.10 Apa Arti Buku Ini bagi Anda
 
 Buku ini menyebut dirinya **materi pengenalan**, bukan hasil riset baru. Bagi Anda, artinya tiga hal yang berkaitan langsung dengan cara Anda memakai buku ini:
 
 1. **Anda mendapat kurasi yang rapi.** Daripada menyaring sendiri banyak sumber primer, Anda membaca literatur dan praktik yang sudah mapan, disusun ulang dalam satu narasi dengan contoh data meteorologi Indonesia.
-2. **Anda tidak akan disesatkan angka.** Tidak ada klaim performa "metode baru yang lebih baik"; setiap hasil dibandingkan dengan *baseline* dan disajikan apa adanya, sebagai bahan belajar, bukan klaim untuk keputusan operasional.
+2. **Anda tidak akan disesatkan angka.** Tidak ada klaim performa "metode baru yang lebih baik". Setiap hasil dibandingkan dengan *baseline* dan disajikan apa adanya, sebagai bahan belajar, bukan klaim untuk keputusan operasional.
 3. **Ukuran keberhasilannya adalah Anda.** Buku ini berhasil jika Anda mampu membangun dan mengevaluasi model *deep learning* sendiri untuk data Anda.
 
-Jadi, saat Anda membaca "studi kasus" di Bab 8-9, perlakukan sebagai latihan *end-to-end* yang dapat diulang, bukan sebagai makalah penelitian. Ini adalah sikap yang juga Anda pegang sebagai praktisi: selalu tanya "apakah ini mengalahkan *baseline*?"
+Karena itu, saat Anda membaca "studi kasus" di Bab 8-9, perlakukan sebagai latihan *end-to-end* yang dapat diulang, bukan sebagai makalah penelitian. Ini adalah sikap yang juga Anda pegang sebagai praktisi: selalu tanya "apakah ini mengalahkan *baseline*?"
 
 ## 1.11 Ekosistem dan Sumber Belajar Lanjutan
 
@@ -336,9 +336,9 @@ Anda mungkin bertanya: "bukankah banyak buku *deep learning* yang sudah ada?" Bu
 
 Di samping buku ini, berikut ekosistem yang bermanfaat:
 
-- **PyTorch**, alternatif populer di riset; konsep yang Anda pelajari di sini mudah dipindahkan.
+- **PyTorch**, alternatif populer di riset, dan konsep yang Anda pelajari di sini mudah dipindahkan.
 - **Kaggle / GitHub**, sumber dataset dan contoh notebook untuk latihan mandiri.
-- **Pandas & xarray**, penanganan data tabular dan data NetCDF (rincian & instalasi di Bagian 1.6).
+- **Pandas dan xarray**, penanganan data tabular dan data NetCDF (detail dan instalasi di Bagian 1.6).
 
 ### Pertanyaan yang Sering Muncul (FAQ)
 
@@ -350,7 +350,7 @@ Di samping buku ini, berikut ekosistem yang bermanfaat:
 
 ## 1.12 Glosarium Mini Bab 1
 
-Daftar istilah singkat yang muncul di bab ini. Glosarium lengkap buku ada di *front matter*; di sini hanya yang esensial untuk bab ini.
+Daftar istilah singkat yang muncul di bab ini. Glosarium lengkap buku ada di *front matter*, sedangkan di sini hanya yang esensial untuk bab ini.
 
 | Istilah | Indonesia | Inggris | Penjelasan singkat |
 |---|---|---|---|
@@ -359,12 +359,12 @@ Daftar istilah singkat yang muncul di bab ini. Glosarium lengkap buku ada di *fr
 | DL | Pembelajaran mendalam | *Deep Learning* | ML dengan jaringan saraf berlapis. |
 | NN | Jaringan saraf | *Neural Network* | Model matematis berlapis unit sederhana. |
 | Baseline | Tolok ukur | *Baseline* | Model sederhana acuan (*persistence*, klimatologis). |
-| Persistence | - | *Persistence* | $\hat{y}_{t+1} = y_t$; besok = hari ini. |
+| Persistence | - | *Persistence* | $\hat{y}_{t+1} = y_t$. Besok = hari ini. |
 | Tensor | - | *Tensor* | "Kotak angka" generalisasi matriks ke banyak dimensi. |
-| GPU | - | *Graphics Processing Unit* | Kartu grafis untuk komputasi paralel; mempercepat DL. |
+| GPU | - | *Graphics Processing Unit* | Kartu grafis untuk komputasi paralel, dan mempercepat DL. |
 | Notebook | Buku catatan | *Notebook* | Dokumen interaktif kode + narasi (Colab, Jupyter). |
-| Overhype | Berlebih-lebihan | *Overhype* | Klaim model lebih bagus dari kenyataan; kita hindari. |
-| Seed | Benih | *Seed* | Nilai awal generator acak; kunci reproduksibilitas. |
+| Overhype | Berlebih-lebihan | *Overhype* | Klaim model lebih bagus dari kenyataan. Kita hindari. |
+| Seed | Benih | *Seed* | Nilai awal generator acak, dan kunci reproduksibilitas. |
 | ENSO | - | *El Niño-Southern Oscillation* | Mode variabilitas iklim Pasifik yang memengaruhi hujan Indonesia. |
 | MJO | - | *Madden-Julian Oscillation* | Osilasi intramusiman tropis (30-60 hari) [10]. |
 | Rob | - | *Rob* | Banjir pesisir akibat pasang tinggi (penting di Semarang, Pontianak). |
@@ -377,19 +377,19 @@ Untuk membantu Anda memutuskan ke mana melompat setelah bab ini, berikut peta si
 
 **Jika Anda ingin memahami cara kerja *backpropagation* sebelum kode:** Bab 4 membahas *gradient descent*, aturan rantai, dan perannya dalam melatih jaringan, sangat bermanfaat sebelum masuk ke model sekuensial.
 
-**Jika Anda sudah familiar dengan ML klasik (regresi, pohon keputusan):** Bab 1 cukup; Anda bisa langsung ke Bab 3 untuk klasifikasi dan Bab 5 untuk metrik domain.
+**Jika Anda sudah familiar dengan ML klasik (regresi, pohon keputusan):** Bab 1 cukup. Anda bisa langsung ke Bab 3 untuk klasifikasi dan Bab 5 untuk metrik domain.
 
 **Jika Anda ingin konteks data dulu:** Bab 6 (data terbuka/ERA5/pasang surut) menjelaskan sumber, lisensi, dan kualitas, bekal penting untuk Bab 8-9.
 
 ## Ringkasan
 
-- *Deep learning* adalah cabang *machine learning* berbasis jaringan saraf berlapis; relevan untuk meteorologi karena data besar, komputasi murah, dan tooling matang.
-- Fokus buku: prediksi deret waktu dan klasifikasi kejadian untuk data Indonesia; aplikasi lain (*nowcasting*, *downscaling*, model generatif) diarahkan ke Bab 10.
-- *Deep learning* layak digunakan jika mengalahkan *baseline* yang sederhana; jangan pernah memulai tanpa pembanding.
-- Lingkungan kerja: Google Colab + TensorFlow/Keras; semua data dibawa sebagai tensor.
+- *Deep learning* adalah cabang *machine learning* berbasis jaringan saraf berlapis, dan relevan untuk meteorologi karena data besar, komputasi murah, dan tooling matang.
+- Fokus buku: prediksi deret waktu dan klasifikasi kejadian untuk data Indonesia, sedangkan aplikasi lain (*nowcasting*, *downscaling*, model generatif) diarahkan ke Bab 10.
+- *Deep learning* layak digunakan jika mengalahkan *baseline* yang sederhana. Jangan pernah memulai tanpa pembanding.
+- Lingkungan kerja: Google Colab + TensorFlow/Keras. Semua data dibawa sebagai tensor.
 - Alur kerja proyek ML (masalah → data → persiapan → model → evaluasi) menjadi pola acuan semua bab.
 - Matematika yang dibutuhkan terbatas pada aljabar linear, kalkulus, dan statistika dasar, cukup untuk penggunaan praktis.
-- Buku ini "bukan riset baru"; buku ini merupakan hasil kurasi literatur untuk konteks meteorologi Indonesia, dengan referensi lanjutan untuk pendalaman.
+- Buku ini "bukan riset baru", melainkan hasil kurasi literatur untuk konteks meteorologi Indonesia, dengan referensi lanjutan untuk pendalaman.
 
 ## References
 

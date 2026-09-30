@@ -12,6 +12,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from mpl_toolkits.mplot3d import proj3d
+import matplotlib.patheffects as pe
 
 ROOT = Path(__file__).resolve().parent.parent
 MANS = ROOT / "manuscripts"
@@ -240,7 +242,148 @@ def fig_3_3():
     save(fig, MANS / "ch-03-klasifikasi-neural-network/figures/fig-3-3-roc-pr.png")
 
 
-# ---------------------------------------------------------------- fig-4-1 / 5-1
+# ---------------------------------------------------------------- fig-4-1 (gradien)
+def fig_4_1_gradien():
+    """Kurva loss 1-D: kemiringan (gradien) di satu titik dan satu langkah turun."""
+    w = np.linspace(-0.2, 6.2, 400)
+    L = 0.6 * (w - 3.0) ** 2 + 0.5
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    ax.plot(w, L, color="#1f4e79", lw=2.6)
+
+    w0 = 4.8
+    L0 = 0.6 * (w0 - 3.0) ** 2 + 0.5
+    grad0 = 1.2 * (w0 - 3.0)             # dL/dw pada w0 (positif)
+
+    # garis singgung (gradien) di titik w0
+    wtan = np.array([w0 - 1.1, w0 + 1.1])
+    Ltan = L0 + grad0 * (wtan - w0)
+    ax.plot(wtan, Ltan, color="#c0552b", lw=1.6, ls="--")
+    ax.scatter([w0], [L0], s=55, color="#c0552b", zorder=6)
+    ax.text(w0 + 0.25, L0 + 0.05, "gradien", ha="left", va="bottom",
+            fontsize=11.5, color="#c0552b",
+            bbox=dict(fc="white", ec="none", alpha=0.7, pad=1.2))
+
+    # satu langkah: w1 = w0 - eta * gradien (menuju minimum)
+    eta = 0.6
+    w1 = w0 - eta * grad0
+    L1 = 0.6 * (w1 - 3.0) ** 2 + 0.5
+    ax.annotate("", xy=(w1, L1), xytext=(w0, L0),
+                arrowprops=dict(arrowstyle="-|>", color="#2e7d32", lw=3.0,
+                                mutation_scale=28, shrinkA=6, shrinkB=6),
+                zorder=5)
+    ax.scatter([w1], [L1], s=55, color="#2e7d32", zorder=6)
+    ax.text((w0 + w1) / 2 - 0.05, (L0 + L1) / 2 + 0.42, "langkah",
+            ha="center", va="bottom", fontsize=11.5, color="#2e7d32",
+            bbox=dict(fc="white", ec="none", alpha=0.7, pad=1.2))
+
+    ax.axvline(3.0, color="#999", ls=":", lw=1.3)
+    ax.text(3.0, 0.12, "minimum", ha="center", va="bottom", fontsize=11.5,
+            color="#666")
+
+    ax.set_xlim(-0.2, 6.2)
+    ax.set_ylim(0, 6.2)
+    ax.set_xlabel("bobot w")
+    ax.set_ylabel("loss L(w)")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(alpha=0.2)
+    save(fig, MANS / "ch-04-backpropagation-optimasi/figures/fig-4-1-gradien.png")
+
+
+# ---------------------------------------------------------------- fig-4-2 (loss landscape)
+def _loss_surface(x, y):
+    """Permukaan loss sintetis: dua lembah dengan satu col (saddle) di antaranya."""
+    return (
+        -4.5 * np.exp(-(((x - 2.4) ** 2 + (y - 2.4) ** 2) / 1.1))
+        - 2.5 * np.exp(-(((x + 2.0) ** 2 + (y + 2.0) ** 2) / 1.0))
+        + 1.2 * np.exp(-(((x + 0.7) ** 2 + (y + 0.7) ** 2) / 1.2))
+        + 3.0 * np.exp(-(((x - 0.64) ** 2 + (y + 2.04) ** 2) / 1.0))
+        + 3.0 * np.exp(-(((x + 2.04) ** 2 + (y - 0.64) ** 2) / 1.0))
+    )
+
+
+def _grad_xy(p):
+    h = 1e-4
+    gx = (_loss_surface(p[0] + h, p[1]) - _loss_surface(p[0] - h, p[1])) / (2 * h)
+    gy = (_loss_surface(p[0], p[1] + h) - _loss_surface(p[0], p[1] - h)) / (2 * h)
+    return np.array([gx, gy])
+
+
+def _proyeksi_ke_axes(ax, x, y, z):
+    """Proyeksikan titik 3-D ke koordinat axes (fraksi 0-1) untuk label 2-D."""
+    x2, y2, _ = proj3d.proj_transform(x, y, z, ax.get_proj())
+    tampilan = ax.transData.transform((x2, y2))
+    return ax.transAxes.inverted().transform(tampilan)
+
+
+def fig_4_2_landscape():
+    """Permukaan loss 3-D: minimum global, minimum lokal, saddle point, bidang bobot."""
+    x = np.linspace(-5.5, 5.5, 150)
+    y = np.linspace(-5.5, 5.5, 150)
+    X, Y = np.meshgrid(x, y)
+    Z = _loss_surface(X, Y)
+
+    # dua minimum (turunkan dari dekat pusat lembah)
+    gmin = np.array([2.2, 2.2])
+    lmin = np.array([-1.9, -1.9])
+    for _ in range(200):
+        gmin -= 0.05 * _grad_xy(gmin)
+        lmin -= 0.05 * _grad_xy(lmin)
+    # saddle: titik tertinggi pada jalur lurus antara kedua minimum
+    ts = np.linspace(0.0, 1.0, 600)
+    px = lmin[0] + ts * (gmin[0] - lmin[0])
+    py = lmin[1] + ts * (gmin[1] - lmin[1])
+    vals = _loss_surface(px, py)
+    sad = np.array([px[np.argmax(vals)], py[np.argmax(vals)]])
+
+    fig = plt.figure(figsize=(9.0, 5.8))
+    ax = fig.add_subplot(111, projection="3d")
+    ax.plot_surface(X, Y, Z, cmap="jet", rstride=2, cstride=2,
+                    linewidth=0.12, edgecolor="#333333", alpha=0.96)
+    # bidang bobot (referensi z = 0), seperti "bayangan" permukaan
+    ax.plot_wireframe(X, Y, np.zeros_like(X), color="#5fb98a", lw=0.35,
+                      rstride=12, cstride=12, alpha=0.5)
+
+    zg = _loss_surface(*gmin)
+    zl = _loss_surface(*lmin)
+    zs = _loss_surface(*sad)
+
+    ax.set_xlabel("bobot $w_1$", labelpad=10)
+    ax.set_ylabel("bobot $w_2$", labelpad=10)
+    ax.set_zlabel("loss", labelpad=8)
+    # garis kisi bidang muncul dari tick; angka tetap ditampilkan
+    for sumbu in (ax.xaxis, ax.yaxis, ax.zaxis):
+        sumbu.pane.set_facecolor((1.0, 1.0, 1.0, 1.0))
+        sumbu.pane.set_edgecolor("#c8c8c8")
+        sumbu._axinfo["grid"].update(color="#d9d9d9", linewidth=0.7,
+                                     linestyle="-")
+    ax.grid(True)
+    ax.view_init(elev=26, azim=-58)
+
+    # label di margin (2-D) dengan garis penunjuk ke titik 3-D
+    fig.canvas.draw()
+    anotasi = [
+        (gmin[0], gmin[1], zg, "minimum global", "#1b5e20", "●", 0.86, 1.03),
+        (lmin[0], lmin[1], zl, "minimum lokal", "#8a3b1c", "●", 0.14, 1.03),
+        (sad[0], sad[1], zs, "saddle point", "#2c3e50", "◆", 0.50, 1.08),
+    ]
+    for x0, y0, z0, teks, warna, bentuk, tx, ty in anotasi:
+        titik = _proyeksi_ke_axes(ax, x0, y0, z0)
+        ax.text2D(titik[0], titik[1], bentuk, transform=ax.transAxes,
+                  color=warna, fontsize=14, ha="center", va="center",
+                  zorder=30,
+                  path_effects=[pe.withStroke(linewidth=2.4,
+                                              foreground="white")])
+        ax.annotate(teks, xy=titik, xycoords=ax.transAxes,
+                    xytext=(tx, ty), textcoords=ax.transAxes,
+                    color=warna, fontsize=10.5, ha="center", va="center",
+                    bbox=dict(fc="white", ec="none", alpha=0.7, pad=1.2),
+                    arrowprops=dict(arrowstyle="-", color=warna, lw=1.2,
+                                    connectionstyle="arc3,rad=0.12"))
+    save(fig, MANS / "ch-04-backpropagation-optimasi/figures/fig-4-2-landscape.png")
+
+
+# ---------------------------------------------------------------- fig-4-3 / 5-1
 def _learning_curve():
     ep = np.arange(0, 101)
     train = 0.92 * np.exp(-ep / 22) + 0.06
@@ -252,7 +395,7 @@ def _learning_curve():
     return ep, train, val
 
 
-def fig_4_1():
+def fig_4_3():
     ep, train, val = _learning_curve()
     fig, ax = plt.subplots(figsize=(7.5, 4.2))
     ax.plot(ep, train, label="Train", color="#1f4e79", lw=2)
@@ -262,7 +405,7 @@ def fig_4_1():
     ax.set_ylim(0, 1.0)
     ax.legend()
     ax.grid(alpha=0.25)
-    save(fig, MANS / "ch-04-backpropagation-optimasi/figures/fig-4-1-learning-curve.png")
+    save(fig, MANS / "ch-04-backpropagation-optimasi/figures/fig-4-3-learning-curve.png")
 
 
 def fig_5_1():
@@ -423,7 +566,7 @@ def fig_10_1():
 
 def main():
     fig_2_1(); fig_2_2(); fig_3_1(); fig_3_2(); fig_3_3()
-    fig_4_1(); fig_5_1(); fig_6_1(); fig_7_1()
+    fig_4_1_gradien(); fig_4_2_landscape(); fig_4_3(); fig_5_1(); fig_6_1(); fig_7_1()
     fig_8_1(); fig_9_1(); fig_9_2(); fig_10_1()
     print("Semua gambar diregenerasi tanpa judul.")
 

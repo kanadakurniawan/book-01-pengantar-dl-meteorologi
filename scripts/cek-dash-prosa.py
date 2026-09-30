@@ -43,13 +43,20 @@ def strip_frontmatter(text: str) -> str:
 
 
 def strip_fences(text: str) -> str:
-    out, in_fence = [], False
+    """Remove code fences (```/~~~) AND multi-line display math (bare $$ lines).
+
+    A bare "$$" line toggles a display-math block; single-line "$$..$$" math
+    is already handled by strip_inline()."""
+    out, in_fence, in_math = [], False, False
     for raw in text.splitlines():
         s = raw.strip()
         if s.startswith("```") or s.startswith("~~~"):
             in_fence = not in_fence
             continue
-        if not in_fence:
+        if s == "$$":
+            in_math = not in_math
+            continue
+        if not (in_fence or in_math):
             out.append(raw)
     return "\n".join(out)
 

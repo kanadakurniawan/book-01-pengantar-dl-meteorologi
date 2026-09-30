@@ -11,7 +11,11 @@
     "cek": "python scripts/cek-kualitas.py",
     "cek:bahasa": "python scripts/cek-bahasa-asing.py",
     "cek:terminologi": "python scripts/cek-terminologie.py",
-    "cek:dash": "python scripts/cek-dash-prosa.py"
+    "cek:dash": "python scripts/cek-dash-prosa.py",
+    "slide": "python scripts/build-slide.py",
+    "slide:build": "python scripts/build-slide.py",
+    "slide:tema": "python scripts/buat-tema-slide.py",
+    "slide:cek": "python scripts/cek-slide.py"
   },
   "description": "Buku 'Pengantar Deep Learning untuk Meteorologi' — manuscript, release, dan sinkronisasi ke blog."
 }

@@ -115,7 +115,7 @@
 | 2 | ✅ | ✅ | ✅ | ✅ | ⚠️ | Belum (build & DOI) |
 | 3 |   |   |   |   |   |                 |
 | 4 |   |   |   |   |   |                 |
-| 5 |   |   |   |   |   |                 |
+| 5 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Belum (D uji Colab; E build & DOI) |
 | 6 |   |   |   |   |   |                 |
 | 7 |   |   |   |   |   |                 |
 | 8 |   |   |   |   |   |                 |
@@ -174,3 +174,36 @@
   disarankan sebelum rilis karena log/GPU Colab dapat sedikit berbeda. Cadangan notebook
   sebelum uji: `C:\Users\Hi\AppData\Local\Temp\kilo\ch-02-01_backup.ipynb`.
 - **E (build & output):** ⚠️ Belum diuji `node build/generate.mjs`; `bookDOI` placeholder.
+
+### Catatan Evaluasi Bab 5 (28 Sep 2026 — setelah perbaikan)
+
+- **A (isi & keilmuan):** ✅ Ketiga cek otomatis bersih (bahasa-asing, terminologie,
+  dash-prosa; exit 0). Perbaikan terpasang: miring istilah asing disamakan dengan seluruh
+  buku (`*baseline*`, `*persistence*`, `*walk-forward*`, `*learning curve*`, `*dropout*`,
+  `*threshold*`, `*leakage*`, `*overfit*`/`*underfit*`, `*k-fold*`, `*cross-validation*`,
+  `*trade-off*`, `*range*`, `*run*`, `*seed*`, dst. di prosa, judul, dan caption); di §5.5
+  "variant" → "varian" dan "mantenir" → "pertahankan"; "latihan benarnya" → "latihan
+  sebenarnya". Angka contoh terverifikasi benar (MAE 1.33, RMSE ≈1.41, R² 0.97, Willmott d
+  ≈0.99, KGE klimatologi = 1−√2 ≈ −0.41, Tabel 5.4 akurasi/POD/FAR/CSI cocok); disclaimer
+  materi pengenalan ada; klaim disitasi.
+- **B (struktur & konsistensi):** ✅ Volume isi ±3.125 kata (target 3.000–4.500). Prasyarat
+  Bab 2/3/4 benar (terverifikasi: §2.7 *leakage*, §4.6 *callback*, §4.7 *learning curve*).
+  Tujuan Pembelajaran 4 butir selaras dengan 9 latihan. Penomoran persamaan (5.1), kode
+  (5.1–5.3), tabel (5.1–5.5), gambar (5.1) utuh. Belum ada penutup "Koneksi ke Bab
+  Berikutnya" (opsional, sama seperti Bab 2).
+- **C (sitasi):** ✅ [1]–[8] urut incremental; semua ada di `refs.bib` dan daftar pustaka.
+  Perbaikan terpasang: sitasi Willmott 2012 [7] dikoreksi menjadi vol. 32, no. 13, pp.
+  2088–2094 dengan DOI 10.1002/joc.2419 (sebelumnya vol. 32, no. 6, pp. 573–580) — disamakan
+  di `master.md` [7], `refs.bib`, daftar pustaka no. 16, dan `REGISTER.md`. DOI Gupta
+  (10.1016/j.jhydrol.2009.08.003) dan buku Jolliffe (10.1002/9781119960003) terverifikasi
+  valid. Dilengkapi: ISBN 978-0-262-03561-3 untuk [3] Deep Learning, tanggal akses untuk [4]
+  arXiv. Catatan: arXiv:1207.0580 bukan versi JMLR 2014 [5] (itu paper workshop 2012), jadi
+  tidak dicantumkan; [5] JMLR open access tanpa DOI dibiarkan.
+- **D (kode & reproduksibilitas):** ⚠️ Notebook `ch-05-04_metrik_walkforward.ipynb` (17 sel)
+  lengkap: seed 42, versi TensorFlow dicetak, data sintetik mandiri (tanpa unduhan), fungsi
+  MAE/RMSE/R²/KGE/Willmott/POD/FAR/CSI, walk-forward + early stopping + perbandingan
+  learning curve dengan/tanpa regularisasi. Uji eksekusi dari awal–akhir TIDAK dapat
+  dilakukan di mesin ini (TensorFlow diblokir kebijakan mesin: DLL load failed, Application
+  Control policy); wajib diuji di Colab sebelum rilis.
+- **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh Pandoc+LaTeX
+  di mesin rilis); `bookDOI` masih placeholder `10.5281/zenodo.0000000`.

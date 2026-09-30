@@ -55,6 +55,7 @@ sitasi — versi baru naik di Zenodo, concept DOI tetap sama.
 ```
 01-pengantar-dl-meteorologi/
 ├── outline.md               # OUTLINE: rencana & detil isi 10 bab (sumber perencanaan)
+├── KETENTUAN-PENULISAN.md   # KETENTUAN: konsolidasi seluruh ketentuan penulisan buku
 ├── front-matter/
 │   ├── 00-halaman-judul.md   # Halaman judul (judul, edisi, penulis, DOI)
 │   ├── 01-hak-cipta-lisensi.md # Hak cipta & lisensi (imprint)
@@ -77,6 +78,9 @@ sitasi — versi baru naik di Zenodo, concept DOI tetap sama.
 │   ├── 05-tentang-penulis.md
 │   └── 06-kolofon.md
 ├── notebooks/               # notebook Colab (nama berawalan bab: ch-01-*.ipynb)
+├── slides/                  # deck PPT per bab (sumber di slides/ch-NN/slides.md)
+│   ├── theme/tokens.json    # sumber tunggal desain (warna, font, ukuran)
+│   └── _template/slides.md  # kerangka deck, salin ke ch-NN/
 ├── releases/
 │   └── v2.0.0/              # snapshot tiap rilis (PDF+DOCX) → untuk Zenodo
 ├── preview/                 # preview build (1 PDF, selalu diganti, bukan rilis)
@@ -131,6 +135,21 @@ Tanpa lolos Fase 2, tidak ada publikasi (Zenodo/ISBN/GitHub publik/blog).
    `bookDOI` di semua bab.
 3. Buat ISBN, buka repo publik, buat GitHub release.
 4. Posting blog per bab (2 artikel/bulan) via `node build/sync-to-blog.mjs`.
+
+## Slide Presentasi per Bab
+
+Setiap bab punya deck di `slides/ch-NN/slides.md`. Slide diturunkan dari `master.md`
+(gambar, kode, istilah, sitasi tetap satu sumber) dan memakai satu tema brand dari
+`slides/theme/tokens.json`. Aturan lengkap: `PANDUAN-PPT.md`.
+
+```
+npm run slide:tema     # bangkitkan tema (pptx + css) dari tokens.json
+npm run slide:build    # render semua deck (pptx + html) lalu jalankan cek
+npm run slide:cek      # pengaman konsistensi saja
+```
+
+Hasil render masuk `slides/build/` (tidak di-commit). Prasyarat: **pandoc** dan
+**python-pptx**.
 
 ## Prasyarat
 

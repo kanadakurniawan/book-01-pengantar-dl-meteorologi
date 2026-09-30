@@ -73,7 +73,9 @@
 
 | Jenis | Nomor | Caption / isi | File | Dirujuk di § |
 |---|---|---|---|---|
-| Gambar | Gambar 4.1 | Contoh learning curve (train turun, val naik → overfit) | `figures/fig-4-1-learning-curve.png` | §4.7 |
+| Gambar | Gambar 4.1 | Gradien sebagai kemiringan loss; langkah gradient descent | `figures/fig-4-1-gradien.png` | §4.1 |
+| Gambar | Gambar 4.2 | Permukaan loss landscape (minimum global, lokal, saddle) | `figures/fig-4-2-landscape.png` | §4.1 |
+| Gambar | Gambar 4.3 | Contoh learning curve (train turun, val naik → overfit) | `figures/fig-4-3-learning-curve.png` | §4.7 |
 | Tabel | Tabel 4.1 | Perbandingan fungsi aktivasi dari sisi gradien | — | §4.3 |
 | Tabel | Tabel 4.2 | SGD vs Adam | — | §4.4 |
 | Persamaan | (4.1) | $w \leftarrow w - \eta \frac{\partial L}{\partial w}$ | — | §4.1 |
@@ -254,7 +256,7 @@
 | [4] | `loshchilov2019decoupled` | Artikel (ICLR) | arXiv:1711.05101 | ✅ |
 | [5] | `srivastava2014dropout` | Artikel (JMLR) | (JMLR) | ✅ |
 | [6] | `willmott1981validation` | Artikel (Phys. Geogr.) | (v2 n2, 1981) | ✅ |
-| [7] | `willmott2012refined` | Artikel (Int. J. Climatol.) | (v32 n6, 2012) | ✅ |
+| [7] | `willmott2012refined` | Artikel (Int. J. Climatol.) | (v32 n13, 2012, DOI 10.1002/joc.2419) | ✅ |
 | [8] | `gupta2009decomposition` | Artikel (J. Hydrol) | 10.1016/j.jhydrol.2009.08.003 | ✅ |
 
 ### Bab 6 — Data Meteorologi
