@@ -1,6 +1,6 @@
 ---
 title: "Backpropagation, Optimasi dan Pelatihan"
-description: "Bab 4 - memahami bagaimana neural network belajar: intuisi gradient descent dan backpropagation, fungsi aktivasi dari sisi gradien (vanishing gradient), learning rate dan scheduler, SGD vs Adam, dan callback untuk pelatihan yang sehat."
+description: "Bab 4 - memahami bagaimana neural network belajar: intuisi gradient descent dan backpropagation, fungsi aktivasi dari sisi gradien (vanishing gradient), learning rate dan scheduler, SGD dan Adam, dan callback untuk pelatihan yang sehat."
 pubDate: 2026-09-01
 categories: ["Deep Learning", "Meteorologi"]
 tags: ["backpropagation", "gradient descent", "optimasi", "learning rate", "adam", "callback", "early stopping"]
@@ -22,7 +22,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Menjelaskan** mekanisme *gradient descent* dan *backpropagation* (aturan rantai) secara intuitif.
-2. **Menganalisis** peran fungsi aktivasi dari sisi gradien (ReLU vs sigmoid/tanh) dan mengenali *vanishing gradient*.
+2. **Menganalisis** peran fungsi aktivasi dari sisi gradien (ReLU dan sigmoid/tanh) dan mengenali *vanishing gradient*.
 3. **Menerapkan** *tuning hyperparameter* (*learning rate*, *batch size*, *epochs*) dan *callback* (*early stopping*, ModelCheckpoint, ReduceLROnPlateau).
 4. **Membaca** *learning curve* untuk mendiagnosis *underfit*/*overfit* sebagai transisi ke Bab 5.
 
@@ -40,7 +40,7 @@ $$
 w \leftarrow w - \eta \frac{\partial L}{\partial w} \tag{4.1}
 $$
 
-Persamaan (4.1) menyatakan: bobot baru = bobot lama dikurangi `η` (*learning rate*) dikali gradien. Catatan notasi: `∂` (turunan parsial) digunakan karena *loss* bergantung pada banyak bobot, sedangkan untuk satu bobot konsepnya sama dengan `dL/dw` di atas. *Learning rate* `η` mengontrol besar langkah: terlalu besar → melompat melewati minimum, sedangkan terlalu kecil → lambat.
+Persamaan 4.1 menyatakan: bobot baru = bobot lama dikurangi `η` (*learning rate*) dikali gradien. Catatan notasi: `∂` (turunan parsial) digunakan karena *loss* bergantung pada banyak bobot, sedangkan untuk satu bobot konsepnya sama dengan `dL/dw` di atas. *Learning rate* `η` mengontrol besar langkah: terlalu besar → melompat melewati minimum, sedangkan terlalu kecil → lambat.
 
 Mengapa kita selalu ingin menuju minimum? Karena *loss* mengukur seberapa jauh prediksi model dari nilai sebenarnya: makin kecil *loss*, makin dekat prediksi ke kenyataan. Karena itu, **tujuan pelatihan** adalah menemukan bobot yang memberi *loss* sekecil mungkin. Bergerak ke minimum adalah cara mencapainya.
 
@@ -54,11 +54,11 @@ Bayangkan Anda berdiri di atas gunung berkabut (ruang bobot) dan ingin turun ke 
 
 ### Tiga varian *gradient descent*
 
-Berdasarkan berapa banyak data yang digunakan untuk satu langkah update:
+Satu langkah *gradient descent* (Gambar 4.1) dapat dihitung dengan tiga cara, bergantung pada berapa banyak data yang digunakan per update:
 
 - ***Batch gradient descent*** - gunakan seluruh *training set* per langkah. Akurat, tetapi sangat lambat untuk data besar.
 - ***Stochastic gradient descent (SGD)*** - gunakan *satu sampel* per langkah. Cepat, tetapi sangat berisik (tiap sampel bisa "menarik" ke arah berbeda).
-- ***Mini-batch gradient descent*** - gunakan subkelompok kecil (misal 32 sampel) per langkah. **Kompromi terbaik dan yang standar digunakan** termasuk oleh Keras.
+- ***Mini-batch gradient descent*** - gunakan subkelompok kecil (misal 32 sampel) per langkah. **Kompromi yang standar digunakan** termasuk oleh Keras.
 
 Istilah "SGD" di Keras/PyTorch sebenarnya merujuk pada varian *mini-batch*: kerangka yang sama, *batch* kecil. Konsistensi di seluruh buku: kita menyebutnya ***batch size*** untuk jumlah sampel per langkah.
 
@@ -73,7 +73,7 @@ Untuk satu bobot, loss `L(w)` berupa kurva, sedangkan untuk dua bobot, berupa pe
 
 **Gambar 4.2**: Permukaan *loss landscape* untuk dua bobot: dua lembah (minimum global dan minimum lokal) dipisahkan *saddle point*. Bidang hijau adalah bidang bobot.
 
-Kabar baiknya: di ruang berdimensi tinggi (model besar, banyak parameter), minimum lokal "tidak selalu buruk". Banyak di antaranya memberi galat yang hampir sama dengan minimum global sebenarnya [1]. Catatan: temuan ini terutama berlaku untuk model besar. Pada model kecil (dimensi rendah), minimum lokal yang buruk lebih sering muncul. Untuk masalah-masalah di buku ini (model kecil, data cukup), algoritma hampir selalu menemukan solusi yang layak. Yang lebih menentukan adalah kualitas data dan fitur, bukan terjebak di satu minimum.
+Minimum lokal dan *saddle point* tampak pada permukaan *loss* dua bobot di Gambar 4.2. Kabar baiknya: di ruang berdimensi tinggi (model besar, banyak parameter), minimum lokal "tidak selalu buruk". Banyak di antaranya memberi galat yang hampir sama dengan minimum global sebenarnya [1]. Catatan: temuan ini terutama berlaku untuk model besar. Pada model kecil (dimensi rendah), minimum lokal yang buruk lebih sering muncul. Untuk masalah-masalah di buku ini (model kecil, data cukup), algoritma hampir selalu menemukan solusi yang layak. Yang lebih menentukan adalah kualitas data dan fitur, bukan terjebak di satu minimum.
 
 ## 4.2 *Backpropagation*: Aturan Rantai untuk Seluruh Jaringan
 
@@ -85,7 +85,7 @@ $$
 \frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \frac{\partial z}{\partial w} \tag{4.2}
 $$
 
-Persamaan (4.2) adalah inti *backpropagation*: galat di lapisan keluaran "dipropagasikan mundur" (*backward*) melalui turunan berantai, memberitahu tiap lapisan seberapa besar sumbangannya terhadap galat akhir. Nama *backpropagation* merujuk pada alur propagasi mundur ini.
+Persamaan 4.2 adalah inti *backpropagation*: galat di lapisan keluaran "dipropagasikan mundur" (*backward*) melalui turunan berantai, memberitahu tiap lapisan seberapa besar sumbangannya terhadap galat akhir. Nama *backpropagation* merujuk pada alur propagasi mundur ini.
 
 **Kode 4.1 - Langkah pelatihan manual dengan `GradientTape`. Dalam praktik, *backpropagation* ditangani `model.fit`.**
 
@@ -158,11 +158,11 @@ $$
 \sigma'(z) = \sigma(z) \cdot (1 - \sigma(z)) \tag{4.3}
 $$
 
-Persamaan (4.3) punya sifat penting: `σ'(z)` **selalu < 1**, dan mendekati 0 ketika `z` jauh dari 0. Akibatnya, dalam jaringan yang dalam, perkalian berantai dari gradien kecil "menguap", sehingga lapisan dekat masukan nyaris tidak belajar. Ini disebut ***vanishing gradient***.
+Persamaan 4.3 punya sifat penting: `σ'(z)` **selalu < 1**, dan mendekati 0 ketika `z` jauh dari 0. Akibatnya, dalam jaringan yang dalam, perkalian berantai dari gradien kecil "menguap", sehingga lapisan dekat masukan nyaris tidak belajar. Ini disebut ***vanishing gradient***.
 
 Ilustrasinya: jika tiap lapisan mengalikan gradien dengan (misal) 0.2, setelah 10 lapisan faktornya `0.2^10 ≈ 1e-7`, praktis nol.
 
-Perbandingan fungsi aktivasi:
+Perbandingan fungsi aktivasi dari sisi gradien dirangkum di Tabel 4.1:
 
 **Tabel 4.1**: Perbandingan fungsi aktivasi dari sisi gradien.
 
@@ -181,22 +181,22 @@ ReLU unggul karena turunannya `1` untuk `z > 0`, sehingga gradien tidak menyusut
 
 ### Inisialisasi bobot (Xavier/He)
 
-Satu pertahanan praktis terhadap *vanishing*/*exploding gradient* (selain ReLU) adalah **inisialisasi** bobot yang baik. Dua metode yang paling umum:
+Satu pertahanan praktis terhadap *vanishing*/*exploding gradient* (selain ReLU) adalah **inisialisasi** bobot yang baik. Dua metode yang umum:
 
 - **Xavier/Glorot** - menskalakan nilai awal berdasarkan jumlah neuron yang masuk dan keluar dari lapisan, sehingga varians sinyal tetap terjaga. Direkomendasikan untuk sigmoid/tanh. Di Keras: `kernel_initializer="glorot_uniform"`.
 - **He** - disesuaikan untuk ReLU, agar varians tetap terjaga di paruh positif. Di Keras: `kernel_initializer="he_normal"`.
 
 Di Keras, inisialisasi yang baik sudah menjadi bawaan `Dense` (itulah sebabnya terasa "langsung jalan"), tetapi Anda bisa memilihnya secara eksplisit lewat `kernel_initializer`. Inisialisasi yang buruk (misal semua bobot nol atau sangat besar) memperparah *vanishing/exploding gradient*. Ini relevan untuk model yang lebih dalam dan LSTM (Bab 7).
 
-### Tanh vs sigmoid
+### Tanh dan sigmoid
 
-Turunan `tanh` maksimal 1 (tepat di `z=0`, yaitu `tanh'(0)=1`) (vs sigmoid 0.25), sehingga gradien tidak menyusut secepat sigmoid. Namun maksimal 1 hanya berlaku di `z=0`. Untuk `|z|` lebih besar, turunan mendekati 0 (saturasi). Karena itu, di jaringan dalam "penguapan" tetap terjadi, hanya lebih lambat. Inilah mengapa ReLU (turunan 1) menjadi pilihan bawaan untuk lapisan tersembunyi di jaringan modern. Titik ini penting saat kita membandingkan arsitektur dan fungsi aktivasi di Bab 7.
+Turunan `tanh` maksimal 1 (tepat di `z=0`, yaitu `tanh'(0)=1`) (dibandingkan dengan sigmoid 0.25), sehingga gradien tidak menyusut secepat sigmoid. Namun maksimal 1 hanya berlaku di `z=0`. Untuk `|z|` lebih besar, turunan mendekati 0 (saturasi). Karena itu, di jaringan dalam "penguapan" tetap terjadi, hanya lebih lambat. Inilah mengapa ReLU (turunan 1) menjadi pilihan bawaan untuk lapisan tersembunyi di jaringan modern. Titik ini penting saat kita membandingkan arsitektur dan fungsi aktivasi di Bab 7.
 
 ### Kenapa sigmoid masih digunakan di keluaran?
 
 Di Bab 3, lapisan keluaran menggunakan sigmoid (biner) / softmax (multi-kelas). Mengapa tidak ReLU? Karena kita **ingin** keluaran berupa probabilitas di rentang (0,1), dan cross-entropy + sigmoid "cocok" dari sisi gradien (lihat Bab 3 §3.4). Kesimpulannya: ReLU di **lapisan tersembunyi** (biarkan gradien mengalir), sigmoid/softmax di **lapisan keluaran** (untuk probabilitas). Dua peran berbeda, dan kini Anda paham alasannya.
 
-## 4.4 Optimizer: SGD vs Adam
+## 4.4 Optimizer: SGD dan Adam
 
 **SGD** (*stochastic gradient descent*) adalah *gradient descent* dasar: perbarui bobot menggunakan gradien dari satu *batch* kecil data (stochastic).
 
@@ -205,13 +205,13 @@ Di Bab 3, lapisan keluaran menggunakan sigmoid (biner) / softmax (multi-kelas). 
 - Menghitung rata-rata gradien (momentum) sehingga langkah lebih halus.
 - Menyesuaikan *learning rate* per-parameter berdasarkan riwayat gradien.
 
-Adam diperkenalkan oleh Kingma & Ba (2015) [4]. Praktik umum: **mulai dengan Adam**, karena bekerja baik pada banyak masalah tanpa *tuning* yang banyak. SGD kadang memberi hasil akhir sedikit lebih baik bila disetel dengan hati-hati [5], tetapi menuntut usaha lebih. Catatan: di sebagian domain (terutama *computer vision*), SGD yang disetel baik (+ momentum) bisa menggeneralisasi lebih baik dari Adam, sedangkan pada data tabular/meteorologi, selisihnya biasanya kecil. Untuk buku ini, Adam adalah pilihan bawaan (seperti yang sudah digunakan di Bab 2-3).
+Adam diperkenalkan oleh Kingma & Ba (2015) [4]. Praktik umum: **mulai dengan Adam**, karena bekerja baik pada banyak masalah tanpa *tuning* yang banyak. SGD kadang memberi hasil akhir sedikit lebih baik bila disetel dengan hati-hati [5], tetapi menuntut usaha lebih. Catatan: di sebagian domain (terutama *computer vision*), SGD yang disetel baik (+ momentum) bisa menggeneralisasi lebih baik dari Adam, sedangkan pada data tabular/meteorologi, selisihnya biasanya kecil. Untuk buku ini, Adam adalah pilihan bawaan (seperti yang sudah digunakan di Bab 2-3). Perbandingan ringkasnya di Tabel 4.2.
 
 **Tabel 4.2**: Perbandingan SGD dan Adam untuk pemula.
 
 | Aspek                 | SGD                                     | Adam                           |
 | --------------------- | --------------------------------------- | ------------------------------ |
-| *Learning rate*       | Perlu di-tuning hati-hati               | Lebih toleran (default ~0.001) |
+| *Learning rate*       | Perlu di-tuning hati-hati               | Lebih toleran (default ≈0.001) |
 | Momentum              | Tidak otomatis (varian SGD+Momentum)    | Otomatis                       |
 | Kecepatan konvergensi | Lambat                                  | Cepat                          |
 | Kapan digunakan         | Sesudah berpengalaman / model sederhana | Default semua bab              |
@@ -236,7 +236,7 @@ Tiga *hyperparameter* utama yang menentukan perilaku pelatihan:
 | *Batch size*    | 32                  | Data sangat besar, mau cepat | Memori kurang / mau stabilitas  |
 | *Epochs*        | 100 + EarlyStopping | Kurva masih turun tajam      | Val naik (*overfit*)            |
 
-### Efisiensi: kapan mempertimbangkan GPU vs CPU
+### Efisiensi: kapan mempertimbangkan GPU atau CPU
 
 Di Colab, GPU mempercepat terutama untuk **matriks besar** (model besar, *batch* besar, banyak data). Untuk masalah kecil di Bab 2-4, selisihnya kecil. Bahkan Colab menyediakannya gratis (Bab 1). Tips praktis:
 
@@ -276,7 +276,7 @@ Kode 4.2 menggunakan `Adam(learning_rate=0.001)` eksplisit (nilai *default*), da
 
 ## 4.6 *Callback*: Mengotomatiskan Keputusan
 
-*Callbacks* adalah "fungsi yang dipanggil selama pelatihan" oleh Keras. Tiga yang paling berguna:
+*Callbacks* adalah "fungsi yang dipanggil selama pelatihan" oleh Keras. Tiga yang berguna:
 
 - **EarlyStopping** - hentikan pelatihan jika metrik validasi tidak membaik selama `patience` *epoch* (mencegah *overfit* dan menghemat waktu).
 - **ModelCheckpoint** - simpan bobot terbaik (misal berdasarkan `val_loss`) ke file, agar tidak kehilangan model terbaik saat *overfit*.
@@ -320,7 +320,7 @@ def lr_schedule(epoch):
 callbacks.append(tf.keras.callbacks.LearningRateScheduler(lr_schedule))
 ```
 
-*Scheduler* "keras kepala" seperti ini berguna saat Anda sudah tahu tepat jadwal penurunan learning rate yang diinginkan (misal setengah tiap 30 epoch). Sedangkan `ReduceLROnPlateau` lebih adaptif karena menunggu metrik berhenti membaik dulu, baru menurunkan *learning rate*. Keduanya wajar digunakan di dunia nyata.
+*Scheduler* "keras kepala" seperti pada Kode 4.4 berguna saat Anda sudah tahu tepat jadwal penurunan learning rate yang diinginkan (misal setengah tiap 30 epoch). Sedangkan `ReduceLROnPlateau` lebih adaptif karena menunggu metrik berhenti membaik dulu, baru menurunkan *learning rate*. Keduanya wajar digunakan di dunia nyata.
 
 ## 4.7 Membaca *Learning Curve*
 
@@ -395,7 +395,7 @@ Analisis galat adalah bagian yang sering dilupakan pemula: setelah model pertama
 
 **Apakah *backpropagation* perlu saya implementasikan manual?** Untuk menggunakan buku ini, tidak. `model.fit` menanganinya. Memahami mekanismenya (Kode 4.1) membantu saat *debugging* dan membaca literatur, misalnya memahami mengapa *gradient flow* penting di Bab 7.
 
-**Yang paling sering salah pemula?** Mengubah banyak hal sekaligus tanpa memantau kurva. Ubah satu variabel, amati efeknya, catat. Itu disiplin yang akan digunakan ulang di Bab 5 (tuning regularisasi) dan Bab 8-9 (eksperimen kasus).
+**Yang sering salah dilakukan pemula?** Mengubah banyak hal sekaligus tanpa memantau kurva. Ubah satu variabel, amati efeknya, catat. Itu disiplin yang akan digunakan ulang di Bab 5 (tuning regularisasi) dan Bab 8-9 (eksperimen kasus).
 
 ## 4.10 Latihan
 
@@ -409,9 +409,9 @@ Analisis galat adalah bagian yang sering dilupakan pemula: setelah model pertama
 **Latihan praktik (notebook `ch-04-03_optimasi_callbacks.ipynb`)**
 
 1. Pada kasus regresi Bab 2, coba *learning rate* `[0.01, 0.001, 0.0001]` dan catat kurva loss-nya. Yang mana konvergen? Yang mana macet/melonjak?
-2. Bandingkan `batch_size` 16 vs 256. Amati perbedaan "berisik" kurva train.
+2. Bandingkan `batch_size` 16 dan 256. Amati perbedaan "berisik" kurva train.
 3. Terapkan EarlyStopping dan ModelCheckpoint, lalu bandingkan *epoch* berhenti dengan tanpa *callback*.
-4. Plot learning curve train vs val dan tandai titik *overfit* (jika ada).
+4. Plot learning curve train dan val dan tandai titik *overfit* (jika ada).
 5. Ganti aktivasi lapisan tersembunyi menjadi `tanh`, lalu bandingkan konvergensinya dengan ReLU.
 
 ## Ringkasan

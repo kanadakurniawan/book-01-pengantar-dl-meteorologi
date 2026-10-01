@@ -16,8 +16,9 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Dataset | Penyedia | Cakupan | Lisensi & akses | Dipakai di |
 |---|---|---|---|---|
 | GHCN-Daily (stasiun global) | NOAA NCEI (`ncei.noaa.gov/pub/data/ghcn/daily`) | Global, termasuk 17+ stasiun Indonesia | Domain publik AS; atribusi Menne et al. (2012) | Bab 6 |
-| ERA5 global reanalysis | Copernicus C3S (`cds.climate.copernicus.eu`) | Global, 1940–sekarang, harian/jam-an | Lisensi terbuka (setara CC-BY 4.0); atribusi wajib "Copernicus Climate Change Service (C3S)". Akses via API `cdsapi`. | Bab 6, 9 |
+| ERA5 global reanalysis | Copernicus C3S (`cds.climate.copernicus.eu`) | Global, 1940–sekarang, harian/jam-an | Lisensi terbuka (setara CC-BY 4.0); atribusi wajib "Copernicus Climate Change Service (C3S)". Akses via API `cdsapi`. Varian **ERA5-Land** (0.1°, ≈9 km) cocok untuk studi skala lokal. | Bab 6, 9 |
 | CHIRPS (precipitation) | UC Santa Barbara / USGS (`chc.ucsb.edu`) | Global, ≥1981, harian | Domain publik (hak cipta dilepaskan); atribusi dianjurkan (kutip Funk et al. 2015); DOI: 10.1038/sdata.2015.66 | Bab 6, 9 |
+| GSMaP (hujan satelit) | JAXA (`sharaku.eorc.jaxa.jp`) | Global, 0.1°, 3 jam–harian | Gratis untuk riset; atribusi paper pembuat (Okamoto et al. 2005) | Bab 6 |
 | Indeks MJO (RMM) | Bureau of Meteorology (BoM), Australia & NOAA | Global, ≥1974 | Publik, gratis dengan atribusi Wheeler & Hendon (2004) | Bab 6, 9 |
 | Indeks ENSO: MEI & Nino3.4 | NOAA (`psl.noaa.gov`) | Global, ≥1950-an | Publik, gratis; atribusi Wolter & Timlin (1993) dan NOAA PSL | Bab 6, 9 |
 
@@ -28,10 +29,10 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Sea Level Station Monitoring Facility | UNESCO/IOC (`ioc-sealevelmonitoring.org`) | Real-time/near-real-time, termasuk 24 stasiun Indonesia | Gratis riset/pendidikan; **CC BY-NC 4.0 (non-komersial)** — tidak untuk penggunaan komersial, dan data turunan tetap non-komersial; atribusi "UNESCO/IOC". Endpoint: `bgraph.php?code=<KODE>&period=<HARI>` | Bab 8 |
 | PSMSL (MSL bulanan) | Permanent Service for Mean Sea Level (`psmsl.org`) | Global, puluhan tahun | Gratis dengan sitasi Holgate et al. (2013); format RLR/Metric | Bab 2*, 8 |
 | UHSLC Research Quality | Univ. of Hawaii Sea Level Center (`uhslc.soest.hawaii.edu`) | Hourly/daily research quality | Gratis riset/pendidikan; atribusi UHSLC/NOAA | Bab 8 |
-| Peta pasut & data pasang BIG | Badan Informasi Geospasial (`tides.big.go.id`) | Indonesia | Publik; atribusi BIG | Bab 2*, 6, 8 |
+| Prediksi pasang surut BMKG | BMKG (`maritim.bmkg.go.id/cuaca/pasut`) | Indonesia, per stasiun | Publik; gratis; atribusi BMKG | Bab 2*, 6, 8 |
 
 \* Bab 2 memakai data pasang surut contoh; keterangan sumber di bab tersebut
-mengacu pada BIG (`tides.big.go.id`).
+mengacu pada BMKG (`maritim.bmkg.go.id/cuaca/pasut`).
 
 ## Data Studi Kasus Buku (sampel & skrip)
 

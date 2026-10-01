@@ -20,12 +20,12 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 - **Bab 1. Pengantar: Deep Learning untuk Meteorologi**
   - Posisi AI, *machine learning*, dan *deep learning*
   - Peta aplikasi meteorologi yang dibahas buku ini
-  - Kapan *deep learning* layak dipakai (vs *baseline* statistik)
+  - Kapan *deep learning* layak dipakai (dibandingkan *baseline* statistik)
   - Menyiapkan Google Colab + TensorFlow, dan tensor pertama
 - **Bab 2. Regresi: Perceptron dan Jaringan Saraf untuk Prediksi Besaran**
   - Anatomi neuron: bobot, bias, fungsi aktivasi
   - Dari regresi linear ke MLP; kapan non-linearitas diperlukan
-  - Mini-kasus pasang surut: *windowing*, *baseline persistence*, MAE vs MSE
+  - Mini-kasus pasang surut: *windowing*, *baseline persistence*, MAE dan MSE
   - Split data deret waktu yang mencegah *leakage*
 - **Bab 3. Klasifikasi: Mengenali Kategori Fenomena Cuaca**
   - Sigmoid/softmax dan cross-entropy
@@ -35,7 +35,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 - **Bab 4. Backpropagation, Optimasi dan Pelatihan**
   - Intuisi *gradient descent* dan *backpropagation* (aturan rantai)
   - Fungsi aktivasi ditinjau dari gradien; *vanishing gradient*
-  - *Learning rate*, *batch size*, *epoch*; SGD vs Adam
+  - *Learning rate*, *batch size*, *epoch*; SGD dan Adam
   - Callback: *early stopping*, ModelCheckpoint, ReduceLROnPlateau
 - **Bab 5. Overfitting, Regularisasi dan Evaluasi untuk Data Iklim**
   - Bias-variance, underfit/overfit, *learning curve*
@@ -50,7 +50,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
   - Format CSV/NetCDF/GRIB; nilai hilang, *outlier*, imputasi dasar
   - Eksplorasi: dekomposisi musiman, distribusi, korelasi silang
   - Feature engineering: lag, musiman, ENSO/MJO
-  - Normalisasi (fit hanya pada *train*) dan split berbasis waktu
+  - Normalisasi dan standardisasi (fit hanya pada *train*) serta split berbasis waktu
 - **Bab 7. Deret Waktu dan Model Sekuensial: RNN, LSTM, GRU**
   - *Windowing* dan *horizon*: prediksi satu dan multi-langkah
   - *Baseline* dulu: *persistence*, mean, AR — DL harus mengalahkannya
@@ -62,13 +62,13 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 - **Bab 8. Studi Kasus: Prediksi Pasang Surut di Perairan Indonesia (Contoh Cilacap)**
   - Konteks banjir rob pesisir dan tipe pasang surut Indonesia
   - Memilih stasiun: Cilacap (GLOSS #291) dan sumber data terbuka
-  - Alur kerja (*pipeline*): *baseline* vs MLP vs LSTM/GRU, *walk-forward* 4 blok
-  - Evaluasi MAE/RMSE vs toleransi tinggi pasang; prediksi 1–7 hari
+  - Alur kerja (*pipeline*): *baseline*, MLP, dan LSTM/GRU, *walk-forward* 4 blok
+  - Evaluasi MAE/RMSE terhadap toleransi tinggi pasang; prediksi 1–7 hari
   - Framing jujur: analisis harmonik untuk penjelasan, ML untuk prediksi cepat
 - **Bab 9. Studi Kasus: Prediksi Curah Hujan dengan Data Terbuka**
   - Regresi jumlah hujan + klasifikasi kategori intensitas
   - Verifikasi operasional CSI/FAR/POD dengan *trade-off threshold*
-  - *Walk-forward* vs *baseline* (*persistence*, klimatologi, ARIMA)
+  - *Walk-forward* dibandingkan *baseline* (*persistence*, klimatologi, ARIMA)
   - Interpretasi awal (permutation importance/SHAP) dan verifikasi per kategori
 
 ## Bagian IV — Operasional dan Arah Riset (Bab 10)

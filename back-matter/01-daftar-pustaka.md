@@ -55,23 +55,24 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 33. A. Choromanska, M. Henaff, M. Mathieu, G. B. Arous, and Y. LeCun, "The loss surfaces of multilayer networks," in *Proc. 18th Int. Conf. Artificial Intelligence and Statistics (AISTATS)*, ser. PMLR, vol. 38, 2015, pp. 192–204. (Preprint: arXiv:1412.0233.)
 34. I. Loshchilov and F. Hutter, "Decoupled weight decay regularization," in *Proc. Int. Conf. Learning Representations (ICLR)*, 2019. [Online]. Available: https://arxiv.org/abs/1711.05101 (diakses: September 2026).
 35. K. Wolter and M. S. Timlin, "Monitoring ENSO in COADS with a seasonally adjusted principal component index," in *Proc. 17th Climate Diagnostics Workshop*, Norman, OK, USA, 1993, pp. 52–57.
+36. K. Okamoto et al., "The global satellite mapping of precipitation (GSMaP) project," in *Proc. IEEE Int. Geoscience and Remote Sensing Symp. (IGARSS)*, vol. 5, Seoul, South Korea, 2005, pp. 3414-3416, doi: 10.1109/IGARSS.2005.1526538.
 
 ## 4. Laporan Teknis dan Perangkat Lunak
 
-36. World Meteorological Organization (WMO), "WMO guidelines on the verification of operational forecasts," WMO, Geneva, Switzerland, Tech. Rep. WMO-No. 1214, 2018. [Online]. Available: https://library.wmo.int (diakses: September 2026).
-37. M. Abadi et al., "TensorFlow: Large-scale machine learning on heterogeneous systems," 2016, arXiv:1603.04467 [cs.DC]. [Online]. Available: https://arxiv.org/abs/1603.04467
+37. World Meteorological Organization (WMO), "WMO guidelines on the verification of operational forecasts," WMO, Geneva, Switzerland, Tech. Rep. WMO-No. 1214, 2018. [Online]. Available: https://library.wmo.int (diakses: September 2026).
+38. M. Abadi et al., "TensorFlow: Large-scale machine learning on heterogeneous systems," 2016, arXiv:1603.04467 [cs.DC]. [Online]. Available: https://arxiv.org/abs/1603.04467
+39. World Meteorological Organization (WMO), *Guide to Instruments and Methods of Observation* (WMO-No. 8), 2021 ed. Geneva, Switzerland: WMO, 2021. [Online]. Available: https://community.wmo.int/activity-sites/meteorological-and-hydrological-service-wmo-8 (diakses: September 2026).
 
 ## 5. Dataset dan Sumber Data
 
-38. C. Funk et al., "The climate hazards infrared precipitation with stations (CHIRPS) - a new environmental record for monitoring extremes," *Scientific Data*, vol. 2, 150066, 2015, doi: 10.1038/sdata.2015.66.
-39. Copernicus Climate Change Service (C3S), "ERA5: Fifth generation ECMWF atmospheric reanalysis of the global climate," 2026. [Online]. Available: https://cds.climate.copernicus.eu (diakses: September 2026).
-40. NOAA National Centers for Environmental Information (NCEI), "GHCN-Daily," 2026. [Online]. Available: https://www.ncei.noaa.gov/pub/data/ghcn/daily/ (diakses: September 2026).
-41. Badan Informasi Geospasial (BIG), "Peta pasang surut dan pola pasut perairan Indonesia," 2026. [Online]. Available: https://tides.big.go.id (diakses: September 2026).
-42. Badan Informasi Geospasial (BIG), "Informasi genangan rob dan pola pasut perairan Indonesia," 2026. [Online]. Available: https://tides.big.go.id (diakses: September 2026).
-43. Permanent Service for Mean Sea Level (PSMSL), "Global sea level data," 2026. [Online]. Available: https://psmsl.org (diakses: September 2026).
-44. UNESCO/IOC, "Sea Level Station Monitoring Facility," 2026. [Online]. Available: https://www.ioc-sealevelmonitoring.org (diakses: September 2026).
-45. University of Hawaii Sea Level Center (UHSLC), "Research quality tide gauge data (hourly/daily)," 2026. [Online]. Available: https://uhslc.soest.hawaii.edu/data (diakses: September 2026).
-46. NOAA Physical Sciences Laboratory, "Nino3.4 SST index," 2026. [Online]. Available: https://psl.noaa.gov/data/timeseries/monthly/NINO34 (diakses: September 2026).
+40. C. Funk et al., "The climate hazards infrared precipitation with stations (CHIRPS) - a new environmental record for monitoring extremes," *Scientific Data*, vol. 2, 150066, 2015, doi: 10.1038/sdata.2015.66.
+41. Copernicus Climate Change Service (C3S), "ERA5: Fifth generation ECMWF atmospheric reanalysis of the global climate," 2026. [Online]. Available: https://cds.climate.copernicus.eu (diakses: September 2026).
+42. NOAA National Centers for Environmental Information (NCEI), "GHCN-Daily," 2026. [Online]. Available: https://www.ncei.noaa.gov/pub/data/ghcn/daily/ (diakses: September 2026).
+43. Badan Meteorologi, Klimatologi, dan Geofisika (BMKG), "Prakiraan pasang surut," 2026. [Online]. Available: https://maritim.bmkg.go.id/cuaca/pasut (diakses: September 2026).
+44. Permanent Service for Mean Sea Level (PSMSL), "Global sea level data," 2026. [Online]. Available: https://psmsl.org (diakses: September 2026); sitasi dataset: Holgate et al. (2013), doi: 10.2112/JCOASTRES-D-12-00175.1.
+45. Flanders Marine Institute (VLIZ) and UNESCO/IOC, "Sea Level Station Monitoring Facility," 2026. [Online]. Available: https://www.ioc-sealevelmonitoring.org (diakses: September 2026), doi: 10.14284/482.
+46. University of Hawaii Sea Level Center (UHSLC), "Research quality tide gauge data (hourly/daily)," 2026. [Online]. Available: https://uhslc.soest.hawaii.edu/data (diakses: September 2026).
+47. NOAA Physical Sciences Laboratory, "Nino3.4 SST index," 2026. [Online]. Available: https://psl.noaa.gov/data/timeseries/monthly/NINO34 (diakses: September 2026).
 
 ---
 

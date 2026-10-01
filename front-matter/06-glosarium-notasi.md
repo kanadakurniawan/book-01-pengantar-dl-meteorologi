@@ -51,7 +51,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | MAE / RMSE | Metrik galat regresi: *mean absolute error*; *root mean square error* | 2, 5, 8, 9 |
 | R², Willmott, KGE | Metrik kesesuaian regresi | 5 |
 | CSI / FAR / POD / TS | Metrik verifikasi kejadian ekstrem (kategori) | 3, 5, 9 |
-| *Confusion matrix* | Tabel tabulasi prediksi vs aktual untuk klasifikasi | 3, 5 |
+| *Confusion matrix* | Tabel tabulasi prediksi dan aktual untuk klasifikasi | 3, 5 |
 | *Class imbalance* | Ketidakseimbangan jumlah sampel antar-kelas | 3, 5, 9 |
 | *Threshold* | Ambang keputusan (mis. hujan jika probabilitas > 0,5) | 3, 9 |
 | *Drift* | Perubahan distribusi data seiring waktu (atmosfer non-stasioner) | 10 |
@@ -105,7 +105,7 @@ Konvensi notasi di seluruh buku:
 | i.i.d. | *independent and identically distributed* (independen dan berdistribusi identik) |
 | GHCND | *Global Historical Climatology Network - Daily* (NOAA) |
 | CHIRPS | *Climate Hazards Group InfraRed Precipitation with Station data* |
-| BIG | Badan Informasi Geospasial |
+| BMKG | Badan Meteorologi, Klimatologi, dan Geofisika |
 | WMO | *World Meteorological Organization* |
 | ERA5 | Reanalysis global generasi kelima ECMWF |
 | CHIRPS | *Climate Hazards Group InfraRed Precipitation with Station data* |

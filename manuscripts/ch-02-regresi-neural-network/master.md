@@ -1,6 +1,6 @@
 ﻿---
 title: "Regresi: Perceptron dan Jaringan Saraf untuk Prediksi Besaran"
-description: "Bab 2 - membangun model regresi pertama untuk prediksi besaran meteorologi: anatomi neuron (bobot, bias, fungsi aktivasi), regresi linear sebagai kasus khusus, kebutuhan non-linearitas (ReLU), mini-kasus pasang surut, perbandingan MAE vs MSE, dan alasan split berbasis waktu."
+description: "Bab 2 - membangun model regresi pertama untuk prediksi besaran meteorologi: anatomi neuron (bobot, bias, fungsi aktivasi), regresi linear sebagai kasus khusus, kebutuhan non-linearitas (ReLU), mini-kasus pasang surut, perbandingan MAE dan MSE, dan alasan split berbasis waktu."
 pubDate: 2026-09-01
 categories: ["*Deep Learning*", "*Meteorologi*"]
 tags: ["regresi", "*neural network*", "perceptron", "fungsi aktivasi", "ReLU", "*time series*"]
@@ -21,7 +21,7 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Membangun** model regresi *neural network* (*perceptron*/MLP) untuk prediksi besaran meteorologi dengan TensorFlow/Keras.
 2. **Menjelaskan** peran bobot, bias, dan fungsi aktivasi (termasuk ReLU) serta kapan non-linearitas diperlukan.
-3. **Menerapkan** mini-kasus pasang surut: *windowing*, *baseline* *persistence*, dan perbandingan MAE antara model *neural* vs *baseline*.
+3. **Menerapkan** mini-kasus pasang surut: *windowing*, *baseline* *persistence*, dan perbandingan MAE antara model *neural* dan *baseline*.
 4. **Memilih** antara MAE dan MSE berdasarkan sifat data dan tujuan, serta membagi data deret waktu secara kronologis yang mencegah *leakage*.
 
 ## 2.1 Prediksi Besaran Sebagai Masalah Regresi
@@ -70,13 +70,13 @@ $$
 
 Bobot `w` mencerminkan **seberapa penting** tiap masukan, sedangkan bias `b` adalah "ambang" yang memungkinkan neuron aktif bahkan ketika semua masukan nol. Keduanya adalah **parameter**: istilah untuk seluruh angka dalam model yang nilainya dipelajari dari data selama pelatihan, bukan ditetapkan manusia. Saat awal, nilainya acak kecil. Melalui ribuan contoh, model menyesuaikan bobot agar prediksinya semakin akurat.
 
-Contoh paling sederhana adalah *perceptron* yang diperkenalkan Rosenblatt pada 1958 [1]: neuron dengan fungsi aktivasi berbentuk aturan, misalnya `a = 1` jika `z > 0`, dan `a = 0` sebaliknya. Perceptron penting karena menunjukkan bahwa mesin bisa belajar, tetapi terbatas pada masalah yang *linearly separable*. Dalam bab ini kita menggunakan versi modern: neuron **tanpa aktivasi di lapisan keluaran** untuk regresi (nilai bebas, bukan 0/1).
+Contoh sederhana adalah *perceptron* yang diperkenalkan Rosenblatt pada 1958 [1]: neuron dengan fungsi aktivasi berbentuk aturan, misalnya `a = 1` jika `z > 0`, dan `a = 0` sebaliknya. Perceptron penting karena menunjukkan bahwa mesin bisa belajar, tetapi terbatas pada masalah yang *linearly separable*. Dalam bab ini kita menggunakan versi modern: neuron **tanpa aktivasi di lapisan keluaran** untuk regresi (nilai bebas, bukan 0/1).
 
 ![Gambar 2.1 - Struktur neuron buatan](figures/fig-2-1-neuron.png)
 
 **Gambar 2.1**: Struktur neuron buatan.
 
-Persamaan (2.1) dan (2.2) diilustrasikan pada Gambar 2.1: setiap panah masukan membawa satu komponen `x_i` yang dikalikan `w_i`, semua hasil dijumlahkan bersama bias menjadi `z` (nilai sebelum aktivasi), lalu `f` menghasilkan keluaran `a`.
+Persamaan 2.1 dan Persamaan 2.2 diilustrasikan pada Gambar 2.1: setiap panah masukan membawa satu komponen `x_i` yang dikalikan `w_i`, semua hasil dijumlahkan bersama bias menjadi `z` (nilai sebelum aktivasi), lalu `f` menghasilkan keluaran `a`.
 
 ### Contoh numerik sederhana
 
@@ -86,7 +86,7 @@ $$
 z = (0.5 \times 26) + (-0.05 \times 90) + 10 = 13 - 4.5 + 10 = 18.5
 $$
 
-Tanpa fungsi aktivasi (identitas), prediksi `ŷ = 18.5°C`. Pembaca bisa melihat intuisi: suhu hari ini menaikkan prediksi (bobot positif), kelembapan tinggi menurunkannya (bobot negatif). Tugas pelatihan justru menemukan `w` dan `b` yang "paling masuk akal" ini dari data, bukan menentukannya manual.
+Tanpa fungsi aktivasi (identitas), prediksi `ŷ = 18.5°C`. Pembaca bisa melihat intuisi: suhu hari ini menaikkan prediksi (bobot positif), kelembapan tinggi menurunkannya (bobot negatif). Tugas pelatihan justru menemukan `w` dan `b` yang "wajar" ini dari data, bukan menentukannya manual.
 
 ## 2.3 Satu Neuron Linear = Regresi Linear
 
@@ -96,14 +96,14 @@ $$
 \hat{y} = wx + b \tag{2.3}
 $$
 
-Persamaan (2.3) identik dengan **regresi linear** yang biasa Anda pelajari di statistika. Bedanya hanya di jalur penemuan parameter:
+Persamaan 2.3 identik dengan **regresi linear** yang biasa Anda pelajari di statistika. Bedanya hanya di jalur penemuan parameter:
 
 - Statistika klasik: `w` dan `b` dihitung dengan rumus kuadrat terkecil (*closed-form*).
 - *Neural network*: `w` dan `b` ditemukan lewat proses berulang (*gradient descent*, Bab 4).
 
 Hasil akhirnya sama dalam kondisi dasar: fungsi *loss* MSE, tanpa regularisasi, dan pelatihan yang selesai dengan baik. Jika Anda ganti loss ke MAE, menambahkan regularisasi atau menghentikan pelatihan lebih awal (*early stopping*), hasilnya akan berbeda dari solusi *closed-form*.
 
-Catatan ini penting: "sama" berlaku hanya untuk kasus dasar di Bagian 2.3. Karena itu, satu neuron linear sebaiknya dianggap sebagai **baseline**. Prinsip di Bab 1 tetap berlaku: mulai dari model paling sederhana, ukur kinerjanya, lalu tingkatkan jika perlu.
+Catatan ini penting: "sama" berlaku hanya untuk kasus dasar di Bagian 2.3. Karena itu, satu neuron linear sebaiknya dianggap sebagai **baseline**. Prinsip di Bab 1 tetap berlaku: mulai dari model sederhana, ukur kinerjanya, lalu tingkatkan jika perlu.
 
 Mengapa kita tetap mempelajari regresi linear di buku *deep learning*? Tiga alasan:
 
@@ -117,13 +117,13 @@ Data meteorologi jarang linear sempurna. Hubungan antara variabel seperti kelemb
 
 Masalahnya: jika kita menyusun beberapa neuron **linear** berlapis, seluruh jaringan tetap linear, karena jumlah fungsi linear adalah fungsi linear. Komposisi `linear(linear(x))` tidak menghasilkan kemampuan baru: seberapa dalam pun, model tetap "garis lurus" dalam ruang berdimensi banyak.
 
-Agar model mampu menangkap pola non-linear, setiap lapisan menyisipkan **fungsi aktivasi** **non-linear**. Fungsi yang paling umum sekarang adalah **ReLU** (*rectified linear unit*):
+Agar model mampu menangkap pola non-linear, setiap lapisan menyisipkan **fungsi aktivasi** **non-linear**. Fungsi yang umum sekarang adalah **ReLU** (*rectified linear unit*):
 
 $$
 \text{ReLU}(x) = \max(0, x) \tag{2.4}
 $$
 
-ReLU mengeluarkan nilai masukan jika positif, dan nol jika negatif (persamaan (2.4)). Sederhana, murah dihitung (satu perbandingan), dan menjadi komponen dasar banyak jaringan modern [2]. Referensi ini merujuk pada AlexNet (2012), jaringan yang mempopulerkan ReLU dalam kompetisi ImageNet. ReLU juga menghindari beberapa masalah *gradien *yang dimiliki sigmoid/tanh (Bab 4 membahas topik ini lebih dalam).
+ReLU mengeluarkan nilai masukan jika positif, dan nol jika negatif (Persamaan 2.4). Sederhana, murah dihitung (satu perbandingan), dan menjadi komponen dasar banyak jaringan modern [2]. Referensi ini merujuk pada AlexNet (2012), jaringan yang mempopulerkan ReLU dalam kompetisi ImageNet. ReLU juga menghindari beberapa masalah *gradien *yang dimiliki sigmoid/tanh (Bab 4 membahas topik ini lebih dalam).
 
 ### Dari neuron ke MLP
 
@@ -156,7 +156,7 @@ Kode 2.1 terlihat pendek, tetapi di dalamnya ada tiga jenis lapisan dengan tugas
 
 **Lapisan keluaran (*output layer*).** Baris terakhir, `Dense(1)`, ditulis tanpa argumen `activation`. Tanpa aktivasi berarti identitas: keluaran neuron terakhir langsung menjadi prediksi `ŷ`. Ini disengaja untuk regresi, karena prediksi suhu boleh bernilai bebas (misalnya `22.7°C` atau `-1.5°C`). ReLU akan membuang semua nilai negatif, sedangkan sigmoid/tanh menjepit keluaran ke rentang tetap. Satu neuron berarti satu angka keluaran: suhu besok.
 
-Alur seluruh jaringan bisa ditulis satu baris. Pada persamaan (2.5), tiap `h` adalah vektor 8 angka:
+Alur seluruh jaringan bisa ditulis satu baris. Pada Persamaan 2.5, tiap `h` adalah vektor 8 angka:
 
 $$
 x \to h_1 = \text{ReLU}(W_1 x + b_1) \to h_2 = \text{ReLU}(W_2 h_1 + b_2) \to \hat{y} = W_3 h_2 + b_3 \tag{2.5}
@@ -195,7 +195,7 @@ Untuk Bab 2-9, ReLU (atau Leaky ReLU) adalah pilihan *default* yang aman untuk l
 
 Pasang surut bersifat periodik dan di sebagian besar perairan Indonesia bertipe semi-diurnal atau diurnal campuran [3] sehingga cocok untuk regresi sederhana: ada pola yang bisa dipelajari, cukup deterministik.
 
-Pendekatan paling dasar: memprediksi tinggi air **besok** berdasarkan tinggi air hari ini dan kemarin (dua fitur). Ini contoh *autoregressive*: target (besok) dijelaskan oleh nilai-nilai sebelumnya. Data nyata pasang surut akan dibahas penuh di Bab 8, sedangkan di sini kita mengenalkan alurnya saja:
+Pendekatan dasar: memprediksi tinggi air **besok** berdasarkan tinggi air hari ini dan kemarin (dua fitur). Ini contoh *autoregressive*: target (besok) dijelaskan oleh nilai-nilai sebelumnya. Data nyata pasang surut akan dibahas penuh di Bab 8, sedangkan di sini kita mengenalkan alurnya saja:
 
 ```text
 input: [tinggi(t-2), tinggi(t-1)]  →  Dense+ReLU  →  output: tinggi(t)
@@ -203,9 +203,9 @@ input: [tinggi(t-2), tinggi(t-1)]  →  Dense+ReLU  →  output: tinggi(t)
 
 ### Langkah 1 - Bentuk data (*windowing*)
 
-Model neural network tidak menerima deret waktu sebagai satu blok. Ia menerima **pasangan fitur-target**, seperti di semua contoh sebelumnya. Pertanyaan desain pertama: apa yang menjadi fitur dan apa yang menjadi target? Untuk prediksi tinggi besok, fitur yang paling natural adalah **nilai beberapa langkah sebelumnya**. Kami menyebut bentuk data ini *windowing*.
+Model neural network tidak menerima deret waktu sebagai satu blok. Ia menerima **pasangan fitur-target**, seperti di semua contoh sebelumnya. Pertanyaan desain pertama: apa yang menjadi fitur dan apa yang menjadi target? Untuk prediksi tinggi besok, fitur yang natural adalah **nilai beberapa langkah sebelumnya**. Kami menyebut bentuk data ini *windowing*.
 
-Lihat dulu datanya (nilai ilustratif, jam demi jam):
+Lihat dulu datanya (Tabel 2.2, nilai ilustratif, jam demi jam):
 
 **Tabel 2.2**: Contoh data deret waktu `tinggi(t)` pasang surut.
 
@@ -233,7 +233,7 @@ Cara membangun *windowing* ini dijelaskan di Bab 7 secara mendalam, sedangkan di
 
 ### Langkah 2 - *Baseline*
 
-Sebelum menantang neural network, ukur *baseline* sederhana. Untuk deret periodik seperti pasang surut, *baseline* paling natural adalah *persistence*: "prediksi tinggi besok = tinggi hari ini" (`ŷ(t) = y(t-1)`). Tabel 2.3 memberi kita *baseline*: berapa MAE yang dihasilkan model yang selalu menebak nilai kemarin?
+Sebelum menantang neural network, ukur *baseline* sederhana. Untuk deret periodik seperti pasang surut, *baseline* natural adalah *persistence*: "prediksi tinggi besok = tinggi hari ini" (`ŷ(t) = y(t-1)`). Tabel 2.3 memberi kita *baseline*: berapa MAE yang dihasilkan model yang selalu menebak nilai kemarin?
 
 Prinsip di Bab 1 menuntut: *neural network* layak digunakan hanya jika **mengalahkan** ***persistence***. Jika tidak, lebih baik kita memakai *persistence*: sederhana, tanpa pelatihan, tanpa pemeliharaan.
 
@@ -282,7 +282,7 @@ history = model.fit(
     epochs=60, batch_size=32, verbose=0,
 )
 
-# evaluasi vs baseline persistence
+# evaluasi terhadap baseline persistence
 pred = model.predict(X_test, verbose=0).ravel()
 base_pred = X_test[:, 1]  # persistence: pakai nilai t-1 (kolom fitur ke-2)
 
@@ -312,9 +312,9 @@ Nilai MAE *Persistence* lebih besar dari MLP. Tetapi walaupun MLP "lebih kecil",
 
 **Kesimpulan:** angka MAE saja belum cukup untuk menentukan kualitas model. Kita perlu melihat juga ***baseline* operasional, uji statistik, konsistensi antar-periode, serta biaya untuk menjalankan dan memelihara model**. Tidak ada model "sempurna". Yang dicari adalah model yang **cukup baik untuk tujuan** dan **lebih baik dari *baseline* sederhana**. Sikap ini yang membedakan praktisi dari sekadar pengguna *library*.
 
-## 2.6 Mengukur Galat: MAE vs MSE
+## 2.6 Mengukur Galat: MAE dan MSE
 
-Setelah model menghasilkan prediksi, kita perlu mengukur **seberapa besar galat prediksinya**. Dua fungsi *loss* regresi yang paling umum:
+Setelah model menghasilkan prediksi, kita perlu mengukur **seberapa besar galat prediksinya**. Dua fungsi *loss* regresi yang umum:
 
 **Tabel 2.4**: Perbandingan MAE dan MSE sebagai fungsi galat regresi.
 
@@ -337,7 +337,7 @@ $$
 \text{MSE} = \frac{(-1)^2 + (3)^2 + (0)^2}{3} = \frac{10}{3} \approx 3.33 \tag{2.7}
 $$
 
-Perhatikan: pada MSE satu galat `3` "menyumbang" nilai 9 karena 3 kuadrat. Hal ini jauh lebih besar daripada kontribusinya di MAE (3). Itulah inti perbedaan: **MSE lebih sensitif pada galat** **besar**.
+Perhatikan Persamaan 2.6 dan Persamaan 2.7: pada MSE satu galat `3` "menyumbang" nilai 9 karena 3 kuadrat. Hal ini jauh lebih besar daripada kontribusinya di MAE (3). Itulah inti perbedaan: **MSE lebih sensitif pada galat** **besar**.
 
 **Kapan memilih yang mana?**
 
@@ -408,8 +408,8 @@ Data **validasi** digunakan selama pelatihan untuk memantau kinerja (misalnya le
 2. Tambahkan fitur ketiga `tinggi(t-3)`. Apakah MAE membaik? Apa alasan Anda?
 3. Ganti `loss="mse"` dengan `loss="mae"`. Bandingkan akhir MAE test. Diskusikan perbedaan.
 4. Buat *baseline* kedua: rata-rata klimatologis (nilai **rata-rata** keseluruhan train) sebagai prediksi tetap untuk seluruh test. Bandingkan dengan *persistence* dan jaringan.
-5. **Proyek mini:** ambil data suhu harian stasiun lokal (misal dari GHCN-Daily - Bab 6), lakukan *windowing* 2 langkah, dan bandingkan MLP 2 lapisan vs *persistence*. Laporkan MAE.
-6. **(Opsional, statistik)** Jika punya library `statsmodels` atau `sklearn`, ulangi perbandingan MAE model vs *persistence* di beberapa blok waktu dan jalankan skema uji **Diebold-Mariano** untuk menyajikan apakah selisih signifikan. Bila *library* tidak tersedia, cukup catat MAE per blok dan diskusikan konsistensinya.
+5. **Proyek mini:** ambil data suhu harian stasiun lokal (misal dari GHCN-Daily - Bab 6), lakukan *windowing* 2 langkah, dan bandingkan MLP 2 lapisan dan *persistence*. Laporkan MAE.
+6. **(Opsional, statistik)** Jika punya library `statsmodels` atau `sklearn`, ulangi perbandingan MAE model dan *persistence* di beberapa blok waktu dan jalankan skema uji **Diebold-Mariano** untuk menyajikan apakah selisih signifikan. Bila *library* tidak tersedia, cukup catat MAE per blok dan diskusikan konsistensinya.
 
 Jawaban latihan tidak harus "menang": yang penting adalah Anda terbiasa membandingkan model dengan *baseline* dan membaca angka MAE secara kritis.
 
@@ -438,11 +438,11 @@ Menghindari galat di atas menghemat banyak waktu dan, lebih penting, menjauhkan 
 - Regresi = memprediksi besaran kontinu. Neuron = bobot + bias + fungsi aktivasi.
 - 1 neuron linear identik regresi linear, sedangkan non-linearitas (ReLU) diperlukan untuk pola yang tidak lurus.
 - Mini-kasus pasang surut memperkenalkan penggunaan langsung pada data laut Indonesia, sedangkan *baseline* *persistence* selalu digunakan sebagai pembanding.
-- MAE vs MSE: pilih sesuai skala dan tujuan, Adam dan learning rate, serta split berbasis waktu untuk melawan *leakage*.
+- MAE dan MSE: pilih sesuai skala dan tujuan, Adam dan learning rate, serta split berbasis waktu untuk melawan *leakage*.
 - Proyek ML selalu: bentuk data → *baseline* → model → bandingkan → putuskan.
 
 ## References
 
 1. F. Rosenblatt, "The perceptron: A probabilistic model for information storage and organization in the brain," *Psychological Review*, vol. 65, no. 6, pp. 386-408, 1958, doi: 10.1037/h0042519.
 2. A. Krizhevsky, I. Sutskever, and G. E. Hinton, "ImageNet classification with deep convolutional neural networks," in *Proc. Adv. Neural Inf. Process. Syst. (NeurIPS)*, vol. 25, Dec. 2012, pp. 1097-1105; reissued in *Communications of the ACM*, vol. 60, no. 6, pp. 84-90, 2017, doi: 10.1145/3065386.
-3. Badan Informasi Geospasial (BIG), "Peta pasang surut dan pola pasut perairan Indonesia," [Online]. Available: [https://tides.big.go.id/](https://tides.big.go.id/) (diakses: September 2026)
+3. Badan Meteorologi, Klimatologi, dan Geofisika (BMKG), "Prakiraan pasang surut," [Online]. Available: [https://maritim.bmkg.go.id/cuaca/pasut](https://maritim.bmkg.go.id/cuaca/pasut) (diakses: September 2026).

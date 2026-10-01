@@ -73,7 +73,7 @@ PSMSL ID untuk station Indonesia umum: 1709 (Bitung II), 1752 (Sibolga II),
 
 ## Catatan
 
-- **Hanya ~30 hari terakhir dari IOC**: endpoint `bgraph.php` mengembalikan data
+- **Hanya ≈30 hari terakhir dari IOC**: endpoint `bgraph.php` mengembalikan data
   *real-time* maksimal ±30 hari terakhir; ia **tidak** melayani arsip historis meski
   `--start/--end` diberikan (parameter itu hanya memfilter jendela 30 hari). Untuk
   deret panjang (berbulan-bertahun) gunakan **UHSLC ERDDAP** (`--source uhslc`),
@@ -104,7 +104,7 @@ print(df.head(), df.shape, df.isna().sum())
 |---|---|
 | `download_ioc.py` | Unduh data IOC real-time / UHSLC ERDDAP / metadata PSMSL (skrip utama) |
 | `generate_sample.py` | Hasilkan sample CSV Cilacap sintetik deterministik |
-| `generate_figures.py` | Hasilkan Gambar 8.2 (prediksi vs aktual) & 8.3 (residu) dari sample |
+| `generate_figures.py` | Hasilkan Gambar 8.2 (prediksi dan aktual) & 8.3 (residu) dari sample |
 
 ## Lisensi skrip
 

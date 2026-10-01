@@ -24,10 +24,10 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Gambar 4.2 | Permukaan *loss landscape* (minimum global, lokal, *saddle*) | 4 |
 | Gambar 4.3 | Contoh *learning curve* (*train* turun, *val* naik → *overfit*) | 4 |
 | Gambar 5.1 | *Learning curve overfit* | 5 |
-| Gambar 6.1 | Distribusi curah hujan harian (ekor panjang) | 6 |
+| Gambar 6.1 | Distribusi curah hujan harian stasiun Cilacap, GHCN-Daily (ekor panjang) | 6 |
 | Gambar 7.1 | Ilustrasi RNN *unrolled* (state h) | 7 |
 | Gambar 8.1 | Spektrum frekuensi pasang surut (M2/K1) | 8 |
-| Gambar 8.2 | Prediksi vs aktual 7 hari (data sample Cilacap) | 8 |
+| Gambar 8.2 | Prediksi dan aktual 7 hari (data sample Cilacap) | 8 |
 | Gambar 8.3 | Residu per amplitudo dan fase pasang M2 | 8 |
 | Gambar 9.1 | Precision–recall untuk hujan lebat | 9 |
 | Gambar 9.2 | Verifikasi per kategori intensitas | 9 |
@@ -43,32 +43,32 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 | Tabel 2.1 | Contoh target regresi meteorologi (satuan & sifat data) | 2 |
 | Tabel 2.2 | Contoh deret raw pasang surut (nilai ilustratif) | 2 |
 | Tabel 2.3 | Contoh *windowing* (dua langkah) pasang surut | 2 |
-| Tabel 2.4 | Perbandingan MAE vs MSE | 2 |
-| Tabel 3.1 | Perbedaan regresi vs klasifikasi | 3 |
-| Tabel 3.2 | Perbandingan sigmoid vs softmax | 3 |
+| Tabel 2.4 | Perbandingan MAE dan MSE | 2 |
+| Tabel 3.1 | Perbedaan regresi dan klasifikasi | 3 |
+| Tabel 3.2 | Perbandingan sigmoid dan softmax | 3 |
 | Tabel 3.3 | Contoh data tidak seimbang | 3 |
 | Tabel 3.4 | Struktur *confusion matrix* biner | 3 |
 | Tabel 4.1 | Perbandingan fungsi aktivasi dari sisi gradien | 4 |
-| Tabel 4.2 | SGD vs Adam | 4 |
+| Tabel 4.2 | SGD dan Adam | 4 |
 | Tabel 5.1 | Underfit / fit / overfit | 5 |
 | Tabel 5.2 | Panduan memilih metrik regresi | 5 |
 | Tabel 5.3 | Kuartet verifikasi WMO (POD/FAR/CSI/TS) | 5 |
 | Tabel 5.4 | Dua model, cerita metrik berbeda | 5 |
 | Tabel 5.5 | Skema *walk-forward* (5 *fold*) | 5 |
-| Tabel 6.1 | Sumber data utama (GHCND/CHIRPS, ERA5, CMIP6, PSMSL, satelit) | 6 |
+| Tabel 6.1 | Pipeline data: dari berkas mentah ke dataset siap dilatih | 6 |
 | Tabel 6.2 | Perbandingan format berkas (CSV/NetCDF/GRIB) | 6 |
 | Tabel 7.1 | Contoh *windowing* (w = 3, h = 1) | 7 |
 | Tabel 7.2 | Pilihan panjang *window* | 7 |
 | Tabel 7.3 | *Baseline* deret waktu | 7 |
-| Tabel 7.4 | LSTM vs GRU | 7 |
+| Tabel 7.4 | LSTM dan GRU | 7 |
 | Tabel 7.5 | Strategi multi-langkah | 7 |
 | Tabel 8.1 | Tipe pasang surut Indonesia | 8 |
-| Tabel 8.2 | Harmonik vs *machine learning* | 8 |
+| Tabel 8.2 | Harmonik dan *machine learning* | 8 |
 | Tabel 8.3 | Stasiun Indonesia di sumber terbuka (IOC/UHSLC/PSMSL) | 8 |
 | Tabel 8.4 | Ringkasan dataset Cilacap yang dibangun (sintetik deterministik) | 8 |
 | Tabel 8.5 | Pilihan *window* (jam-an) | 8 |
 | Tabel 8.6 | Contoh hasil MAE per *horizon* | 8 |
-| Tabel 8.7 | *Skill score* relatif vs *persistence* | 8 |
+| Tabel 8.7 | *Skill score* relatif terhadap *persistence* | 8 |
 | Tabel 9.1 | Fitur yang dibangun untuk stasiun | 9 |
 | Tabel 9.2 | Kategori intensitas hujan | 9 |
 | Tabel 9.3 | Verifikasi *threshold* (POD/FAR/CSI) | 9 |

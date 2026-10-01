@@ -37,9 +37,9 @@ Tiga pertanyaan yang harus dijawab sebelum sebuah model disebut "produksi":
 2. **Bagaimana model dipantau?** - pesan ketika metrik menurun?
 3. **Siapa yang bertanggung jawab?** - ada penanggung jawab dan prosedur saat model gagal?
 
-### Contoh "praktik produksi paling sederhana" untuk buku ini
+### Contoh "praktik produksi sederhana" untuk buku ini
 
-Anda tidak perlu membangun Kubernetes untuk mengikuti bab ini. Contoh paling sederhana yang sudah memenuhi kebutuhan institusi kecil:
+Anda tidak perlu membangun Kubernetes untuk mengikuti bab ini. Contoh sederhana yang sudah memenuhi kebutuhan institusi kecil:
 
 - **Skrip batch** - satu script dijalankan tiap hari (mis. `cron` atau *scheduled notebook*) yang memuat data terbaru, menjalankan model, menulis tabel prediksi.
 - **Laporan** - output CSV/Excel di email atau folder bersama.
@@ -59,7 +59,7 @@ Atmosfer **tidak stasioner**: distribusi cuaca bergeser seiring musim, tahunan, 
 **Cara mendeteksi secara praktis:**
 
 1. **Pantau metrik operasional** - untuk model *regresi* gunakan metrik kontinu (MAE/RMSE), sedangkan untuk model *klasifikasi* gunakan metrik kategorikal (CSI/POD/FAR). Hitung secara *periodik* (mingguan/bulanan) terhadap data terbaru yang sudah diverifikasi. Jika metrik menurun melebihi ambang, picu peringatan.
-2. **Bandingkan distribusi fitur** - misal histogram `X` bulan ini vs rata-rata historis. Pergeseran besar menandakan *data drift*.
+2. **Bandingkan distribusi fitur** - misal histogram `X` bulan ini dibandingkan dengan rata-rata historis. Pergeseran besar menandakan *data drift*.
 3. **Grafik kendali sederhana** - gunakan rata-rata bergerak + batas 2σ untuk melacak metrik. Titik di luar batas = sinyal. Untuk data meteorologi yang autokorelasi dan musiman, batas 2σ bisa memicu banyak *false alarm*. Metode yang lebih tangguh (EWMA/CUSUM, dekomposisi musiman) layak dipertimbangkan setelah tahap awal ini.
 
 ![Gambar 10.1 - Grafik kendali metrik operasional](figures/fig-10-1-control-chart.png)
@@ -72,7 +72,7 @@ Ambang ±2σ pada grafik kendali (Gambar 10.1) hanyalah titik awal. Sesuaikan de
 
 - **Volatilitas alami metrik** - pada hujan, MAE/CSI berfluktuasi antar musim. Ambang yang terlalu ketat akan sering "berbunyi" tanpa masalah nyata.
 - **Biaya galat** - bila false alarm monitoring mahal (mis. menghentikan model padahal masih baik), lebih longgarkan. Bila risiko nyata, percepat.
-- **Periode evaluasi** - mingguan vs bulanan memberikan sensitivitas berbeda. Pilih sesuai seberapa cepat Anda bisa bereaksi.
+- **Periode evaluasi** - mingguan atau bulanan memberikan sensitivitas berbeda. Pilih sesuai seberapa cepat Anda bisa bereaksi.
 
 Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah). Ini semacam *pra-registrasi* ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias* / *overfitting* pada noise monitoring (ingat prinsip evaluasi jujur di Bab 5). Justru akan melewatkan degradation yang seharusnya terdeteksi.
 
@@ -81,15 +81,15 @@ Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah
 Bayangkan model hujan stasiun (Bab 9) digunakan secara operasional untuk peringatan dini. Monitoring praktisnya:
 
 - **Setiap 1 bulan**: hitung CSI/POD/FAR terhadap data yang sudah dikonfirmasi selama bulan itu. Simpan ke tabel.
-- **Setiap bulan**: bandingkan distribusi (histogram) fitur `X` bulan ini vs rata-rata historis (mis. `rmm1`, `mus_sin/cos`).
+- **Setiap bulan**: bandingkan distribusi (histogram) fitur `X` bulan ini dibandingkan dengan rata-rata historis (mis. `rmm1`, `mus_sin/cos`).
 - **Tiap kuartal**: tinjau kurva kendali. Bila >1 titik keluar batas, selidiki dan nilai apakah perlu kalibrasi/retrain.
 
-Memiliki jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produksi", menghindari kejadian model diam-diam rusak (Bab 10.1 membahas "siapa yang menjawab?"). Contoh produksi paling sederhana di sub-bab ini adalah titik awal minimal: institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang seiring kebutuhan.
+Memiliki jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produksi", menghindari kejadian model diam-diam rusak (Bab 10.1 membahas "siapa yang menjawab?"). Contoh produksi sederhana di sub-bab ini adalah titik awal minimal: institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang seiring kebutuhan.
 
 
 ## 10.3 Retraining dan Kalibrasi Ulang
 
-Ketika *drift* terdeteksi, pilihan tindakan (dari yang paling ringan):
+Ketika *drift* terdeteksi, pilihan tindakan (dari yang ringan):
 
 1. **Kalibrasi ulang output** - sesuaikan threshold (Bab 9) tanpa melatih ulang. Cepat dan murah.
 2. **Retraining berkala terjadwal** - misal tahunan/musiman. Jadwalkan, jangan menunggu darurat.
@@ -155,7 +155,7 @@ print("Sebaran antar-run (±1σ):", p_std[:5])
 
 > **Apa yang diukur σ ini?** Sebaran antar-*seed* terutama menangkap **variasi inisialisasi/optimisasi**, bukan ketidakpastian prediktif penuh (aleatorik + epistemik). Karena semua anggota berbagi data, arsitektur, dan hyperparameter yang sama, ukuran ini bisa **mengecilkan** ketidakpastian sebenarnya. Perlakuan yang lebih bermakna (opsional, di luar cakupan buku ini) mencakup MC-dropout, *deep ensembles* dengan variasi arsitektur/hyperparameter, regresi kuantil (Kode 10.2), dan *conformal prediction*.
 
-Manfaat tambahan: ensembel juga **menstabilkan angka metrik**. MAE/CSI dari rata-rata ensembel sering lebih rendah variansnya daripada satu run acak. Ini menjadikan ensembel alat ganda: lebih "tenang" dalam laporan dan memberi ukuran kestabilan. Biayanya linear dengan jumlah anggota. Untuk 3-5 seed masih sangat wajar di Colab.
+Manfaat tambahan: ensembel juga **menstabilkan angka metrik**. MAE/CSI dari rata-rata ensembel sering lebih rendah variansnya daripada satu run acak. Ini menjadikan ensembel alat ganda: lebih "tenang" dalam laporan dan memberi ukuran kestabilan. Biayanya linear dengan jumlah anggota. Untuk 3-5 seed masih sangat wajar di Colab; contoh ringkasnya ada di Kode 10.1.
 
 ### Interval kuantil
 
@@ -218,7 +218,7 @@ nilai_shap = explainer(X_test_sample)
 shap.plots.beeswarm(nilai_shap)
 ```
 
-Interpretasi SHAP harus selalu ditautkan ke **pengetahuan atmosfer**:
+Interpretasi SHAP (Kode 10.3) harus selalu ditautkan ke **pengetahuan atmosfer**:
 
 - Fitur yang "penting" tetapi secara fisis tidak masuk akal → perlu investigasi: cek kebocoran data, fitur proksi, atau interaksi non-linear yang tak terduga (belum tentu berarti data "rusak").
 - Fitur yang fisis masuk akal dan penting → menaikkan kepercayaan praktisi (misal `hujan_t1`, `rmm1` untuk hujan barat).
@@ -262,7 +262,7 @@ Ketika hasil dipublikasikan (artikel, media sosial), aturan praktis:
 - Lampirkan tautan/metode agar pembaca bisa memeriksa (transparansi).
 - Bila media menanyakan "apakah akurat?", jawab dengan metrik dan batas, bukan sensasi.
 
-Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaan publik, bagian dari *risk management* yang digunakan sepanjang buku.
+Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaan publik. Panduan ringkasnya ada di Tabel 10.3, bagian dari *risk management* yang digunakan sepanjang buku.
 
 **Tabel 10.3**: Etika penggunaan yang dianjurkan.
 
@@ -276,7 +276,7 @@ Komunikasi yang hati-hati melindungi kredibilitas institusi sekaligus kepercayaa
 
 ## 10.7 Arah Riset dan Bab Lanjutan
 
-Di sinilah pembaca melebarkan sayapnya. Tiga arah besar yang paling relevan untuk meteorologi + deep learning:
+Di sinilah pembaca melebarkan sayapnya. Tiga arah besar yang relevan untuk meteorologi + deep learning:
 
 ### 1. CNN dan data spasial
 
@@ -321,7 +321,7 @@ Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca, 
 
 ## 10.9 FAQ Singkat
 
-**Apakah saya "harus" membuat API?** Tidak selalu. Untuk institusi kecil, model bisa dijalankan sebagai *batch* terjadwal (notebook/script) yang menghasilkan tabel prediksi. API diperlukan ketika banyak pengguna memanggil secara interaktif. Mulai dari yang paling sederhana yang memenuhi kebutuhan.
+**Apakah saya "harus" membuat API?** Tidak selalu. Untuk institusi kecil, model bisa dijalankan sebagai *batch* terjadwal (notebook/script) yang menghasilkan tabel prediksi. API diperlukan ketika banyak pengguna memanggil secara interaktif. Mulai dari yang sederhana yang memenuhi kebutuhan.
 
 **Bagaimana saya tahu model "rusak" tanpa menunggu keluhan?** Justru gunakan monitoring (Bab 10.2): metrik berkala + grafik kendali. Jangan menunggu pengguna menyadari.
 
@@ -359,7 +359,7 @@ Buku ini adalah permulaan, bukan akhir. Jadikan studi kasus Cilacap (pasang suru
 **Latihan praktik (notebook `ch-10-09_operasional_arah_riset.ipynb`)**
 
 6. Ambil salah satu model Bab 8/9. Hitung grafik kendali sederhana MAE mingguan dan tandai titik yang keluar batas (simulasikan satu periode dengan galat tinggi).
-7. Latih ensembel multi-seed (Kode 10.1). Bandingkan MAE rata-rata vs MAE model tunggal. Laporkan sebaran antar-run (bukan klaim ketidakpastian statistika penuh).
+7. Latih ensembel multi-seed (Kode 10.1). Bandingkan MAE rata-rata dan MAE model tunggal. Laporkan sebaran antar-run (bukan klaim ketidakpastian statistika penuh).
 8. Terapkan regresi kuantil sederhana (Kode 10.2) dan hitung cakupan interval 80% pada data uji.
 9. Jalankan SHAP (Kode 10.3) pada model Bab 9. Tampilkan 5 fitur teratas dan kaitkan dengan pengetahuan atmosfer.
 10. (Proyek) Tulis "rencana operasional singkat" untuk salah satu studi kasus: monitoring, retraining, ketidakpastian, interpretasi, batas etika - satu halaman.

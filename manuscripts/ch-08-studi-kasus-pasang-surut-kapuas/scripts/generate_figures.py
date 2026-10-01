@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Hasilkan Gambar 8.2 (prediksi vs aktual 7 hari) dan Gambar 8.3 (residu per fase
+Hasilkan Gambar 8.2 (prediksi dan aktual 7 hari) dan Gambar 8.3 (residu per fase
 pasang) untuk Bab 8, dari data sample Cilacap.
 
 CATATAN KEJUJURAN:
@@ -75,7 +75,7 @@ def predict_persistence(ser: np.ndarray) -> np.ndarray:
 
 
 def plot_figure_8_2(ser: pd.Series, pred: np.ndarray, src: str) -> Path:
-    """Plot prediksi vs aktual untuk 7 hari terakhir."""
+    """Plot prediksi dan aktual untuk 7 hari terakhir."""
     hari = 7
     sample_per_hour = 1
     n = hari * 24 * sample_per_hour
@@ -124,7 +124,7 @@ def plot_figure_8_2(ser: pd.Series, pred: np.ndarray, src: str) -> Path:
 
 
 def plot_figure_8_3(ser: pd.Series, pred: np.ndarray) -> Path:
-    """Plot residu per fase pasang (scatter error vs tinggi aktual)."""
+    """Plot residu per fase pasang (scatter error terhadap tinggi aktual)."""
     hari = 7
     n = hari * 24
     aktual = ser.values[-n:]
@@ -138,7 +138,7 @@ def plot_figure_8_3(ser: pd.Series, pred: np.ndarray) -> Path:
 
     fig, axes = plt.subplots(1, 2, figsize=(11, 3.6))
 
-    # Panel kiri: scatter error vs tinggi aktual
+    # Panel kiri: scatter error terhadap tinggi aktual
     ax = axes[0]
     ax.scatter(aktual, residu, s=10, alpha=0.55, color="#4a90e2")
     ax.axhline(0, color="#333", lw=0.8, ls="--")

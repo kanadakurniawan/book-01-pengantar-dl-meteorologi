@@ -33,7 +33,7 @@ DEFAULT_OUT = ROOT / "manuscripts" / "ch-09-studi-kasus-curah-hujan-terbuka" / "
 BASE = "https://www.ncei.noaa.gov/pub/data/ghcn/daily/all/"
 USER_AGENT = "Buku-DL-Meteorologi/1.0 (research)"
 
-# Stasiun buku: GHCN ID, nama, posisi (barat vs timur untuk Bab 9)
+# Stasiun buku: GHCN ID, nama, posisi (barat dan timur untuk Bab 9)
 GHCN_STATIONS = {
     "ID000096745": ("jakarta", -6.183, 106.833),
     "ID000096805": ("cilacap", -7.733, 109.017),

@@ -29,7 +29,7 @@ agar satu buku utuh terasa seimbang & pantas di Zenodo:
 | 5 | 3.500–4.000 | Tambah studi mini sample imbalance |
 | 6 | 3.500–4.000 | Tambah studi data ERA5/CHIRPS nyata |
 | 7 | 4.000–4.500 | Tambah jadwal multi-step & perbandingan univariate/multivariate |
-| 8 | 4.000–4.500 | Perdalam framing analisis harmonik vs ML |
+| 8 | 4.000–4.500 | Perdalam framing analisis harmonik dan ML |
 | 9 | 4.000–4.500 | Table verifikasi kategori + interpretasi |
 | 10 | 3.000–3.500 | Operasional + etika + arah riset |
 
@@ -73,15 +73,15 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 - **Tujuan pembelajaran:** setelah bab ini, pembaca mampu:
   1. Membedakan AI, machine learning, dan deep learning beserta contoh aplikasinya.
   2. Mempetakan aplikasi DL meteorologi ke bab yang relevan dan membedakan mana yang
-     dibahas buku vs literatur lanjut.
-  3. Menilai kapan deep learning layak dipakai (vs baseline statistik) berdasarkan ukuran
+     dibahas buku dibandingkan literatur lanjut.
+  3. Menilai kapan deep learning layak dipakai (dibandingkan baseline statistik) berdasarkan ukuran
      data, non-linearitas, dan konteks operasional.
   4. Menyiapkan lingkungan kerja Google Colab + TensorFlow/Keras dan membuat tensor
      pertama dari contoh data cuaca mini.
 - **Isi:**
-  1. ML vs DL — dan di mana DL berada dalam spektrum (regresi, klasifikasi, dsb).
+  1. ML dan DL — dan di mana DL berada dalam spektrum (regresi, klasifikasi, dsb).
   2. Mengapa DL relevan *sekarang*: ketersediaan data besar, GPU/Colab gratis, tooling matang.
-  3. **Peta aplikasi meteo** — Buku vs diarahkan ke sumber lain:
+  3. **Peta aplikasi meteo** — Buku dibandingkan sumber lain:
 
      | Aplikasi | Di mana di buku | Jika tidak |
      |---|---|---|
@@ -91,7 +91,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
      | Downscaling & data spasial | — | Bab 10 (arah riset) |
      | Imputasi data hilang | Bab 6 (dasar) | Bab 10 (generative) |
 
-  4. **Kapan DL layak vs model statistik** (regresi, ARIMA): ukuran data, kompleksitas pola,
+  4. **Kapan DL layak dibandingkan model statistik** (regresi, ARIMA): ukuran data, kompleksitas pola,
      biaya + teaser baseline di Bab 7 ("DL harus mengalahkan baseline").
   5. Setup lingkungan: Google Colab, TensorFlow/Keras, verifikasi instalasi.
   6. Pengenalan tensor 0D–3D dengan contoh data cuaca mini (skalar suhu, vektor, matriks stasiun).
@@ -113,7 +113,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   2. Menjelaskan peran bobot, bias, dan fungsi aktivasi (termasuk ReLU) serta kapan
      non-linearitas diperlukan.
   3. Menerapkan mini-kasus pasang surut: windowing, baseline persistence, dan perbandingan
-     MAE antara model neural vs baseline.
+     MAE antara model neural dan baseline.
   4. Memilih antara MAE dan MSE berdasarkan sifat data dan tujuan, serta membagi data
      deret waktu secara kronologis yang mencegah leakage.
 - **Isi:**
@@ -121,7 +121,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   2. Anatomi neuron: bobot, bias, fungsi aktivasi.
   3. 1 neuron linear = regresi linear → MLP + **ReLU muncul dari kebutuhan non-linearitas**.
   4. **Mini-kasus pasang surut sederhana** (identitas "data laut Indonesia" hadir sejak bab ini).
-  5. MAE vs MSE — dan skala ekstrem data meteo.
+  5. MAE dan MSE — dan skala ekstrem data meteo.
   6. Adam & learning rate (pengenalan; mendalam di Bab 4).
   7. Motif split train/val/test + kenapa urutan waktu krusial di meteo.
 - **Notebook:** `01_regresi_pasang_surut`.
@@ -163,17 +163,17 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 - **Tujuan pembelajaran:** setelah bab ini, pembaca mampu:
   1. Menjelaskan mekanisme gradient descent dan backpropagation (aturan rantai) secara
      intuitif.
-  2. Menganalisis peran fungsi aktivasi dari sisi gradien (ReLU vs sigmoid/tanh) dan
+  2. Menganalisis peran fungsi aktivasi dari sisi gradien (ReLU dan sigmoid/tanh) dan
      mengenali vanishing gradient.
   3. Menerapkan tuning hyperparameter (learning rate, batch size, epochs) dan callback
      (early stopping, ModelCheckpoint, ReduceLROnPlateau).
   4. Membaca learning curve untuk mendiagnosa underfit/overfit sebagai transisi ke Bab 5.
 - **Isi:**
   1. Intuisi gradient descent; backpropagation via aturan rantai.
-  2. **Fungsi aktivasi ditinjau dari sisi gradien** — ReLU vs sigmoid/tanh, vanishing gradient
+  2. **Fungsi aktivasi ditinjau dari sisi gradien** — ReLU dan sigmoid/tanh, vanishing gradient
      (rumah pembahasan lengkap "fungsi aktivasi" yang semula bab mandiri).
   3. Learning rate & scheduler; batch size; epochs.
-  4. SGD vs Adam; callback: early stopping, ModelCheckpoint, ReduceLROnPlateau.
+  4. SGD dan Adam; callback: early stopping, ModelCheckpoint, ReduceLROnPlateau.
   5. Membaca learning curve → transisi ke Bab 5.
 - **Notebook:** `03_optimasi_callbacks`.
 - **Latihan:** tuning LR/batch pada kasus regresi Bab 2.
@@ -221,7 +221,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   4. Menerapkan normalisasi (fit pada train) dan split berbasis waktu anti-leakage.
 - **Isi:**
   1. Sumber data: **stasiun GHCN-Daily & grid CHIRPS**, reanalysis **ERA5** (Copernicus), CMIP6, **pasang surut
-     (PSMSL/IOC/BIG)**, satelit. Lisensi & batasan akses.
+     (PSMSL/IOC/BMKG)**, satelit. Lisensi & batasan akses.
   2. Format: CSV, NetCDF, GRIB; tooling xarray, netCDF4.
   3. Kualitas: nilai hilang, outlier, imputasi dasar.
   4. Eksplorasi: dekomposisi musiman, distribusi ekor kanan hujan, korelasi silang.
@@ -244,15 +244,15 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   3. Menjelaskan intuisi RNN → LSTM → GRU (gate ingatan/lupa) dan keterbatasannya.
   4. Memilih arsitektur input multivariate dan strategi multi-step (recursive/direct/seq2seq).
 - **Isi:**
-  1. Windows & horizon: satu vs multi-langkah.
+  1. Windows & horizon: satu atau multi-langkah.
   2. **Baseline dulu:** persistence, mean, AR(p) — DL harus mengalahkan baseline.
   3. RNN & keterbatasannya → LSTM (intuisi gate = "pintu ingatan & lupa") → GRU (ringkas).
-  4. Arsitektur praktis: input shape, univariate vs multivariate.
-  5. Multi-step: recursive vs direct vs seq2seq (pengenalan).
-  6. Evaluasi + plotting forecast vs aktual; catatan training.
+  4. Arsitektur praktis: input shape, univariate dan multivariate.
+  5. Multi-step: recursive, direct, dan seq2seq (pengenalan).
+  6. Evaluasi + plotting forecast dan aktual; catatan training.
 - **Notebook:** `06_lstm_gru` (menyambung Bab 8).
-- **Latihan:** bandingkan baseline vs LSTM pada data Bab 6.
-- **SEO:** "LSTM time series", "prediksi deret waktu LSTM", "GRU vs LSTM".
+- **Latihan:** bandingkan baseline dan LSTM pada data Bab 6.
+- **SEO:** "LSTM time series", "prediksi deret waktu LSTM", "GRU dan LSTM".
 - **Blog:** 2 artikel.
 
 ---
@@ -265,7 +265,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 - **Tujuan pembelajaran:** setelah bab ini, pembaca mampu:
   1. Menjalankan proyek end-to-end prediksi pasang surut dari data terbuka
      (IOC/UHSLC/PSMSL), dengan Cilacap sebagai contoh reproducible.
-  2. Menerapkan pipeline Bab 7 (baseline persistence vs MLP vs LSTM/GRU) dengan
+  2. Menerapkan pipeline Bab 7 (baseline persistence, MLP, dan LSTM/GRU) dengan
      walk-forward.
   3. Mengevaluasi MAE/RMSE terhadap toleransi tinggi pasang dan memplot prediksi
      1–7 hari.
@@ -279,10 +279,10 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
      jenis pasang (semi-diurnal/diurnal/campuran); tipe pasut Indonesia.
   2. **Pemilihan station:** Cilacap (GLOSS #291) sebagai contoh reproducible —
      mengapa, keterbatasan untuk lokasi tanpa station terbuka.
-  3. **Sumber data terbuka:** IOC, UHSLC, PSMSL, BIG; tabel station Indonesia yang
+  3. **Sumber data terbuka:** IOC, UHSLC, PSMSL, BMKG; tabel station Indonesia yang
      datanya dapat diunduh; lisensi & atribusi.
-  4. Pipeline Bab 7: baseline persistence vs MLP vs LSTM/GRU; walk-forward 4 blok.
-  5. Evaluasi MAE/RMSE vs toleransi tinggi pasang; plot prediksi 1–7 hari;
+  4. Pipeline Bab 7: baseline persistence, MLP, dan LSTM/GRU; walk-forward 4 blok.
+  5. Evaluasi MAE/RMSE terhadap toleransi tinggi pasang; plot prediksi 1–7 hari;
      diskusi batas model & keterbatasan data.
   6. **Framing jujur:** analisis harmonik untuk penjelasan, ML untuk prakiraan
      cepat & pengisian gap data — bukan klaim riset baru.
@@ -308,7 +308,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 - **Tujuan pembelajaran:** setelah bab ini, pembaca mampu:
   1. Membangun prediktor hujan harian (data terbuka; regresi jumlah hujan + klasifikasi intensitas).
   2. Menerapkan verifikasi operasional dengan CSI/FAR/POD dan trade-off threshold.
-  3. Membandingkan walk-forward vs baseline (persistence, klimatologi, ARIMA singkat).
+  3. Membandingkan walk-forward dan baseline (persistence, klimatologi, ARIMA singkat).
   4. Melakukan interpretasi awal (permutation importance/SHAP) dan menyusun tabel verifikasi
      per kategori.
 - **Isi:**
@@ -317,11 +317,11 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
   3. Dua lintasan:
      - Regresi jumlah hujan (MAE + metrik domain).
      - Klasifikasi hujan/tidak & kategori intensitas dengan **CSI/FAR/POD + trade-off threshold**.
-  4. Walk-forward vs baseline (persistence, klimatologi, ARIMA singkat).
+  4. Walk-forward dibandingkan baseline (persistence, klimatologi, ARIMA singkat).
   5. Interpretasi awal (permutation importance/SHAP) → transisi ke Bab 10.
   6. Tabel verifikasi per kategori intensitas.
 - **Reproduksibilitas:** sumber data, lisensi, pipeline, seed, versi/**DOI**.
-- **Latihan:** model untuk stasiun pola berbeda (Indonesia timur vs barat).
+- **Latihan:** model untuk stasiun pola berbeda (Indonesia timur dan barat).
 - **SEO:** "prediksi curah hujan machine learning", "prediksi hujan LSTM",
   "machine learning cuaca".
 - **Blog:** 3–4 artikel + **video YouTube** (Fase II).
@@ -381,7 +381,7 @@ Urutan berkas mengikuti urutan baca dalam buku (konvensi standar buku ilmiah).
   - `back-matter/02-indeks.md` — indeks tematik per bagian (untuk indeks halaman final,
     bangkit via LaTeX `\makeindex`).
   - `back-matter/03-daftar-dataset-sumber.md` — daftar dataset & sumber (GHCND/CHIRPS, ERA5,
-    IOC/UHSLC/PSMSL, BIG, CHIRPS, ENSO/MJO) + lisensi & cara akses.
+    IOC/UHSLC/PSMSL, BMKG, CHIRPS, ENSO/MJO) + lisensi & cara akses.
   - `back-matter/04-daftar-notebook-doi.md` — daftar notebook Colab + DOI buku/versi.
   - `back-matter/05-tentang-penulis.md` — biografi singkat penulis.
   - `back-matter/06-kolofon.md` — kolofon (info produksi dokumen, peranti lunak, lisensi).
@@ -470,7 +470,7 @@ Standar sitasi seluruh bab, selaras dengan aturan IEEE di umbrella (§3.1b) dan 
 | 1 | Jurnal/prosiding *peer-reviewed*, buku teks klasik | Sumber utama klaim teknis |
 | 2 | Buku teks DL/ML (Goodfellow, Bishop, Géron, Chollet, Nielsen) | Untuk definisi & derivasi inti |
 | 3 | Dokumentasi resmi library (TensorFlow, Keras, xarray, Pandas) | Cantumkan versi API |
-| 4 | Dataset & data (ERA5/Copernicus, GHCND/CHIRPS, PSMSL/BIG) | Wajib: lisensi, identifikasi dataset, versi, cara akses |
+| 4 | Dataset & data (ERA5/Copernicus, GHCND/CHIRPS, PSMSL/BMKG) | Wajib: lisensi, identifikasi dataset, versi, cara akses |
 | 5 | Preprint (arXiv/SSRN) | Boleh bila tak ada versi peer-reviewed; tandai "preprint" |
 | 6 | Blog/artikel non-review, Wikipedia | **Hanya untuk konteks/lintasan**, bukan penguat klaim inti; usahakan diganti sumber primer |
 | ✗ | Sumber sekunder tanpa kredibilitas, tautan mati, UGC tanpa verifikasi | Jangan |

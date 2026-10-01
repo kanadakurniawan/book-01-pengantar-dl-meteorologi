@@ -11,7 +11,7 @@
 
 | Berkas | Sumber | Lisensi | Catatan |
 |---|---|---|---|
-| `cili_30d.csv` | IOC Sea Level Station Monitoring Facility (stasiun `cili`, Cilacap) | **CC BY-NC 4.0 (non-komersial)** | Observasi nyata ~30 hari (sampling 1–3 menit; deskripsi kolom di header) |
+| `cili_30d.csv` | IOC Sea Level Station Monitoring Facility (stasiun `cili`, Cilacap) | **CC BY-NC 4.0 (non-komersial)** | Observasi nyata ≈30 hari (sampling 1–3 menit; deskripsi kolom di header) |
 | `cili_1y_hourly_real.csv` | Turunan dari `cili_30d.csv` (skrip `make_tide_harmonic.py`) | **CC BY-NC 4.0 (non-komersial)** — turunan data IOC | Deret harmonik 1 tahun; **bukan** pengukuran langsung |
 | `cilacap_psmsl_rlr_monthly.rlrdata` | PSMSL (stasiun Cilacap, format RLR) | Gratis; sitasi Holgate et al. (2013) | MSL bulanan jangka panjang |
 

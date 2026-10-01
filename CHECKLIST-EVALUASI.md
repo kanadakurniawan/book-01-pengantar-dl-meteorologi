@@ -4,10 +4,28 @@
 > Rujukan: `outline.md` → "Alur Kerja Penulisan & Evaluasi Internal".
 > Skala: ✅ lolos · ⚠️ perlu perbaikan · ❌ gagal. Tulis catatan di kolom lembar kerja.
 
+> **Pemicu "cek kualitas" (wajib):** bila diminta "cek kualitas" (atau variasi senada),
+> kerjakan **dua hal sekaligus** dan laporkan keduanya dalam satu laporan:
+>
+> 1. Jalankan cek otomatis terpadu — `python scripts/cek-kualitas.py` untuk seluruh buku,
+>    atau `python scripts/cek-kualitas.py --file <path>` untuk satu berkas. Perintah ini
+>    menjalankan `cek-bahasa-asing.py`, `cek-terminologie.py`, dan `cek-dash-prosa.py`
+>    sekaligus; laporkan "bersih" hanya bila exit 0 (ketiganya lolos).
+> 2. Telusuri checklist A–E di bawah (isi & keilmuan, struktur, sitasi, kode, build).
+>
+> Cek otomatis saja tidak cukup, dan checklist saja tidak cukup: "cek kualitas" berarti
+> keduanya.
+
 ## A. Isi & Keilmuan
 
 ### A1. Bahasa — Ejaan & Kaidah (EYD)
 
+- [ ] **Cek kualitas terpadu (otomatis, entry point):** jalankan
+      `python scripts/cek-kualitas.py` (seluruh buku) atau
+      `python scripts/cek-kualitas.py --file <path>` (satu berkas); perintah ini
+      membungkus `cek-bahasa-asing.py`, `cek-terminologie.py`, dan `cek-dash-prosa.py`
+      dalam satu jalur. Laporkan "bersih" hanya bila exit 0 (ketiganya lolos); ini bagian
+      tetap dari pemicu "cek kualitas" (lihat catatan di awal berkas).
 - [ ] **Baku & EYD:** seluruh naskah mengikuti *Ejaan Bahasa Indonesia yang Disempurnakan*
       (EYD) dan kaidah PUEBI §18; kata tidak baku ditulis ke bentuk bakunya (mis. "resiko" →
       *risiko*, "nasehat" → *nasihat*, "ijin" → *izin*, "jaman" → *zaman*, "apotik" →
@@ -116,7 +134,7 @@
 | 3 |   |   |   |   |   |                 |
 | 4 |   |   |   |   |   |                 |
 | 5 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Belum (D uji Colab; E build & DOI) |
-| 6 |   |   |   |   |   |                 |
+| 6 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Belum (D: uji notebook+data; E: build & DOI) |
 | 7 |   |   |   |   |   |                 |
 | 8 |   |   |   |   |   |                 |
 | 9 |   |   |   |   |   |                 |
@@ -137,7 +155,7 @@
 - **C (sitasi):** ⚠️ Year Jolliffe disamakan ke 2011 (teks, refs.bib x3, daftar pustaka);
   URL arXiv [6] diberi tanggal akses. DOI belum diverifikasi ulang via `doi.org`
   satu-per-satu di mesin rilis.
-- **D (kode & reproduksibilitas):** ⚠️ Kode 1.3 (mini-challenge *persistence* vs
+- **D (kode & reproduksibilitas):** ⚠️ Kode 1.3 (mini-challenge *persistence* dan
   klimatologis) ditambahkan ke `notebooks/ch-01-00_fondasi_tensorflow.ipynb` (13 sel);
   perlu uji eksekusi dari awal–akhir di Colab.
 - **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh
@@ -168,7 +186,7 @@
   (21 Sep 2026, mesin lokal): `jupyter nbconvert --execute` — 8/8 sel berhasil tanpa error,
   seed 42, TensorFlow 2.21.0 (CPU; GPU `[]` di Windows). Hasil akhir: baseline
   *persistence* MAE 0.3256 m; MLP MAE test 0.0782 m; `loss="mse"` → MAE 0.0782 / RMSE
-  0.0948; `loss="mae"` → MAE 0.0745 / RMSE 0.0921. Sel perbandingan MAE vs MSE (sebelumnya
+  0.0948; `loss="mae"` → MAE 0.0745 / RMSE 0.0921. Sel perbandingan MAE dan MSE (sebelumnya
   belum tereksekusi) kini ikut tereksekusi. Warning Keras `input_shape=` di `Dense` muncul
   (tidak berbahaya; opsional diganti `Input(shape=...)`). Validasi silang di Colab
   disarankan sebelum rilis karena log/GPU Colab dapat sedikit berbeda. Cadangan notebook
@@ -205,5 +223,37 @@
   learning curve dengan/tanpa regularisasi. Uji eksekusi dari awal–akhir TIDAK dapat
   dilakukan di mesin ini (TensorFlow diblokir kebijakan mesin: DLL load failed, Application
   Control policy); wajib diuji di Colab sebelum rilis.
+- **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh Pandoc+LaTeX
+  di mesin rilis); `bookDOI` masih placeholder `10.5281/zenodo.0000000`.
+
+### Catatan Evaluasi Bab 6 (30 Sep 2026 — setelah perbaikan)
+
+- **A (isi & keilmuan):** ✅ Ketiga cek otomatis bersih (bahasa-asing, terminologie,
+  dash-prosa; exit 0). Perbaikan: salah ketik "trasformasi" → "transformasi" (§6.5).
+  Notebook `ch-06-05_persiapan_data.ipynb` dibersihkan dari nama fungsi/token tidak baku
+  (`_buscar_raiz` → `_cari_direktori_buku`, `cargar_nyata` → `muat_data_nyata`,
+  `ETIQUETA` → `ETIKET_SUMBER`, "repoti" → "repositori"), dan guard kolom verifikasi
+  dirapikan menjadi `elif c.startswith("chirps")` (kolom yang tidak ada di data tidak
+  diproses).
+- **B (struktur & konsistensi):** ✅ Volume isi ±4.394 kata (target 3.000–4.500);
+  Tujuan Pembelajaran 4 butir selaras dengan latihan; prasyarat Bab 1/2/5; Kode 6.1–6.8,
+  Tabel 6.1–6.2, Persamaan 6.1–6.3, dan Gambar 6.1 terdaftar di `REGISTER.md`. Diagram
+  Alur 6.1 dihapus dan alurnya dijadikan Tabel 6.1 (pipeline 7 tahap); daftar sumber data
+  dijadikan daftar berbutir (bukan tabel), sehingga tabel perbandingan format berkas
+  bergeser menjadi Tabel 6.2.
+- **C (sitasi):** ✅ Perbaikan: dua entri yang hilang ditambahkan ke `refs.bib`, yaitu
+  [6] Okamoto et al. (GSMaP, IGARSS 2005) dan [8] WMO (WMO-No. 8, 2021). Penomoran `[n]`
+  disusun ulang agar incremental sesuai kemunculan pertama (sebelumnya [11] mendahului [6]).
+  URL WMO-No. 8 diperbaiki (spasi di tengah URL dihapus); inisial Jolliffe dikoreksi
+  ("S." → "I. T."). Daftar pustaka agregat (`back-matter/01-daftar-pustaka.md`, kini 48
+  entri) dan daftar dataset (`back-matter/03-daftar-dataset-sumber.md`, ditambah GSMaP +
+  keterangan ERA5-Land) diselaraskan. Verifikasi DOI via `doi.org` tetap disarankan di
+  mesin rilis.
+- **D (kode & reproduksibilitas):** ⚠️ Notebook `ch-06-05_persiapan_data.ipynb` (17 sel):
+  seed 42 ada; tidak memakai TensorFlow (tidak relevan untuk bab data). Notebook memakai
+  data nyata di `manuscripts/ch-09-.../data` (ERA5-Land jakarta + indeks RMM/ONI) lewat
+  `scripts/download_era5.py` dan `scripts/download_indices.py`; tanpa data itu muncul
+  `FileNotFoundError` (memang disengaja). Uji eksekusi awal–akhir menunggu unduhan data di
+  Colab.
 - **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh Pandoc+LaTeX
   di mesin rilis); `bookDOI` masih placeholder `10.5281/zenodo.0000000`.

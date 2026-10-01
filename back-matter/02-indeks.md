@@ -69,7 +69,7 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 
 ## H
 
-- Harmonik vs *machine learning* — Bab 8
+- Harmonik dan *machine learning* — Bab 8
 - Horizon prediksi (multi-step) — Bab 7, 8
 
 ## I
@@ -93,8 +93,8 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 
 ## M
 
-- MAE vs MSE — Bab 2
-- *Machine learning* (ML): definisi, vs DL — Bab 1
+- MAE dan MSE — Bab 2
+- *Machine learning* (ML): definisi, dan DL — Bab 1
 - MLP (*multilayer perceptron*) — Bab 2, 8
 - Metrik operasional WMO — Bab 5, 9
 - MJO (RMM) — Bab 6

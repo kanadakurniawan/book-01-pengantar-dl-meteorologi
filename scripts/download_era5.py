@@ -40,7 +40,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 
 # Stasiun buku: nama -> (lat, lon, rentang tahun default). Cilacap = pasut Bab 8;
-# Jakarta/Kupang/Merauke = calon stasiun hujan Bab 9 (barat vs timur).
+# Jakarta/Kupang/Merauke = calon stasiun hujan Bab 9 (barat dan timur).
 BOOK_STATIONS = {
     "cilacap": {"lat": -7.75, "lon": 109.02, "start": 2020, "end": 2026},
     "jakarta": {"lat": -6.183, "lon": 106.833, "start": 2010, "end": 2026},

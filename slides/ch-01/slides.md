@@ -124,7 +124,7 @@ suhu_hari = tf.constant([26.5, 26.8, 27.2])
 print(suhu_hari.shape)   # (3,)
 ```
 
-## Hasil: Persistence vs Klimatologis
+## Hasil: Persistence dan Klimatologis
 
 - *Persistence*: prediksi besok sama dengan pengamatan hari ini.
 - Klimatologis: rata-rata historis untuk hari dan bulan yang sama [12].

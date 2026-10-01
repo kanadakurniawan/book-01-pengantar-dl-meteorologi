@@ -23,7 +23,7 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Membangun** prediktor hujan harian titik grid terbuka (regresi jumlah hujan + klasifikasi intensitas) dengan fitur regional ERA5/ERA5-Land dan indeks iklim.
 2. **Menerapkan** verifikasi operasional dengan CSI/POD/FAR dan trade-off threshold.
-3. **Membandingkan** *walk-forward* vs baseline (persistence, klimatologi, ARIMA singkat).
+3. **Membandingkan** *walk-forward* dengan baseline (persistence, klimatologi, ARIMA singkat).
 4. **Melakukan** interpretasi awal (*permutation importance*, sedangkan SHAP penuh di Bab 10) dan menyusun tabel verifikasi per kategori intensitas.
 
 ## 9.1 Konteks Pelayanan dan Kejujuran Framing
@@ -70,7 +70,7 @@ Lisensi data: semua sumber terbuka. CHIRPS (domain publik, kutip Funk et al. 201
 
 Semua fitur dinormalisasi dengan statistik dari bagian latih saja (Bab 6 §6.7), sedangkan target regresi di-transform `log1p` bila digunakan (Bab 6 §6.7).
 
-### Data multi-titik: barat vs timur Indonesia
+### Data multi-titik: barat dan timur Indonesia
 
 Pola hujan Indonesia sangat bergantung pada geografi: wilayah barat (Sumatera, Kalimantan, Jawa) dipengaruhi kuat oleh monsun Asia-Australia dan MJO, sedangkan wilayah timur (Papua, Maluku, Nusa Tenggara Timur) lebih dipengaruhi oleh monsun Australia dan variabilitas ENSO. Untuk studi kasus yang lebih lengkap, bandingkan **dua titik grid berbeda pola**:
 
@@ -106,7 +106,7 @@ Bab 2-3 mengajarkan keduanya. Di sini kita terapkan pada masalah yang sama, kare
 
 Catatan: Tabel 9.2 mengelompokkan ambang umum menjadi 3 kelas: kelas 0 mencampur tidak hujan (0 mm) dan hujan ringan (>0-<20 mm), sedangkan kelas 2 mencampur lebat dan sangat lebat (≥50 mm). Jika kebutuhan operasional meminta lebih rinci, skema yang lebih lengkap punya "tidak hujan" dan "sangat lebat" terpisah.
 
-Untuk klasifikasi biner "hujan lebat vs tidak" (untuk peringatan dini), gunakan ambang `≥ 50` sebagai kelas positif (lebat atau sangat lebat). Evaluasi dengan metrik fenomena langka (Bab 5): **CSI, POD, FAR** dan trade-off threshold (Bab 3).
+Untuk klasifikasi biner "hujan lebat atau tidak" (untuk peringatan dini), gunakan ambang `≥ 50` sebagai kelas positif (lebat atau sangat lebat). Evaluasi dengan metrik fenomena langka (Bab 5): **CSI, POD, FAR** dan trade-off threshold (Bab 3).
 
 **Model yang digunakan:** GRU multivariate (Bab 7) sebagai pilihan utama, MLP + lag sebagai pembanding, dan LSTM bila perlu. Seluruh model dilatih dengan *window* `w` (misal 7-30 hari) tanpa *shuffle*, sehingga urutan *window* dipertahankan agar tiap blok *walk-forward* tetap kronologis dan perbandingan antar blok adil. (Bab 7 §7.9 mencatat bahwa `shuffle=True` umumnya aman untuk model *stateless*, tetapi di sini kita memilih tanpa *shuffle* demi keseragaman antar blok.)
 
@@ -158,7 +158,7 @@ def verifikasi(y_true, prob, thresholds):
 
 Ada beberapa cara memiliki titik kerja yang bisa dijelaskan:
 
-1. **Cost matrix** - tetapkan *harga* miss vs false alarm (misal 5:1 untuk peringatan dini), lalu pilih threshold yang meminimalkan total biaya pada *validasi*.
+1. **Cost matrix** - tetapkan *harga* miss dan false alarm (misal 5:1 untuk peringatan dini), lalu pilih threshold yang meminimalkan total biaya pada *validasi*.
 2. **Target keberhasilan** - misal "POD ≥ 0,7 dengan FAR ≤ 0,5", lalu pilih threshold terkecil yang memenuhi keduanya.
 3. **Jawab pertanyaan pemangku** - tanyakan "lebih buruk mana: peringatan keliru atau kejadian terlewat?" dan biarkan jawaban menentukan titik kerja.
 
@@ -201,11 +201,11 @@ plt.tight_layout()
 plt.show()
 ```
 
-Persamaan yang digunakan (dari Tabel 5.3 Bab 5, pedoman WMO [7]):
+Kode 9.4 memplot kurva precision-recall beserta garis baseline acaknya. Persamaan yang digunakan (dari Tabel 5.3 Bab 5, pedoman WMO [7]):
 
 $$ \text{POD} = \frac{TP}{TP+FN}, \quad \text{FAR} = \frac{FP}{TP+FP}, \quad \text{CSI} = \frac{TP}{TP+FP+FN} \tag{9.1} $$
 
-Persamaan (9.1) memberi tiga sudut pandang yang saling melengkapi. Contoh membaca hasil (ilustratif, perhatikan *trade-off* antar metrik):
+Persamaan 9.1 memberi tiga sudut pandang yang saling melengkapi. Contoh membaca hasil (ilustratif, perhatikan *trade-off* antar metrik):
 
 **Tabel 9.3**: Contoh verifikasi *threshold*.
 
@@ -215,7 +215,7 @@ Persamaan (9.1) memberi tiga sudut pandang yang saling melengkapi. Contoh membac
 | 0,5 | 0.58 | 0.34 | 0.43 |
 | 0,8 | 0.31 | 0.20 | 0.27 |
 
-Membaca Tabel 9.3: threshold rendah (0,2) menangkap banyak kejadian (POD 0,82) tetapi banyak alarm palsu (FAR 0,55), sedangkan threshold tinggi (0,8) sebaliknya. **Titik terbaik bukanlah "yang CSI tertinggi" semata**, melainkan yang paling sesuai konsekuensi: untuk peringatan dini, POD tinggi (dengan FAR wajar) sering dipilih, sedangkan untuk kebijakan evakuasi yang mahal, FAR rendah lebih penting.
+Membaca Tabel 9.3: threshold rendah (0,2) menangkap banyak kejadian (POD 0,82) tetapi banyak alarm palsu (FAR 0,55), sedangkan threshold tinggi (0,8) sebaliknya. **Titik yang dipilih bukanlah "yang CSI tertinggi" semata**, melainkan yang sesuai konsekuensi: untuk peringatan dini, POD tinggi (dengan FAR wajar) sering dipilih, sedangkan untuk kebijakan evakuasi yang mahal, FAR rendah lebih penting.
 
 ## 9.5 Baseline, Walk-Forward, dan Arsitektur
 
@@ -225,7 +225,7 @@ Membaca Tabel 9.3: threshold rendah (0,2) menangkap banyak kejadian (POD 0,82) t
 - ***Klimatologi***: rata-rata hujan untuk kalender yang sama. Baseline yang *kuat* untuk hujan harian.
 - ***ARIMA singkat***: autoregressive ARIMA(p,d,q) kecil (misal p,q ≤ 2, d ∈ {0,1}) yang memberi *baseline* linier [8].
 
-Pilihan ini mengingatkan Bab 7: deep learning harus **mengalahkan baseline yang paling kuat** (sering klimatologi untuk hujan), bukan sekadar "bekerja".
+Pilihan ini mengingatkan Bab 7: deep learning harus **mengalahkan baseline yang kuat** (sering klimatologi untuk hujan), bukan sekadar "bekerja".
 
 ### Membangun baseline klimatologi yang benar
 
@@ -247,9 +247,9 @@ Catatan walk-forward: karena fitur punya lag/window, beri *purge/embargo* di bat
 
 ### Menyusun "kalender eksperimen"
 
-Untuk menghindari hasil yang membingungkan, susun eksperimen secara teratur, misalnya tabel berikut:
+Untuk menghindari hasil yang membingungkan, susun eksperimen secara teratur, seperti pada Tabel 9.4.
 
-| Eksperimen | Fitur | Model | Baseline terbaik | Catatan |
+| Eksperimen | Fitur | Model | Baseline yang dipilih | Catatan |
 |---|---|---|---|---|
 | E1 | lag saja | GRU | klimatologi | dasar |
 | E2 | + musiman | GRU | - | lihat dampak musiman |
@@ -266,7 +266,7 @@ Mengikuti Bab 7-8: GRU multivariate `w` hari dengan fitur per langkah waktu (`(b
 
 ## 9.6 Interpretasi Awal: Mengapa Model Memprediksi Demikian?
 
-Deep learning "kotak hitam" menjadi masalah untuk kepercayaan operasional. Interpretasi **global** (fitur apa yang paling berpengaruh) dan **lokal** (mengapa satu prediksi tertentu) dibahas penuh di Bab 10, sedangkan di sini kita mulai dengan **permutation importance** pada model yang sudah dilatih (SHAP penuh di Bab 10).
+Deep learning "kotak hitam" menjadi masalah untuk kepercayaan operasional. Interpretasi **global** (fitur apa yang berpengaruh) dan **lokal** (mengapa satu prediksi tertentu) dibahas penuh di Bab 10, sedangkan di sini kita mulai dengan **permutation importance** pada model yang sudah dilatih (SHAP penuh di Bab 10).
 
 **Kode 9.2 - Permutation importance sederhana.**
 
@@ -287,7 +287,7 @@ def permutation_importance(model, X, y, n_repeat=10, metric=mae):
     return imp
 ```
 
-Catatan implementasi: kode 9.2 acak fitur di semua timestep (input 3D). Untuk MLP 2D `(n, f)`, sesuaikan indeks menjadi `X.shape[1]` dan acak `Xp[:, j]`. Untuk klasifikasi, gunakan metrik langka (AUPRC, log-loss, atau CSI), bukan MAE.
+Catatan implementasi: Kode 9.2 mengacak fitur di semua timestep (input 3D). Untuk MLP 2D `(n, f)`, sesuaikan indeks menjadi `X.shape[1]` dan acak `Xp[:, j]`. Untuk klasifikasi, gunakan metrik langka (AUPRC, log-loss, atau CSI), bukan MAE.
 
 Prinsip: jika mengacak satu fitur membuat galat naik banyak, fitur itu penting. Kewaspadaan: untuk fitur yang saling berkorelasi, permutation importance bisa menyesatkan (mengacak satu membuat yang lain "kehilangan konteks"). Bab 10 memakai SHAP untuk penjelasan yang lebih stabil dan disertai kewaspadaan penggunaannya.
 
@@ -309,7 +309,7 @@ Melakukan interpretasi ini sejak tahap kajian (bukan setelah produksi) membantu 
 
 ## 9.7 Tabel Verifikasi per Kategori
 
-Bagian laporan yang paling berguna untuk praktisi: **contingency table** dirangkum menjadi tabel ringkas.
+Bagian laporan yang berguna untuk praktisi: **contingency table** dirangkum menjadi tabel ringkas.
 
 **Kode 9.3 - Tabel ringkas verifikasi per kategori intensitas.**
 
@@ -321,7 +321,7 @@ def tabel_kategori(y_true, y_pred):
                        pd.Series(y_pred, name="prediksi"))
 ```
 
-`pd.crosstab` memberi *counts* saja, sehingga untuk CSI/POD/FAR per kategori, hitung per kategori secara *one-vs-rest* (kelas k positif, semua lain negatif), misal dengan mengulang fungsi `verifikasi` (Kode 9.1) untuk setiap k.
+Kode 9.3 memakai `pd.crosstab` yang hanya memberi *counts*, sehingga untuk CSI/POD/FAR per kategori hitung secara *one-vs-rest* (kelas k positif, semua lain negatif), misal dengan mengulang fungsi `verifikasi` (Kode 9.1) untuk setiap k.
 
 Laporkan untuk masing-masing kategori (0, 1, 2) nilai CSI/POD/FAR secara terpisah, sedangkan perilaku model pada hujan lebat (langka) sering jauh lebih buruk daripada pada hari kering, dan ini penting diketahui pengguna (Bab 5). Contoh kerja penuh (termasuk threshold, probabilitas, dan crosstab) tersedia di notebook `ch-09-08_studi_kasus_curah_hujan_terbuka.ipynb`.
 
@@ -337,7 +337,7 @@ Laporkan untuk masing-masing kategori (0, 1, 2) nilai CSI/POD/FAR secara terpisa
 
 **Gambar 9.2**: Verifikasi per kategori intensitas (ilustratif).
 
-Tabel 9.5 dan Gambar 9.2 menyingkap hal menarik: model "bagus" pada hari kering (POD tinggi, FAR rendah) justru paling lemah pada kejadian yang paling penting (lebat). Ini hasil yang layak dilaporkan apa adanya, bukan disembunyikan. Seluruh eksperimen bab ini berjalan di atas TensorFlow [9].
+Tabel 9.5 dan Gambar 9.2 menyingkap hal menarik: model "bagus" pada hari kering (POD tinggi, FAR rendah) justru lemah pada kejadian yang penting (lebat). Ini hasil yang layak dilaporkan apa adanya, bukan disembunyikan. Seluruh eksperimen bab ini berjalan di atas TensorFlow [9].
 
 ### Apa yang harus dilaporkan (dan apa yang tidak)
 
@@ -348,7 +348,7 @@ Laporan studi kasus yang jujur biasanya berisi:
 3. **Hasil** - MAE/RMSE (regresi), CSI/POD/FAR per threshold dan kategori, plus rentang antar blok.
 4. **Threshold yang dipilih dan alasannya** - konteks operasional.
 5. **Interpretasi** - fitur penting (dengan kewaspadaan), galat per musim.
-6. **Keterbatasan** - data contoh vs nyata, satu/dua titik lokasi, tanpa optimasi menyeluruh.
+6. **Keterbatasan** - data contoh dan nyata, satu/dua titik lokasi, tanpa optimasi menyeluruh.
 
 Yang **tidak** perlu dilaporkan: klaim "akurasi 99%" tanpa metrik langka, angka tanpa baseline, atau kesimpulan kausal dari korelasi. Format ini langsung digunakan kembali di Bab 10 untuk keputusan produksi.
 
@@ -374,7 +374,7 @@ Yang **tidak** perlu dilaporkan: klaim "akurasi 99%" tanpa metrik langka, angka 
 
 1. Gunakan data contoh harian satu titik lokasi, lalu bangun fitur (Tabel 9.1).
 2. Regresi: latih GRU dengan transformasi `log1p`, hitung MAE/RMSE, dan bandingkan dengan persistence dan klimatologi pada *walk-forward* 3 blok.
-3. Klasifikasi biner lebat vs tidak: evaluasi threshold 0,2/0,5/0,8 (Tabel 9.3), lalu tetapkan threshold berdasarkan skenario (peringatan dini vs evakuasi) dan jelaskan.
+3. Klasifikasi biner lebat atau tidak: evaluasi threshold 0,2/0,5/0,8 (Tabel 9.3), lalu tetapkan threshold berdasarkan skenario (peringatan dini atau evakuasi) dan jelaskan.
 4. Klasifikasi multi-kelas intensitas: buat crosstab (Kode 9.3) dan hitung CSI/POD/FAR per kategori (Tabel 9.5).
 5. Tambahkan indeks MJO/ENSO, lalu bandingkan CSI lebat dengan dan tanpa fitur tersebut.
 6. (Proyek mini) Susun laporan satu halaman seperti Bab 8: konteks, data, metode, tabel hasil, threshold terpilih, interpretasi dan keterbatasan.
@@ -382,13 +382,13 @@ Yang **tidak** perlu dilaporkan: klaim "akurasi 99%" tanpa metrik langka, angka 
 ## Ringkasan
 
 - Prediksi hujan berdampak langsung pada masyarakat, sehingga kejujuran framing dan metrik wajib.
-- Data: titik grid CHIRPS (target + lag), ERA5/ERA5-Land (regional), ENSO/MJO (indeks iklim), sedangkan pola barat vs timur Indonesia berbeda dan perlu dilatih ulang per lokasi.
+- Data: titik grid CHIRPS (target + lag), ERA5/ERA5-Land (regional), ENSO/MJO (indeks iklim), sedangkan pola barat dan timur Indonesia berbeda dan perlu dilatih ulang per lokasi.
 - Dua lintasan: regresi (mm, `log1p`, MAE/RMSE) dan klasifikasi (kategori, CSI/POD/FAR), lalu menangani imbalance dengan class_weight dan threshold.
 - Threshold bukan 0,5 tetap - atur sesuai biaya galat, lalu gunakan precision-recall untuk data langka (Tabel 9.3).
 - Baseline kuat: klimatologi "cerdas" per kalender (juga persistence dan ARIMA), sedangkan deep learning harus mengalahkannya secara konsisten (Tabel 9.4).
 - Walk-forward multi-blok, lalu laporkan rentang, bukan hanya rata-rata.
 - Interpretasi dimulai dari permutation importance (deskriptif, bukan kausal, dan SHAP di Bab 10).
-- Laporkan verifikasi per kategori - kejadian langka paling penting dan paling sulit (Tabel 9.5), lengkap dengan keterbatasan.
+- Laporkan verifikasi per kategori - kejadian langka yang penting dan sulit (Tabel 9.5), lengkap dengan keterbatasan.
 
 ## References
 

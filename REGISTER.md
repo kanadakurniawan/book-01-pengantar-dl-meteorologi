@@ -25,7 +25,7 @@
 | Persamaan | — (belum ada) | | | |
 | Kode | Kode 1.1 | Verifikasi TensorFlow + GPU | — | §1.6 |
 | Kode | Kode 1.2 | Pembuatan tensor suhu_hari | — | §1.7 |
-| Kode | Kode 1.3 | Mini-challenge persistence vs klimatologis | — | §1.7b |
+| Kode | Kode 1.3 | Mini-challenge persistence dan klimatologis | — | §1.7b |
 
 ### Bab 2 — Regresi: Perceptron dan Jaringan Saraf
 
@@ -36,7 +36,7 @@
 | Tabel | Tabel 2.1 | Contoh target regresi meteorologi (satuan & sifat data) | — | §2.1 |
 | Tabel | Tabel 2.2 | Contoh deret raw pasang surut (nilai ilustratif) | — | §2.5 |
 | Tabel | Tabel 2.3 | Contoh windowing (dua langkah) pasang surut | — | §2.5 |
-| Tabel | Tabel 2.4 | Perbandingan MAE vs MSE | — | §2.6 |
+| Tabel | Tabel 2.4 | Perbandingan MAE dan MSE | — | §2.6 |
 | Persamaan | (2.1) | $z = \sum w_i x_i + b$ | — | §2.2 |
 | Persamaan | (2.2) | $a = f(z)$ | — | §2.2 |
 | Persamaan | (2.3) | $\hat{y} = wx + b$ | — | §2.3 |
@@ -46,7 +46,7 @@
 | Persamaan | (2.7) | $\mathrm{MSE} = \frac{1}{n}\sum (\cdot)^2$ (contoh) | — | §2.6 |
 | Kode | Kode 2.1 | Definisi arsitektur MLP regresi (Keras) | — | §2.4 |
 | Kode | Kode 2.2 | Windowing + split berbasis waktu + data sintetik | — | §2.5 |
-| Kode | Kode 2.3 | Compile, latih, evaluasi vs persistence | — | §2.5 |
+| Kode | Kode 2.3 | Compile, latih, evaluasi terhadap persistence | — | §2.5 |
 
 > **Catatan:** Kode/notebook pendamping (setup data, baseline, pelatihan) di Bab 2 belum
 > diberi nomor `Kode 2.2` dst. Tambahkan saat review.
@@ -57,8 +57,8 @@
 |---|---|---|---|---|
 | Gambar | Gambar 3.1 | Kurva sigmoid memetakan z ke (0,1) | `figures/fig-3-1-sigmoid.png` | §3.2 |
 | Gambar | Gambar 3.2 | Confusion matrix contoh data tidak seimbang | `figures/fig-3-2-confusion-matrix.png` | §3.6 |
-| Tabel | Tabel 3.1 | Perbedaan regresi vs klasifikasi | — | §3.1 |
-| Tabel | Tabel 3.2 | Perbandingan sigmoid vs softmax | — | §3.3 |
+| Tabel | Tabel 3.1 | Perbedaan regresi dan klasifikasi | — | §3.1 |
+| Tabel | Tabel 3.2 | Perbandingan sigmoid dan softmax | — | §3.3 |
 | Tabel | Tabel 3.3 | Contoh data tidak seimbang | — | §3.6 |
 | Tabel | Tabel 3.4 | Struktur confusion matrix biner | — | §3.8, §3.6 |
 | Persamaan | (3.1) | $\sigma(z) = \frac{1}{1+e^{-z}}$ | — | §3.2 |
@@ -77,7 +77,7 @@
 | Gambar | Gambar 4.2 | Permukaan loss landscape (minimum global, lokal, saddle) | `figures/fig-4-2-landscape.png` | §4.1 |
 | Gambar | Gambar 4.3 | Contoh learning curve (train turun, val naik → overfit) | `figures/fig-4-3-learning-curve.png` | §4.7 |
 | Tabel | Tabel 4.1 | Perbandingan fungsi aktivasi dari sisi gradien | — | §4.3 |
-| Tabel | Tabel 4.2 | SGD vs Adam | — | §4.4 |
+| Tabel | Tabel 4.2 | SGD dan Adam | — | §4.4 |
 | Persamaan | (4.1) | $w \leftarrow w - \eta \frac{\partial L}{\partial w}$ | — | §4.1 |
 | Persamaan | (4.2) | aturan rantai backprop | — | §4.2 |
 | Persamaan | (4.3) | $\sigma'(z)=\sigma(z)(1-\sigma(z))$ | — | §4.3 |
@@ -105,18 +105,19 @@
 
 | Jenis | Nomor | Caption / isi | File | Dirujuk di § |
 |---|---|---|---|---|
-| Gambar | Gambar 6.1 | Distribusi curah hujan harian (ekor panjang) | `figures/fig-6-1-distribusi-hujan.png` | §6.5 |
-| Tabel | Tabel 6.1 | Sumber data utama (GHCND/CHIRPS, ERA5, CMIP6, PSMSL, satelit) | — | §6.2 |
+| Gambar | Gambar 6.1 | Distribusi curah hujan harian stasiun Cilacap, GHCN-Daily (ekor panjang) | `figures/fig-6-1-distribusi-hujan.png` | §6.5 |
+| Tabel | Tabel 6.1 | Pipeline data: dari berkas mentah ke dataset siap dilatih | — | §6.1 |
 | Tabel | Tabel 6.2 | Perbandingan format berkas (CSV/NetCDF/GRIB) | — | §6.3 |
-| Persamaan | (6.1) | z-score normalisasi (train) | — | §6.7 |
-| Persamaan | (6.2) | transformasi target log1p | — | §6.7 |
+| Persamaan | (6.1) | normalisasi min-max | — | §6.7 |
+| Persamaan | (6.2) | standardisasi z-score (μ/σ dari data latih) | — | §6.7 |
+| Persamaan | (6.3) | transformasi target log1p | — | §6.7 |
 | Kode | Kode 6.1 | Membaca NetCDF dengan xarray | — | §6.3 |
 | Kode | Kode 6.2 | Membaca GRIB dengan cfgrib | — | §6.3 |
 | Kode | Kode 6.3 | Menyatukan ERA5 per jam → tabel harian | — | §6.3 |
 | Kode | Kode 6.4 | Cek & isi nilai hilang (pandas) | — | §6.4 |
 | Kode | Kode 6.5 | Dekomposisi musiman & korelasi silang | — | §6.5 |
 | Kode | Kode 6.6 | Fitur lag + musiman + ENSO/MJO | — | §6.6 |
-| Kode | Kode 6.7 | Normalisasi (skala train) + split waktu | — | §6.7 |
+| Kode | Kode 6.7 | Normalisasi & standardisasi (skala train) + split waktu | — | §6.7 |
 | Kode | Kode 6.8 | Menyimpan X/y utk bab berikutnya | — | §6.7 |
 
 ### Bab 7 — Deret Waktu dan Model Sekuensial: RNN, LSTM, GRU
@@ -127,7 +128,7 @@
 | Tabel | Tabel 7.1 | Contoh windowing (w=3, h=1) | — | §7.2 |
 | Tabel | Tabel 7.2 | Pilihan panjang window | — | §7.2 |
 | Tabel | Tabel 7.3 | Baseline deret waktu | — | §7.3 |
-| Tabel | Tabel 7.4 | LSTM vs GRU | — | §7.6 |
+| Tabel | Tabel 7.4 | LSTM dan GRU | — | §7.6 |
 | Tabel | Tabel 7.5 | Strategi multi-langkah | — | §7.7 |
 | Persamaan | (7.1) | input shape (batch, waktu, fitur) | — | §7.2 |
 | Persamaan | (7.2) | $h_t = \tanh(W_x x_t + W_h h_{t-1} + b)$ | — | §7.4 |
@@ -139,7 +140,7 @@
 | Kode | Kode 7.2 | baseline persistence & klimatologi | — | §7.3 |
 | Kode | Kode 7.3 | LSTM univariate | — | §7.7 |
 | Kode | Kode 7.4 | LSTM multivariate | — | §7.7 |
-| Kode | Kode 7.5 | Plot prediksi vs aktual | — | §7.8 |
+| Kode | Kode 7.5 | Plot prediksi dan aktual | — | §7.8 |
 | Kode | Kode 7.6 | LSTM bertumpuk (stacked) | — | §7.7 |
 | Kode | Kode 7.7 | Satu model per horizon (strategi direct) | — | §7.7 |
 
@@ -148,15 +149,15 @@
 | Jenis | Nomor | Caption / isi | File | Dirujuk di § |
 |---|---|---|---|---|
 | Gambar | Gambar 8.1 | Spektrum frekuensi pasang surut (M2/K1) | `figures/fig-8-1-spektrum-pasang.png` | §8.2 |
-| Gambar | Gambar 8.2 | Prediksi vs aktual 7 hari (data sample Cilacap) | `figures/fig-8-2-forecast-7hari.png` | §8.5 |
+| Gambar | Gambar 8.2 | Prediksi dan aktual 7 hari (data sample Cilacap) | `figures/fig-8-2-forecast-7hari.png` | §8.5 |
 | Gambar | Gambar 8.3 | Residu per amplitudo dan fase pasang M2 | `figures/fig-8-3-residu.png` | §8.5 |
 | Tabel | Tabel 8.1 | Tipe pasang surut Indonesia | — | §8.2 |
-| Tabel | Tabel 8.2 | Harmonik vs machine learning | — | §8.2 |
+| Tabel | Tabel 8.2 | Harmonik dan machine learning | — | §8.2 |
 | Tabel | Tabel 8.3 | Stasiun Indonesia di sumber terbuka (IOC/UHSLC/PSMSL) | — | §8.3 |
 | Tabel | Tabel 8.4 | Ringkasan dataset Cilacap yang dibangun (sintetik deterministik) | — | §8.3 |
 | Tabel | Tabel 8.5 | Pilihan window (jam-an) | — | §8.4 |
 | Tabel | Tabel 8.6 | Contoh hasil MAE per horizon | — | §8.5 |
-| Tabel | Tabel 8.7 | Skill score relatif vs persistence | — | §8.5 |
+| Tabel | Tabel 8.7 | Skill score relatif terhadap persistence | — | §8.5 |
 | Persamaan | — (belum ada nomor eksplisit) | — | — | — |
 | Kode | Kode 8.1 | Setup & pemuatan data (sample/raw/sintetik) | — | §8.3 |
 | Kode | Kode 8.2 | Windowing per horizon (strategi direct) | — | §8.4 |
@@ -226,7 +227,7 @@
 |---|---|---|---|---|
 | [1] | `rosenblatt1958perceptron` | Artikel | 10.1037/h0042519 | ✅ |
 | [2] | `krizhevsky2012imagenet` | Artikel (NeurIPS) | 10.1145/3065386 | ✅ |
-| [3] | `big_pasut` | Dataset/web | URL tides.big.go.id, diakses Sep 2026 | ✅ |
+| [3] | `bmkg_pasut` | Dataset/web | URL maritim.bmkg.go.id/cuaca/pasut, diakses Sep 2026 | ✅ |
 
 ### Bab 3 — Klasifikasi
 
@@ -268,12 +269,15 @@
 | [2] | `c3s_era5` | Web (C3S) | URL cds.climate.copernicus.eu | ✅ |
 | [3] | `hersbach2020era5` | Artikel | 10.1002/qj.3803 | ✅ |
 | [4] | `psmsl` | Web (PSMSL) | URL psmsl.org | ✅ |
-| [5] | `big_tides` | Web (BIG) | URL tides.big.go.id | ✅ |
-| [6] | `funk2015chirps` | Artikel (Sci Data) | 10.1038/sdata.2015.66 | ✅ |
-| [7] | `wolter1998mei` | Prosiding | (17th Climate Diagnostics) | ✅ |
-| [8] | `wheeler2004rmm` | Artikel | 10.1175/1520-0493(2004)132<1917:AARMMI>2.0.CO;2 | ✅ |
-| [9] | `goodfellow2016deep` | Buku | (MIT Press) | ✅ |
-| [10] | `jolliffe2011forecast` | Buku | 10.1002/9781119960003 | ✅ |
+| [5] | `ioc_sealevel` | Web (UNESCO/IOC) | URL ioc-sealevelmonitoring.org; DOI 10.14284/482 | ✅ |
+| [6] | `bmkg_pasut` | Web (BMKG) | URL maritim.bmkg.go.id/cuaca/pasut | ✅ |
+| [7] | `okamoto2005gsmap` | Prosiding (IGARSS) | 10.1109/IGARSS.2005.1526538 | ✅ |
+| [8] | `funk2015chirps` | Artikel (Sci Data) | 10.1038/sdata.2015.66 | ✅ |
+| [9] | `wmo2021wmo8` | Tech report (WMO) | URL community.wmo.int (WMO-No. 8) | ✅ |
+| [10] | `wolter1993mei` | Prosiding | (17th Climate Diagnostics) | ✅ |
+| [11] | `wheeler2004rmm` | Artikel | 10.1175/1520-0493(2004)132<1917:AARMMI>2.0.CO;2 | ✅ |
+| [12] | `goodfellow2016deep` | Buku | (MIT Press) | ✅ |
+| [13] | `jolliffe2011forecast` | Buku | 10.1002/9781119960003 | ✅ |
 
 ### Bab 7 — Deret Waktu dan Model Sekuensial
 
@@ -291,7 +295,7 @@
 
 | `[n]` | Key `refs.bib` | Jenis | DOI / ISBN / arXiv | Status |
 |---|---|---|---|---|
-| [1] | `rob_kalbar` | Web (BIG) | URL tides.big.go.id | ✅ |
+| [1] | `bmkg_pasut` | Web (BMKG) | URL maritim.bmkg.go.id/cuaca/pasut | ✅ |
 | [2] | `ioc_sealevel` | Web (UNESCO/IOC) | URL ioc-sealevelmonitoring.org | ✅ |
 | [3] | `psmsl` | Web (PSMSL) | URL psmsl.org | ✅ |
 | [4] | `uhslc_rqds` | Web (UHSLC) | URL uhslc.soest.hawaii.edu/data/ | ✅ |

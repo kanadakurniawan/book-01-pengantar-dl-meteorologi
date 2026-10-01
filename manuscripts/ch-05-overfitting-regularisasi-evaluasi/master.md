@@ -33,9 +33,9 @@ Setiap model memiliki dua jenis galat struktural. Kerangka ini juga yang dipakai
 - **Bias tinggi** - model terlalu sederhana, tidak menangkap pola data (*underfit*). Misal: memakai garis lurus untuk data yang jelas tidak linear.
 - ***Varians* tinggi** - model terlalu sensitif pada data latih. Sedikit perubahan data mengubah prediksi secara signifikan (*overfit*). Misal: jaringan sangat besar yang "menghafal" *noise*.
 
-Ini bukan dua "tipe" yang terpisah, melainkan ***trade-off***: saat kapasitas model naik, bias turun tetapi varian naik. Titik keseimbangan terbaik adalah di mana galat total (bias² + varian + *noise*) minimal, yang dicapai pada kondisi optimal antara *underfit* dan *overfit*.
+Ini bukan dua "tipe" yang terpisah, melainkan ***trade-off***: saat kapasitas model naik, bias turun tetapi varian naik. Titik keseimbangan adalah di mana galat total (bias² + varian + *noise*) minimal, yang dicapai pada kondisi optimal antara *underfit* dan *overfit*.
 
-Analoginya di meteorologi: peramal yang **selalu memakai rata-rata klimatologi** sebagai ramalannya punya **bias tinggi tetapi varian nol**. Ia tidak pernah meleset jauh, tetapi ramalannya juga tidak pernah tajam. Sebaliknya, peramal yang **menghafal pola tahun lalu dan mengulanginya begitu saja** tampak sangat akurat pada tahun yang dihafalnya, tetapi **variannya tinggi**: begitu kondisi berubah, ramalannya meleset drastis. Kita ingin peramal di tengah: mengikuti pola nyata, tetapi tidak menghafal kebetulan data.
+Analoginya di meteorologi: peramal yang **selalu memakai rata-rata klimatologi** sebagai ramalannya punya **bias tinggi tetapi varian nol**. Ia tidak pernah meleset jauh, tetapi ramalannya juga tidak pernah tajam. Sebaliknya, peramal yang **menghafal pola tahun lalu dan mengulanginya begitu saja** tampak sangat akurat pada tahun yang dihafalnya, tetapi **variannya tinggi**: begitu kondisi berubah, ramalannya meleset drastis. Kita ingin peramal di tengah: mengikuti pola nyata, tetapi tidak menghafal kebetulan data. Perbandingan ringkas ketiga pola itu ada di Tabel 5.1.
 
 **Tabel 5.1**: Perbandingan pola *underfit*, fit baik, dan *overfit*.
 
@@ -54,7 +54,7 @@ Sebaliknya, ketika **model terlalu kompleks** atau dilatih terlalu lama, model s
 
 ## 5.2 Mendiagnosa via *Learning Curve*
 
-Cara paling sederhana melihat *underfit*/*overfit*: **plot galat latih dan galat validasi** terhadap *epoch* (sudah dikenalkan Bab 4 §4.7):
+Cara sederhana melihat *underfit*/*overfit*: **plot galat latih dan galat validasi** terhadap *epoch* (sudah dikenalkan Bab 4 §4.7):
 
 - ***Underfit***: jika kedua kurva tinggi dan datar, artinya model tidak mampu belajar. Solusinya tingkatkan kapasitas atau gunakan fitur yang lebih baik, dan pastikan pelatihan sudah cukup lama (periksa *learning rate* serta jumlah *epoch*).
 - ***Overfit***: ketika *train* terus turun, sedangkan *validation* naik setelah titik tertentu. Maka solusinya regularisasi (§5.3), lebih banyak data, lebih sedikit parameter dan *early stopping*.
@@ -63,7 +63,7 @@ Cara paling sederhana melihat *underfit*/*overfit*: **plot galat latih dan galat
 
 **Gambar 5.1**: *Learning curve* klasik *overfit*.
 
-Gambar 5.1 adalah pola *overfit* paling umum. Perhatikan titik di mana galat validasi mulai naik, karena itu pertanda model mulai menghafal.
+Gambar 5.1 adalah pola *overfit* yang umum. Perhatikan titik di mana galat validasi mulai naik, karena itu pertanda model mulai menghafal.
 
 Untuk **klasifikasi**, kurva yang sama bisa dipakai dengan *loss* (*cross-entropy*). Untuk regresi, gunakan MAE/MSE.
 
@@ -73,7 +73,7 @@ Overfitting dikatakan **buruk** ketika model kehilangan kemampuan generalisasiny
 
 - **Tren *Validation Loss* yang Meningkat Konsisten.** Overfit mulai bermasalah jika *validation loss* (galat validasi) naik secara konsisten setelah mencapai titik minimumnya (bukan sekadar fluktuasi acak) sedangkan *training loss* terus menurun.
 - **Kesenjangan Performa (*Generalization Gap*) yang Terlalu Lebar.** Jika galat *train* mendekati nol tetapi galat *validation* jauh lebih besar, ini adalah indikasi kuat bahwa model menghafal pola data latih, bukan mempelajari pola umum (walau *gap* besar juga bisa muncul dari pergeseran distribusi antara train dan validasi).
-- **Kalah dari *Baseline* Sederhana (Lihat Bab 2).** Ini adalah indikator paling krusial: jika model yang *overfit* menghasilkan galat validasi yang lebih buruk (atau bahkan sama saja) dibandingkan *baseline* sederhana, maka kompleksitas model tersebut sia-sia. Model seperti ini **tidak berguna**, segera sederhanakan, beri regularisasi, atau tinggalkan.
+- **Kalah dari *Baseline* Sederhana (Lihat Bab 2).** Ini adalah indikator krusial: jika model yang *overfit* menghasilkan galat validasi yang lebih buruk (atau bahkan sama saja) dibandingkan *baseline* sederhana, maka kompleksitas model tersebut sia-sia. Model seperti ini **tidak berguna**, segera sederhanakan, beri regularisasi, atau tinggalkan.
 
 **Kunci Utama:** Selalu evaluasi kinerja model berdasarkan **set validasi (dan *test set*)**, bukan *training set*. *Training error* yang sangat rendah sering kali menyesatkan para praktisi.
 
@@ -83,7 +83,7 @@ Regularisasi adalah sekumpulan teknik yang memberikan batasan pada model agar ti
 
 ### 1. *Early stopping*
 
-*Early stopping* memantau kinerja model pada data validasi dan menghentikan proses pelatihan ketika performa (*loss* atau metrik evaluasi) tidak membaik (lihat Subbab 4.6). Teknik ini merupakan pendekatan paling sederhana, efisien, dan hampir selalu menjadi pertahanan pertama melawan *overfitting*.
+*Early stopping* memantau kinerja model pada data validasi dan menghentikan proses pelatihan ketika performa (*loss* atau metrik evaluasi) tidak membaik (lihat Subbab 4.6). Teknik ini merupakan pendekatan sederhana dan efisien, serta hampir selalu menjadi pertahanan pertama melawan *overfitting*.
 
 **Kode 5.1 - *Early stopping* dengan restore best weights.**
 
@@ -104,7 +104,7 @@ Nilai `patience=15` pada **Kode 5.1** adalah titik awal (*starting point*) yang 
 - **Data dengan Tingkat *Noise* Tinggi** (misal curah hujan): Fluktuasi lokal pada *validation loss* sering terjadi. Jika nilai `patience` terlalu kecil, pelatihan dapat terhenti prematur akibat fluktuasi acak, bukan karena model telah mencapai konvergensi sejati.
 - **Data dengan *Loss* Halus (Dataset Besar / Sinyal Stabil):** Nilai `patience` yang terlalu besar hanya akan membuang waktu komputasi karena model terus melatih parameter meski tidak ada peningkatan performa yang berarti.
 
-**Rekomendasi Praktis:** Mulailah dengan rentang `patience` antara **10 hingga 20**, amati grafik *loss* (*training vs. validation*), lalu sesuaikan berdasarkan dinamika konvergensi model Anda.
+**Rekomendasi Praktis:** Mulailah dengan rentang `patience` antara **10 hingga 20**, amati grafik *loss* (*training dan validation*), lalu sesuaikan berdasarkan dinamika konvergensi model Anda.
 
 ### 2. Regularisasi L2 (*weight decay*)
 
@@ -156,9 +156,11 @@ model = tf.keras.Sequential([
 ])
 ```
 
+Kode 5.2 menunjukkan cara menggabungkan L2 dan *dropout* dalam satu arsitektur *Sequential*.
+
 ### 4. *Batch Normalization* (efek regularisasi sampingan)
 
-*Batch Normalization* menormalkan luaran aktivasi di tiap *layer* selama pelatihan agar distribusi *input* antar-*layer* tetap stabil. Hal ini mempercepat serta menstabilkan konvergensi pelatihan. Perlu dicatat, *Batch Normalization* **bukan** teknik regularisasi utama seperti L2, *dropout*, atau *early stopping*. Efek regularisasinya hanya sampingan dan masih diperdebatkan. Efektivitas *Batch Normalization* umumnya paling terasa pada arsitektur jaringan dalam (*deep networks*), yang akan dibahas lebih detail pada **Bab 7**.
+*Batch Normalization* menormalkan luaran aktivasi di tiap *layer* selama pelatihan agar distribusi *input* antar-*layer* tetap stabil. Hal ini mempercepat serta menstabilkan konvergensi pelatihan. Perlu dicatat, *Batch Normalization* **bukan** teknik regularisasi utama seperti L2, *dropout*, atau *early stopping*. Efek regularisasinya hanya sampingan dan masih diperdebatkan. Efektivitas *Batch Normalization* umumnya terasa pada arsitektur jaringan dalam (*deep networks*), yang akan dibahas lebih detail pada **Bab 7**.
 
 ### Kapan Menggunakan Teknik yang Mana?
 
@@ -197,7 +199,7 @@ Kode 5.1-5.2 menunjukkan pola. Dalam notebook `ch-05-04_metrik_walkforward.ipynb
 
 ## 5.4 Memilih Metrik Operasional yang Tepat
 
-Bagian ini adalah yang paling membedakan buku ini dengan buku ML umum: **metrik yang benar untuk meteorologi** bergantung pada fenomena dan tujuan.
+Bagian ini adalah yang membedakan buku ini dengan buku ML umum: **metrik yang benar untuk meteorologi** bergantung pada fenomena dan tujuan.
 
 ### Untuk regresi (besaran kontinu)
 
@@ -238,7 +240,7 @@ Rangkuman metrik verifikasi operasional standar WMO ini disajikan pada Tabel 5.3
 | **POD**          | TP / (TP + FN)        | Berapa kejadian yang tertangkap?                             | Tinggi (ke arah 1) |
 | **FAR**          | FP / (TP + FP)        | Seberapa banyak *false alarm*?                               | Rendah (ke arah 0) |
 | **CSI / TS**     | TP / (TP + FP + FN)   | Berapa skor sukses keseluruhan?                              | Tinggi (ke arah 1) |
-| ***Bias Score*** | (TP + FP) / (TP + FN) | Apakah model terlalu sering atau terlalu jarang memprediksi? | Ideal (~1)         |
+| ***Bias Score*** | (TP + FP) / (TP + FN) | Apakah model terlalu sering atau terlalu jarang memprediksi? | Ideal (≈1)         |
 
 Pedoman resmi: WMO *Guidelines on the Verification of Operational Forecasts* [1].
 
@@ -309,7 +311,7 @@ Tergantung bagaimana *window* latih bergerak, ada dua varian *walk-forward*:
 
 *Expanding window* memakai semua data sejarah dan cocok untuk deret dengan tren jangka panjang, tetapi mulai berat saat deret sangat panjang. *Sliding window* lebih cocok ketika perilaku lama tidak lagi relevan karena distribusi berubah seiring waktu. Pilih sesuai karakter data Anda, dan sebutkan pilihan itu saat melaporkan hasil.
 
-Bab 2 §2.7 sudah memperkenalkan versi sederhana dari gagasan ini: *split* 70/15/15 yang **berurutan waktu**. Hubungan keduanya sederhana: *split* tiga bagian itu setara dengan *walk-forward* **satu fold**, ditambah satu blok terakhir yang disimpan sebagai *test*. *Walk-forward* hanya mengulang *split* yang sama **beberapa kali** di sepanjang deret. Karena itu keduanya dipakai bersama, bukan dipilih salah satu: `test` tetap blok paling akhir yang **dibuka sekali** setelah semua keputusan selesai, sedangkan bagian latih + validasi dipotong menjadi beberapa fold *walk-forward*, sehingga angka validasi tidak bergantung pada satu batas yang kebetulan dipilih.
+Bab 2 §2.7 sudah memperkenalkan versi sederhana dari gagasan ini: *split* 70/15/15 yang **berurutan waktu**. Hubungan keduanya sederhana: *split* tiga bagian itu setara dengan *walk-forward* **satu fold**, ditambah satu blok terakhir yang disimpan sebagai *test*. *Walk-forward* hanya mengulang *split* yang sama **beberapa kali** di sepanjang deret. Karena itu keduanya dipakai bersama, bukan dipilih salah satu: `test` tetap blok terakhir yang **dibuka sekali** setelah semua keputusan selesai, sedangkan bagian latih + validasi dipotong menjadi beberapa fold *walk-forward*, sehingga angka validasi tidak bergantung pada satu batas yang kebetulan dipilih.
 
 **Kode 5.3 - Contoh *walk-forward* sederhana (pseudo, lengkap di notebook).**
 
@@ -326,7 +328,7 @@ for start in range(0, len(X) - horizon, 20):
 print("Rata-rata MAE walk-forward:", round(sum(results)/len(results), 4))
 ```
 
-Penting: **latih model baru di tiap fold**. Jika Anda melatih sekali lalu memprediksi semua fold, informasi masa depan bocor.
+Penting pada Kode 5.3: **latih model baru di tiap fold**. Jika Anda melatih sekali lalu memprediksi semua fold, informasi masa depan bocor.
 
 ### Kenapa bukan "*k-fold* acak" untuk data meteorologi?
 

@@ -34,7 +34,7 @@ Ringkasnya: buku ini bukan satu-satunya sumber yang Anda butuhkan, melainkan **t
 Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Membedakan** *artificial intelligence*, *machine learning*, dan *deep learning* beserta contoh aplikasinya di meteorologi.
-2. **Memetakan** aplikasi *deep learning* meteorologi ke bab yang relevan dan membedakan mana yang dibahas buku ini vs literatur lanjut.
+2. **Memetakan** aplikasi *deep learning* meteorologi ke bab yang relevan dan membedakan mana yang dibahas buku ini dibandingkan dengan literatur lanjut.
 3. **Menilai** secara kritis kapan *deep learning* layak digunakan dibanding *baseline* statistik (ukuran data, non-linearitas, konteks operasional).
 4. **Menyiapkan** lingkungan kerja Google Colab + TensorFlow/Keras dan membuat tensor pertama dari contoh data cuaca mini.
 
@@ -42,7 +42,7 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 *Artificial intelligence* (AI, kecerdasan buatan) adalah bidang yang mempelajari cara membuat mesin meniru kemampuan kognitif manusia, seperti memahami bahasa, mengenali pola, dan mengambil keputusan [2]. Istilah ini sudah ada sejak 1956 ketika para ilmuwan mulai menyelidiki apakah mesin dapat "berpikir". Seiring waktu, AI berkembang menjadi banyak sub-bidang: sistem berbasis aturan, pengenalan pola, robotika, pemrosesan bahasa alami, dan *machine learning* (pembelajaran mesin).
 
-*Machine learning* (ML) adalah cabang AI yang membuat komputer belajar pola dari data tanpa diprogram secara eksplisit untuk setiap aturan [3]. Alih-alih menulis aturan manual seperti "jika hari ini hujan dan kelembapan tinggi, maka besok akan hujan", kita memberi model ribuan contoh dan membiarkannya **menemukan sendiri** pola yang berguna, misalnya variabel mana yang paling berpengaruh terhadap hujan. Contoh sederhana: jika kita memberi model data riwayat hujan, suhu, dan kelembapan selama bertahun-tahun, model dapat menemukan kombinasi yang paling menjelaskan kapan hujan turun dan kapan tidak. Proses belajar itu akan dijelaskan di Bab 4.
+*Machine learning* (ML) adalah cabang AI yang membuat komputer belajar pola dari data tanpa diprogram secara eksplisit untuk setiap aturan [3]. Alih-alih menulis aturan manual seperti "jika hari ini hujan dan kelembapan tinggi, maka besok akan hujan", kita memberi model ribuan contoh dan membiarkannya **menemukan sendiri** pola yang berguna, misalnya variabel mana yang berpengaruh terhadap hujan. Contoh sederhana: jika kita memberi model data riwayat hujan, suhu, dan kelembapan selama bertahun-tahun, model dapat menemukan kombinasi yang menjelaskan kapan hujan turun dan kapan tidak. Proses belajar itu akan dijelaskan di Bab 4.
 
 *Deep learning* (DL) adalah salah satu cabang *machine learning* yang menggunakan **jaringan saraf berlapis (*neural network*)**, model matematis yang terinspirasi dari susunan neuron biologis [4]. "Dalam" (*deep*) merujuk pada banyaknya lapisan: model tersusun dari banyak lapisan unit sederhana, dan semakin banyak lapisannya, model mampu menangkap pola yang semakin rumit, seperti hubungan rumit antara banyak variabel meteorologi [4]. Kekuatan DL justru datang dari *kedalaman* ini: lapisan-lapisan awal mempelajari pola sederhana, lalu lapisan-lapisan berikutnya menggabungkannya menjadi representasi yang semakin abstrak [1].
 
@@ -95,7 +95,7 @@ Anda tidak perlu hafal tahun-tahun ini, tetapi memahami bahwa DL bukan "keajaiba
 Fokus buku ini sengaja dibatasi pada **dua aplikasi inti** (lihat baris pertama dan kedua Tabel 1.1): prediksi besaran (regresi) dan klasifikasi kejadian, pada data deret waktu meteorologi Indonesia. Ada tiga alasan pembatasan ini:
 
 1. **Kedalaman > keluasan.** Daripada membahas sepuluh topik secara setengah-setengah, buku ini mengupas dua topik sampai tuntas, dari data hingga evaluasi operasional.
-2. **Aplikasi paling dekat dengan praktisi.** Regresi dan klasifikasi adalah dua hal pertama yang Anda butuhkan untuk tugas prediksi dan pengambilan keputusan harian.
+2. **Aplikasi yang dekat dengan praktisi.** Regresi dan klasifikasi adalah dua hal pertama yang Anda butuhkan untuk tugas prediksi dan pengambilan keputusan harian.
 3. **Bekal yang portabel.** Penguasaan analisis regresi, klasifikasi, dan deret waktu berbasis TensorFlow mempermudah pemahaman arsitektur tingkat lanjut, seperti CNN untuk citra radar maupun model *diffusion* untuk imputasi data.
 
 Tiga aplikasi berikutnya dalam Tabel 1.1 — *nowcasting*, *downscaling*, dan model generatif adalah arah yang kami promosikan di Bab 10 sebagai peta jalan riset. Buku ini tidak mengupasnya secara mendalam karena (a) membutuhkan data spasial/grid yang volumenya jauh lebih besar dan (b) arsitekturnya (U-Net, Transformer, difusi) berada di luar cakupan buku pengantar ini. Khusus verifikasi dan *post-processing*, buku ini hanya menyebutnya singkat di Bab 10.
@@ -133,7 +133,7 @@ Sebelum masuk ke kode, pahami **ciri khas data meteorologi tropis** yang akan An
 
 **4. Sinyal pasang surut yang kuat tetapi nonstasioner.** Di stasiun pesisir seperti Cilacap (Bab 8), sinyal pasang surut memiliki komponen harmonik yang kuat (semi-diurnal, diurnal, dan campuran) tetapi amplitudo dan fase dipengaruhi faktor non-astronomis: cuaca (angin, tekanan), variabilitas laut regional, dan debit sungai (di muara sungai seperti Kapuas). Ini menjadikannya kasus menarik untuk model sekuensial: pola periodik yang bisa dipelajari, dengan komponen residual yang menantang.
 
-**5. Keterbatasan data latih untuk kejadian ekstrem.** Hujan ekstrem (basis peringatan dini) dan pasang surut rob adalah **ekor distribusi**, tepat bagian yang paling ingin kita prediksi dengan baik, tetapi paling jarang ada datanya [7], [11]. Bab 3, 5, dan 9 membahas cara menghadapi *class imbalance* dan verifikasi operasional untuk kejadian langka.
+**5. Keterbatasan data latih untuk kejadian ekstrem.** Hujan ekstrem (basis peringatan dini) dan pasang surut rob adalah **ekor distribusi**, tepat bagian yang justru ingin kita prediksi dengan baik, tetapi jarang ada datanya [7], [11]. Bab 3, 5, dan 9 membahas cara menghadapi *class imbalance* dan verifikasi operasional untuk kejadian langka.
 
 Implikasi untuk *deep learning*:
 
@@ -165,7 +165,7 @@ Gambaran di atas adalah penyederhanaan: dalam praktik, Anda akan bolak-balik ant
 
 ### Tentang versi dan dokumentasi
 
-Setiap percobaan, perubahan *hyperparameter*, normalisasi, atau fitur, hendaknya disimpan dan diberi catatan singkat. Cara paling sederhana: gunakan notebook yang berbeda untuk setiap eksperimen, atau *commit* ke Git dengan pesan yang jelas. Tanpa pencatatan, Anda akan sulit menjawab pertanyaan enam bulan kemudian: "mengapa model ini bekerja lebih baik dari yang sebelumnya?" Bab 10 membahas *versioning* model dan pelatihan ulang secara lebih sistematis.
+Setiap percobaan, perubahan *hyperparameter*, normalisasi, atau fitur, hendaknya disimpan dan diberi catatan singkat. Cara sederhana: gunakan notebook yang berbeda untuk setiap eksperimen, atau *commit* ke Git dengan pesan yang jelas. Tanpa pencatatan, Anda akan sulit menjawab pertanyaan enam bulan kemudian: "mengapa model ini bekerja lebih baik dari yang sebelumnya?" Bab 10 membahas *versioning* model dan pelatihan ulang secara lebih sistematis.
 
 ## 1.6 Menyiapkan Lingkungan Kerja
 
@@ -189,7 +189,7 @@ print(tf.__version__)
 print("GPU tersedia:", tf.config.list_physical_devices("GPU"))
 ```
 
-Jika kolom "GPU tersedia" kosong, pilih menu *Runtime > Change runtime type > Hardware accelerator > GPU*. Jika TensorFlow belum terpasang, instal dengan `pip install tensorflow`.
+Jika kolom "GPU tersedia" kosong, pilih menu *Runtime > Change runtime type > Hardware accelerator > GPU*. Jika TensorFlow belum terpasang, instal dengan `pip install tensorflow`. Kode 1.1 memastikan kedua prasyarat ini sudah terpenuhi.
 
 Notebook pendamping bab ini, `ch-01-00_fondasi_tensorflow.ipynb` (folder `notebooks/` di repo), berisi langkah verifikasi lingkungan dan pengenalan tensor dengan contoh data cuaca mini. Pastikan versi TensorFlow yang terinstal sesuai dengan versi yang tercantum pada metadata bab, agar hasil dapat direproduksi.
 
@@ -241,9 +241,9 @@ suhu_hari = tf.constant([26.5, 26.8, 27.2])      # 1D: 3 pengamatan
 print(suhu_hari.shape)                            # (3,)
 ```
 
-Bentuk (`shape`) tensor inilah yang nantinya menentukan bentuk masukan (*input shape*) arsitektur model di Bab 2 dan Bab 7. Pembaca tidak perlu menguasai aljabar tensor secara mendalam, yang penting adalah memahami (a) urutan dimensi, dan (b) bahwa data waktu akan disusun menjadi langkah-langkah waktu (*timesteps*) saat masuk ke model.
+Kode 1.2 membuat tensor satu dimensi dari tiga pengamatan suhu harian. Bentuk (`shape`) tensor inilah yang nantinya menentukan bentuk masukan (*input shape*) arsitektur model di Bab 2 dan Bab 7. Pembaca tidak perlu menguasai aljabar tensor secara mendalam, yang penting adalah memahami (a) urutan dimensi, dan (b) bahwa data waktu akan disusun menjadi langkah-langkah waktu (*timesteps*) saat masuk ke model.
 
-### Mini-challenge: Prediksi *Persistence* vs. Rata-rata Klimatologis
+### Mini-challenge: Prediksi *Persistence* dan Rata-rata Klimatologis
 
 Sebelum kita bicara tentang model yang *sophisticated*, lihat dua *baseline* yang akan menjadi "lawan tanding" *deep learning* di sepanjang buku. Keduanya digunakan luas dalam verifikasi prediksi cuaca sebagai rujukan keterampilan model [12]:
 
@@ -288,7 +288,7 @@ plt.title("Dua baseline pada data sintetis")
 plt.show()
 ```
 
-Pada data seperti ini, **klimatologis biasanya mengalahkan *persistence*** karena kita sengaja membuat pola yang periodik. Untuk fenomena dengan *persistence* tinggi (pasang surut, suhu harian), *persistence* sering menang. Untuk fenomena periodik (curah hujan musiman), klimatologis sering lebih baik. *Deep learning* baru layak jika bisa mengalahkan keduanya secara konsisten. Kita akan kembali ke prinsip ini di setiap studi kasus (Bab 8-9).
+Pada data seperti ini, **klimatologis biasanya mengalahkan *persistence*** karena kita sengaja membuat pola yang periodik. Hasil Kode 1.3 memperlihatkan hal itu secara langsung. Untuk fenomena dengan *persistence* tinggi (pasang surut, suhu harian), *persistence* sering menang. Untuk fenomena periodik (curah hujan musiman), klimatologis sering lebih baik. *Deep learning* baru layak jika bisa mengalahkan keduanya secara konsisten. Kita akan kembali ke prinsip ini di setiap studi kasus (Bab 8-9).
 
 ## 1.8 Latihan Mini: Mengenali Jenis Masalah
 

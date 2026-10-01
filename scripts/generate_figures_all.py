@@ -209,7 +209,7 @@ def fig_3_2():
 
 # ---------------------------------------------------------------- fig-3-3
 def fig_3_3():
-    # Kontras ROC vs precision-recall untuk kelas langka (proporsi 2,8%,
+    # Kontras ROC dan precision-recall untuk kelas langka (proporsi 2,8%,
     # sesuai Tabel 3.3): ROC terlihat cukup baik, PR menyingkap precision
     # yang rendah.
     rng = np.random.default_rng(7)
@@ -423,10 +423,18 @@ def fig_5_1():
 
 # ---------------------------------------------------------------- fig-6-1
 def fig_6_1():
-    rng = np.random.default_rng(11)
-    n_dry = 2700
-    rain = rng.gamma(shape=1.35, scale=18, size=800)
-    data = np.concatenate([np.zeros(n_dry), rain])
+    """Distribusi curah hujan harian dari observasi GHCN-Daily Cilacap.
+
+    Sumber: NOAA GHCN-Daily, stasiun Cilacap (1960-2024).
+    """
+    csv = (MANS / "ch-09-studi-kasus-curah-hujan-terbuka" / "data" / "raw"
+           / "ghcn_cilacap_daily.csv")
+    if not csv.exists():
+        raise FileNotFoundError(f"Data GHCN-Daily tidak ditemukan: {csv}")
+    import pandas as pd
+    df = pd.read_csv(csv, parse_dates=["tanggal"])
+    data = df["prcp_mm"].dropna().to_numpy()
+    data = data[data >= 0]
     fig, ax = plt.subplots(figsize=(7.5, 4.2))
     ax.hist(data, bins=70, range=(0, 400), color="#4a90e2", alpha=0.85)
     ax.set_xlabel("Curah hujan harian (mm)")

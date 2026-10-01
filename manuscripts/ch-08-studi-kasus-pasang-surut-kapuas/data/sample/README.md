@@ -9,7 +9,7 @@
 
 | Berkas | Ukuran | Sumber | Lisensi | Catatan |
 |---|---|---|---|---|
-| `cili_1y_hourly.csv` | ~1 tahun hourly (~8.760 baris) | Sintetik (lihat header) | CC-BY-4.0 buku | Realistis tapi bukan observasi |
+| `cili_1y_hourly.csv` | ≈1 tahun hourly (≈8.760 baris) | Sintetik (lihat header) | CC-BY-4.0 buku | Realistis tapi bukan observasi |
 
 ## Format
 
