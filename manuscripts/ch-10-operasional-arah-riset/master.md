@@ -41,13 +41,13 @@ Tiga pertanyaan yang harus dijawab sebelum sebuah model disebut "produksi":
 
 Anda tidak perlu membangun Kubernetes untuk mengikuti bab ini. Contoh sederhana yang sudah memenuhi kebutuhan institusi kecil:
 
-- **Skrip batch** - satu script dijalankan tiap hari (mis. `cron` atau *scheduled notebook*) yang memuat data terbaru, menjalankan model, menulis tabel prediksi.
-- **Laporan** - output CSV/Excel di email atau folder bersama.
+- **Skrip batch** - satu skrip dijalankan tiap hari (mis. `cron` atau *scheduled notebook*) yang memuat data terbaru, menjalankan model, dan menulis tabel prediksi.
+- **Laporan** - keluaran CSV/Excel di email atau folder bersama.
 - **Log** - simpan setiap run (tanggal, input hash, metrik) agar bisa diaudit.
 
 Kerangka ini menjaga prinsip: **model yang berguna adalah model yang digunakan**, dan digunakan secara terkontrol, bukan hanya sekali di eksperimen.
 
-Buku ini tidak membahas infrastruktur secara mendalam (itu wilayah Bab engineering khusus), tetapi kerangka kerja di bawah ini memberi jalan yang jelas ke arah sana. Kerangka umum model deep learning dibahas di literatur dasar [1]. Untuk siklus hidup model operasional dan *technical debt* sistem ML, lihat [2].
+Buku ini tidak membahas infrastruktur secara mendalam (itu wilayah rekayasa sistem tersendiri), tetapi kerangka kerja berikut memberi jalan yang jelas ke arah sana. Kerangka umum model *deep learning* dibahas di literatur dasar [1], sedangkan siklus hidup model operasional dan *technical debt* sistem ML dibahas di [2].
 
 ## 10.2 Monitoring *Drift*
 
@@ -74,7 +74,7 @@ Ambang ±2σ pada grafik kendali (Gambar 10.1) hanyalah titik awal. Sesuaikan de
 - **Biaya galat** - bila false alarm monitoring mahal (mis. menghentikan model padahal masih baik), lebih longgarkan. Bila risiko nyata, percepat.
 - **Periode evaluasi** - mingguan atau bulanan memberikan sensitivitas berbeda. Pilih sesuai seberapa cepat Anda bisa bereaksi.
 
-Aturan penting: **tetapkan ambang sebelum melihat data berjalan** (bukan setelah). Ini semacam *pra-registrasi* ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias* / *overfitting* pada noise monitoring (ingat prinsip evaluasi jujur di Bab 5). Justru akan melewatkan degradation yang seharusnya terdeteksi.
+Aturan penting: **tetapkan ambang sebelum melihat data berjalan**, bukan sesudahnya. Ini semacam pra-registrasi ambang: menetapkan ambang setelah melihat hasil berarti menyemai *selection bias*/*overfitting* pada derau (*noise*) monitoring (ingat prinsip evaluasi jujur di Bab 5), dan justru melewatkan penurunan performa yang seharusnya terdeteksi.
 
 ### Contoh penerapan monitoring pada kasus Bab 9
 
@@ -84,16 +84,16 @@ Bayangkan model hujan stasiun (Bab 9) digunakan secara operasional untuk peringa
 - **Setiap bulan**: bandingkan distribusi (histogram) fitur `X` bulan ini dibandingkan dengan rata-rata historis (mis. `rmm1`, `mus_sin/cos`).
 - **Tiap kuartal**: tinjau kurva kendali. Bila >1 titik keluar batas, selidiki dan nilai apakah perlu kalibrasi/retrain.
 
-Memiliki jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produksi", menghindari kejadian model diam-diam rusak (Bab 10.1 membahas "siapa yang menjawab?"). Contoh produksi sederhana di sub-bab ini adalah titik awal minimal: institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang seiring kebutuhan.
+Menetapkan jadwal dan penanggung jawab sedini mungkin, sebelum model "mulai produksi", mencegah model rusak diam-diam (§10.1 membahas "siapa yang bertanggung jawab?"). Contoh produksi sederhana di subbagian ini adalah titik awal minimal; institusi dengan kebutuhan lebih besar dapat menambah orkestrasi, versi, dan pengujian berjenjang.
 
 
 ## 10.3 Retraining dan Kalibrasi Ulang
 
 Ketika *drift* terdeteksi, pilihan tindakan (dari yang ringan):
 
-1. **Kalibrasi ulang output** - sesuaikan threshold (Bab 9) tanpa melatih ulang. Cepat dan murah.
+1. **Kalibrasi ulang keluaran** - sesuaikan *threshold* (Bab 9) tanpa melatih ulang. Cepat dan murah.
 2. **Retraining berkala terjadwal** - misal tahunan/musiman. Jadwalkan, jangan menunggu darurat.
-3. **Retraining berbasis sinyal** - pemicu saat metrik turun (Bab 10.2). Lebih responsif tetapi perlu disiplin evaluasi.
+3. **Retraining berbasis sinyal** - pemicu saat metrik turun (§10.2). Lebih responsif, tetapi perlu disiplin evaluasi.
 4. **Migrasi model baru** - jika data/fitur berubah besar, kembangkan model baru dengan proses studi kasus kembali.
 
 ### Aturan retraining yang jujur
@@ -110,7 +110,7 @@ Model **regresi** (mis. tinggi muka air, Bab 8):
 
 | Sinyal terdeteksi | Investigasi | Tindakan |
 |---|---|---|
-| MAE naik 10% dalam 1 bulan | cek distribusi X, cek data baru | kalibrasi output (interval/kuantil) dulu |
+| MAE naik 10% dalam 1 bulan | cek distribusi X, cek data baru | kalibrasi keluaran (interval/kuantil) dulu |
 | Fitur `rmm1` bergeser jauh | bandingkan dokumentasi | jadwalkan retrain + cek baseline |
 | Metrik turun drastis (>20%) | periksa data dan sensor | model baru dengan studi kasus kembali |
 
@@ -159,7 +159,7 @@ Manfaat tambahan: ensembel juga **menstabilkan angka metrik**. MAE/CSI dari rata
 
 ### Interval kuantil
 
-Lapisan akhir memprediksi beberapa kuantil sekaligus, misal median (50%) serta kuantil 10% dan 90%, dengan *pinball loss* / quantile regression. Hasilnya: interval `[q10, q90]` yang memberi rentang "kisaran 80%" prediksi. Ini jauh lebih informatif daripada satu angka.
+Lapisan akhir memprediksi beberapa kuantil sekaligus, misal median (50%) serta kuantil 10% dan 90%, dengan *pinball loss* (regresi kuantil). Hasilnya: interval `[q10, q90]` yang memberi rentang "kisaran 80%" prediksi, jauh lebih informatif daripada satu angka.
 
 **Kode 10.2 - Latih model regresi kuantil sederhana (3 kuantil dengan satu *loss*).**
 
@@ -179,7 +179,7 @@ def loss_kuantil(qs):
 m = tf.keras.Sequential([
     tf.keras.layers.Dense(32, activation="relu", input_shape=(X_train.shape[1],)),
     tf.keras.layers.Dense(len(quantiles))])               # 3 unit: q10, q50, q90
-# satu output layer dengan satu custom loss untuk semua kuantil
+# satu lapisan keluaran dengan satu custom loss untuk semua kuantil
 m.compile(optimizer="adam", loss=loss_kuantil(quantiles))
 m.fit(X_train, y_train, epochs=50, verbose=0)
 
@@ -187,13 +187,13 @@ preds = m.predict(X_test, verbose=0)                      # (n_test, 3): q10, q5
 q10, q50, q90 = preds[:, 0], preds[:, 1], preds[:, 2]
 ```
 
-Perhatikan: karena semua kuantil keluar dari satu *output layer* (`Dense(3)`), cukup satu *loss* kustom yang menerima `y_pred` berbentuk `(batch, n_kuantil)` dan menghitung *pinball loss* per kuantil, bukan daftar beberapa *loss* yang hanya berlaku untuk model dengan beberapa *output layer* terpisah. Baris `tf.reshape(y_true, (-1, 1))` membuat *loss* kebal terhadap bentuk `y_train`: baik `(n,)` maupun `(n, 1)`.
+Perhatikan: karena semua kuantil keluar dari satu lapisan keluaran (`Dense(3)`), cukup satu *loss* kustom yang menerima `y_pred` berbentuk `(batch, n_kuantil)` dan menghitung *pinball loss* per kuantil, bukan daftar beberapa *loss* yang hanya berlaku untuk model dengan beberapa lapisan keluaran terpisah. Baris `tf.reshape(y_true, (-1, 1))` membuat *loss* kebal terhadap bentuk `y_train`: baik `(n,)` maupun `(n, 1)`.
 
 Catatan penting: ketidakpastian dari model **belum tentu kalibrasi**. Interval 80% bisa benar hanya 50% dari waktu bila model terlalu yakin. Kalibrasi (misal *conformal prediction*) adalah topik lanjut yang layak dikejar setelah buku ini (lihat FAQ §10.9).
 
 ### Kapan melaporkan ketidakpastian?
 
-Tidak semua output harus selengkap itu. Atur sesuai dampak:
+Tidak semua keluaran perlu selengkap itu. Atur sesuai dampak:
 
 - **Peringatan dini / keputusan risiko** → sangat dianjurkan menyertakan interval dan ensembel.
 - **Informasi rutin** → satu angka + toleransi sudah cukup.
@@ -234,7 +234,7 @@ SHAP menjelaskan **kontribusi dalam model**, bukan penyebab di dunia nyata (inga
 
 ## 10.6 Keterbatasan dan Etika
 
-Ini penutup penting dan selaras dengan *Risk Management* umbrella. Tiga area:
+Ini penutup penting, selaras dengan prinsip manajemen risiko. Empat area:
 
 ### 1. Anti-overhype
 
@@ -304,7 +304,7 @@ Sumber belajar lanjut yang direkomendasikan (di luar buku ini):
 
 Buku ini selesai, tetapi belajar tidak. Rekomendasi berjenjang:
 
-1. **Membaca** - literatur pada Referensi bab ini + bab 6-9.
+1. **Membaca** - literatur pada Referensi bab ini dan Bab 6-9.
 2. **Berlatih** - kerjakan ulang Bab 8-9 dengan data nyata stasiun sendiri.
 3. **Terhubung** - komunitas (misal grup ML Indonesia, komunitas data meteorologi/akademik), konferensi (misal *IDEA* / *Indonesia AI Day*), dan *open-source* (GitHub proyek sejenis).
 4. **Publikasikan** - tulis catatan singkat (blog/notebook publik), dapatkan umpan balik - tepat seperti siklus buku ini (bab per blog, DOI, dan lain-lain).
@@ -315,21 +315,21 @@ Agar tidak sekadar "selesai dibaca", gunakan jadwal sederhana:
 
 - **30 hari**: ulangi Bab 8 dengan data nyata satu stasiun pasang surut. Tulis laporan satu halaman (konteks, metode, hasil, keterbatasan).
 - **60 hari**: ulangi Bab 9 dengan dua stasiun (barat dan timur). Tambahkan indeks MJO nyata. Selesaikan tabel verifikasi per kategori.
-- **90 hari**: pilih satu arah lanjut (Bab 10.7) - misal CNN untuk nowcasting - dan buat prototipe kecil dengan data publik (untuk nowcasting: radar/satelit, mis. SEVIR atau dataset radar, sedangkan untuk prediksi jangka menengah: WeatherBench [7]).
+- **90 hari**: pilih satu arah lanjut (§10.7) - misal CNN untuk nowcasting - dan buat prototipe kecil dengan data publik (untuk nowcasting: radar/satelit, mis. SEVIR atau dataset radar; untuk prediksi jangka menengah: WeatherBench [7]).
 
 Jadwal ini memastikan keterampilan tertanam lewat proyek, bukan sekadar dibaca, dan langkah-langkahnya sama dengan cara penulis membangun buku ini.
 
 ## 10.9 FAQ Singkat
 
-**Apakah saya "harus" membuat API?** Tidak selalu. Untuk institusi kecil, model bisa dijalankan sebagai *batch* terjadwal (notebook/script) yang menghasilkan tabel prediksi. API diperlukan ketika banyak pengguna memanggil secara interaktif. Mulai dari yang sederhana yang memenuhi kebutuhan.
+**Apakah saya "harus" membuat API?** Tidak selalu. Untuk institusi kecil, model bisa dijalankan sebagai *batch* terjadwal (notebook/skrip) yang menghasilkan tabel prediksi. API diperlukan ketika banyak pengguna memanggil secara interaktif. Mulai dari yang sederhana dan memenuhi kebutuhan.
 
-**Bagaimana saya tahu model "rusak" tanpa menunggu keluhan?** Justru gunakan monitoring (Bab 10.2): metrik berkala + grafik kendali. Jangan menunggu pengguna menyadari.
+**Bagaimana saya tahu model "rusak" tanpa menunggu keluhan?** Gunakan monitoring (§10.2): metrik berkala dan grafik kendali. Jangan menunggu pengguna menyadari.
 
-**Retraining setiap musim itu melelahkan. Adakah cara ringan?** Mulai dari kalibrasi threshold (murah), lalu retraining hanya bila sinyal menuntut. Jadwalkan juga retraining tahunan ringan sebagai "asuransi".
+**Retraining setiap musim itu melelahkan. Adakah cara ringan?** Mulai dari kalibrasi *threshold* (murah), lalu retraining hanya bila sinyal menuntut. Jadwalkan juga retraining tahunan ringan sebagai "asuransi".
 
 **SHAP apakah wajib?** Tidak, tetapi sangat membantu di institusi yang menuntut penjelasan. Mulai dari permutation importance (Bab 9) bila SHAP terasa berat. Naikkan ke SHAP untuk interpretasi lokal.
 
-**Apakah *generative model* untuk data iklim sudah siap digunakan?** Beragam. Beberapa telah digunakan untuk *downscaling* (misal super-resolution), tetapi untuk skenario iklim masih riset aktif. Perlakukan dengan kehati-hatian dan validasi fisik (Bab 10.6).
+**Apakah *generative model* untuk data iklim sudah siap digunakan?** Beragam. Beberapa telah dipakai untuk *downscaling* (misal super-resolution), tetapi untuk skenario iklim masih riset aktif. Perlakukan dengan kehati-hatian dan validasi fisik (§10.6).
 
 **Bagaimana jika institusi saya tidak punya GPU?** Untuk model sekecil studi kasus di buku ini, Colab gratis umumnya cukup dan tidak butuh GPU kuat. Namun ketersediaan GPU di Colab gratis **tidak dijamin** (ada batas waktu dan kuota). Bagi yang membutuhkan kapasitas lebih, pertimbangkan Colab Pro atau sumber daya institusi. Sesuaikan dengan kebutuhan, bukan gengsi.
 
@@ -366,7 +366,7 @@ Buku ini adalah permulaan, bukan akhir. Jadikan studi kasus Cilacap (pasang suru
 
 ## Ringkasan
 
-- Model operasional butuh monitoring drift (data dan concept) via metrik dan grafik kendali.
+- Model operasional butuh monitoring *drift* (*data* dan *concept*) lewat metrik dan grafik kendali.
 - Retraining: kalibrasi → jadwal → sinyal → model baru. Simpan versi dan muatan latih. Investigasi sebelum bertindak (Tabel 10.2).
 - Ketidakpastian: ensembel multi-seed dan interval kuantil. Waspadai kalibrasi.
 - Interpretasi: SHAP (global + lokal), selalu ditautkan ke fisis, bukan kausal.

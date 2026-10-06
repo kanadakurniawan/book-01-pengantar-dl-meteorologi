@@ -53,7 +53,7 @@ Setelah menyelesaikan buku ini, pembaca diharapkan mampu:
 4. **Mengevaluasi** model dengan metrik yang tepat untuk konteks operasional — MAE/RMSE
    untuk regresi, CSI/FAR/POD untuk kejadian ekstrem — serta membandingkannya dengan
    baseline (Bab 2, 5, 8–9).
-5. **Mereproduksi** studi kasus end-to-end pasang surut Kapuas dan curah hujan (data terbuka),
+5. **Mereproduksi** studi kasus end-to-end pasang surut Cilacap dan curah hujan (data terbuka),
    menginterpretasi hasil, dan mengenali batas model (Bab 8–9).
 6. **Mengomunikasikan** hasil model kepada praktisi/penentu kebijakan secara jujur,
    termasuk keterbatasan, ketidakpastian, dan implikasi etika (Bab 10).
@@ -584,7 +584,7 @@ Setelah evaluasi lolos:
 
 - **Dari outline awal:** "Fungsi aktivasi" (bab mandiri) dibubarkan → muncul sebagai kebutuhan
   aplikasi di Bab 2–4; evaluasi domain ditambah Bab 5 agar kredibel di kalangan praktisi;
-  data diperdalam Bab 6; kasus Kapuas & curah hujan jadi flagship setelah LSTM (Bab 8–9);
+  data diperdalam Bab 6; kasus Cilacap & curah hujan jadi flagship setelah LSTM (Bab 8–9);
   operasional + arah riset digabung Bab 10.
 - **Penyebab:** 10 iterasi review internal (audit struktur, learning-by-problem, framing tugas
   ML, evaluasi domain, adopsi pola code-first ala Bourke, data & reproduksibilitas, bobot &

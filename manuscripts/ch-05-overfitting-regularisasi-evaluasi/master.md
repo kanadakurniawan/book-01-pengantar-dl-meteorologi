@@ -28,14 +28,14 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 ## 5.1 *Bias-Variance*: Dua Sumber Galat
 
-Setiap model memiliki dua jenis galat struktural. Kerangka ini juga yang dipakai literatur verifikasi operasional, misalnya bagaimana WMO meninjau keandalan metrik perkiraan [1]. Rujukan standar verifikasi perkiraan adalah Jolliffe & Stephenson [2], dan untuk *deep learning* umum (termasuk aspek *bias-variance*) lihat Goodfellow et al. [3]:
+Setiap model punya dua jenis galat struktural. Kerangka ini juga dipakai dalam verifikasi operasional [1]. Rujukan standarnya Jolliffe & Stephenson [2], sedangkan untuk *deep learning* umum (termasuk *bias-variance*) lihat Goodfellow et al. [3]:
 
 - **Bias tinggi** - model terlalu sederhana, tidak menangkap pola data (*underfit*). Misal: memakai garis lurus untuk data yang jelas tidak linear.
 - ***Varians* tinggi** - model terlalu sensitif pada data latih. Sedikit perubahan data mengubah prediksi secara signifikan (*overfit*). Misal: jaringan sangat besar yang "menghafal" *noise*.
 
-Ini bukan dua "tipe" yang terpisah, melainkan ***trade-off***: saat kapasitas model naik, bias turun tetapi varian naik. Titik keseimbangan adalah di mana galat total (bias² + varian + *noise*) minimal, yang dicapai pada kondisi optimal antara *underfit* dan *overfit*.
+Keduanya bukan dua tipe terpisah, melainkan *trade-off*: saat kapasitas model naik, bias turun tetapi varian naik. Galat total (bias² + varian + *noise*) minimal pada titik seimbang antara *underfit* dan *overfit*.
 
-Analoginya di meteorologi: peramal yang **selalu memakai rata-rata klimatologi** sebagai ramalannya punya **bias tinggi tetapi varian nol**. Ia tidak pernah meleset jauh, tetapi ramalannya juga tidak pernah tajam. Sebaliknya, peramal yang **menghafal pola tahun lalu dan mengulanginya begitu saja** tampak sangat akurat pada tahun yang dihafalnya, tetapi **variannya tinggi**: begitu kondisi berubah, ramalannya meleset drastis. Kita ingin peramal di tengah: mengikuti pola nyata, tetapi tidak menghafal kebetulan data. Perbandingan ringkas ketiga pola itu ada di Tabel 5.1.
+Analoginya di meteorologi: peramal yang **selalu memakai rata-rata klimatologi** punya **bias tinggi tetapi varian nol**. Ia tidak pernah meleset jauh, tetapi ramalannya juga tidak tajam. Sebaliknya, peramal yang **menghafal pola tahun lalu dan mengulanginya** tampak akurat pada tahun itu, tetapi **variannya tinggi**: begitu kondisi berubah, ramalannya meleset drastis. Kita ingin peramal di tengah: mengikuti pola nyata tanpa menghafal kebetulan data. Ringkasannya di Tabel 5.1.
 
 **Tabel 5.1**: Perbandingan pola *underfit*, fit baik, dan *overfit*.
 
@@ -69,13 +69,13 @@ Untuk **klasifikasi**, kurva yang sama bisa dipakai dengan *loss* (*cross-entrop
 
 ### Kapan *overfit* dikatakan buruk?
 
-Overfitting dikatakan **buruk** ketika model kehilangan kemampuan generalisasinya terhadap data baru. Meskipun tidak ada ambang batas angka yang mutlak, berikut adalah indikator utamanya:
+Overfit menjadi **buruk** ketika model kehilangan kemampuan generalisasi pada data baru. Tidak ada ambang angka yang mutlak, tetapi indikator utamanya:
 
-- **Tren *Validation Loss* yang Meningkat Konsisten.** Overfit mulai bermasalah jika *validation loss* (galat validasi) naik secara konsisten setelah mencapai titik minimumnya (bukan sekadar fluktuasi acak) sedangkan *training loss* terus menurun.
-- **Kesenjangan Performa (*Generalization Gap*) yang Terlalu Lebar.** Jika galat *train* mendekati nol tetapi galat *validation* jauh lebih besar, ini adalah indikasi kuat bahwa model menghafal pola data latih, bukan mempelajari pola umum (walau *gap* besar juga bisa muncul dari pergeseran distribusi antara train dan validasi).
-- **Kalah dari *Baseline* Sederhana (Lihat Bab 2).** Ini adalah indikator krusial: jika model yang *overfit* menghasilkan galat validasi yang lebih buruk (atau bahkan sama saja) dibandingkan *baseline* sederhana, maka kompleksitas model tersebut sia-sia. Model seperti ini **tidak berguna**, segera sederhanakan, beri regularisasi, atau tinggalkan.
+- **Galat validasi naik konsisten.** *Overfit* mulai bermasalah jika galat validasi naik terus setelah titik minimumnya (bukan fluktuasi acak), sedangkan galat latih masih menurun.
+- **Kesenjangan performa (*generalization gap*) terlalu lebar.** Jika galat latih mendekati nol tetapi galat validasi jauh lebih besar, model kemungkinan menghafal data latih, bukan mempelajari pola umum. Namun, kesenjangan besar juga bisa berasal dari pergeseran distribusi antara latih dan validasi.
+- **Kalah dari *baseline* sederhana (Bab 2).** Jika galat validasi model lebih buruk, atau sekadar sama, dibandingkan *baseline* sederhana, kompleksitasnya sia-sia. Segera sederhanakan, beri regularisasi, atau tinggalkan model itu.
 
-**Kunci Utama:** Selalu evaluasi kinerja model berdasarkan **set validasi (dan *test set*)**, bukan *training set*. *Training error* yang sangat rendah sering kali menyesatkan para praktisi.
+**Kunci:** Nilai model selalu dilihat pada **data validasi (dan *test*)**, bukan data latih. Galat latih yang sangat rendah sering menyesatkan.
 
 ## 5.3 Regularisasi: Mencegah *Overfit*
 
@@ -99,12 +99,12 @@ callbacks = [
 
 #### Memilih Parameter `patience`
 
-Nilai `patience=15` pada **Kode 5.1** adalah titik awal (*starting point*) yang umum. Nilai optimal untuk parameter ini sangat bergantung pada tingkat derau (*noise*) dan fluktuasi pada kurva validasi Anda:
+Nilai `patience=15` pada **Kode 5.1** adalah titik awal yang umum. Nilai optimalnya bergantung pada derau (*noise*) dan fluktuasi kurva validasi:
 
-- **Data dengan Tingkat *Noise* Tinggi** (misal curah hujan): Fluktuasi lokal pada *validation loss* sering terjadi. Jika nilai `patience` terlalu kecil, pelatihan dapat terhenti prematur akibat fluktuasi acak, bukan karena model telah mencapai konvergensi sejati.
-- **Data dengan *Loss* Halus (Dataset Besar / Sinyal Stabil):** Nilai `patience` yang terlalu besar hanya akan membuang waktu komputasi karena model terus melatih parameter meski tidak ada peningkatan performa yang berarti.
+- **Data berderau tinggi** (misal curah hujan): fluktuasi lokal pada galat validasi sering terjadi. `patience` terlalu kecil membuat pelatihan berhenti prematur karena fluktuasi acak, bukan karena konvergensi.
+- **Data dengan kurva halus** (dataset besar atau sinyal stabil): `patience` terlalu besar hanya membuang waktu, karena pelatihan berlanjut tanpa peningkatan berarti.
 
-**Rekomendasi Praktis:** Mulailah dengan rentang `patience` antara **10 hingga 20**, amati grafik *loss* (*training dan validation*), lalu sesuaikan berdasarkan dinamika konvergensi model Anda.
+**Rekomendasi:** Mulai dari `patience` 10-20, amati kurva galat latih dan validasi, lalu sesuaikan.
 
 ### 2. Regularisasi L2 (*weight decay*)
 
@@ -114,9 +114,9 @@ $$
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{asal}} + \lambda \sum w^2 \tag{5.1}
 $$
 
-Di sini, hiperparameter $\lambda$ (*lambda*) mengontrol kekuatan penalti. Penalti ini "memaksa" model untuk menjaga nilai bobot tetap kecil, sehingga model tidak terlalu bergantung secara berlebihan pada satu atau beberapa fitur tertentu saja.
+Di sini, hiperparameter $\lambda$ (*lambda*) mengontrol kekuatan penalti. Penalti ini menahan bobot agar tetap kecil, sehingga model tidak terlalu bergantung pada satu atau beberapa fitur.
 
-Pada framework Keras/TensorFlow, L2 dispesifikasikan langsung pada *layer*:
+Pada Keras/TensorFlow, L2 dispesifikasikan langsung pada lapisan:
 
 ```python
 tf.keras.layers.Dense(8, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(1e-4))
@@ -134,7 +134,7 @@ Namun, untuk tingkat pemula hingga menengah pada latihan di bab ini, perbedaan n
 
 Selama proses pelatihan (*training*), *dropout* mematikan (*deactivate*) sebagian unit neuron secara acak pada setiap iterasi dengan probabilitas tertentu (misalnya $20\% - 50\%$).
 
-Teknik ini memaksa jaringan neural untuk tidak terlalu mengandalkan neuron tertentu atau kombinasi fitur yang spesifik (*co-adaptation*). Seolah-olah, jaringan dilatih menggunakan sub-model (*ensemble*) yang berbeda di setiap langkah pelatihan, sehingga menghasilkan model yang jauh lebih kokoh (*robust*). Saat tahap evaluasi atau prediksi (*inference*), seluruh neuron kembali diaktifkan. Implementasi modern seperti Keras/TensorFlow memakai *inverted dropout*, yaitu penskalaan aktivasi dilakukan **saat pelatihan** dengan membaginya dengan *keep probability*, sehingga saat *inference* tidak ada penyesuaian tambahan. *Dropout* klasik berbeda, ia menskalakan bobot dengan *keep probability* saat pengujian. Berikut contoh penerapan layer Dropout dengan rate 30%
+Teknik ini mencegah jaringan terlalu mengandalkan neuron atau kombinasi fitur tertentu (*co-adaptation*). Jaringan seolah dilatih memakai sub-model berbeda di tiap langkah, sehingga menghasilkan model yang lebih kokoh (*robust*). Saat prediksi (*inference*), semua neuron diaktifkan kembali. Keras/TensorFlow memakai *inverted dropout*: penskalaan aktivasi dilakukan saat pelatihan (dibagi *keep probability*), sehingga saat *inference* tidak perlu penyesuaian. *Dropout* klasik berbeda, ia menskalakan bobot saat pengujian. Contohnya, dropout dengan rate 30%:
 
 ```python
 tf.keras.layers.Dropout(0.3)
@@ -160,32 +160,29 @@ Kode 5.2 menunjukkan cara menggabungkan L2 dan *dropout* dalam satu arsitektur *
 
 ### 4. *Batch Normalization* (efek regularisasi sampingan)
 
-*Batch Normalization* menormalkan luaran aktivasi di tiap *layer* selama pelatihan agar distribusi *input* antar-*layer* tetap stabil. Hal ini mempercepat serta menstabilkan konvergensi pelatihan. Perlu dicatat, *Batch Normalization* **bukan** teknik regularisasi utama seperti L2, *dropout*, atau *early stopping*. Efek regularisasinya hanya sampingan dan masih diperdebatkan. Efektivitas *Batch Normalization* umumnya terasa pada arsitektur jaringan dalam (*deep networks*), yang akan dibahas lebih detail pada **Bab 7**.
+*Batch Normalization* menormalkan keluaran aktivasi tiap lapisan selama pelatihan agar distribusi masukannya stabil, sehingga konvergensi lebih cepat dan stabil. Namun, ini **bukan** teknik regularisasi utama seperti L2, *dropout*, atau *early stopping*; efek regularisasinya hanya sampingan dan masih diperdebatkan. Efektivitasnya terasa pada jaringan dalam (*deep networks*), dibahas lebih lanjut di Bab 7.
 
 ### Kapan Menggunakan Teknik yang Mana?
 
-Pemilihan kombinasi regularisasi sangat bergantung pada diagnosis dinamika pelatihan model Anda:
+Pilihan kombinasi regularisasi bergantung pada diagnosis dinamika pelatihan:
 
-- **Data Kecil dan *Overfitting* Ringan:** Gunakan kombinasi ***Early Stopping*** + **L2 ringan** ($\lambda \approx 10^{-4}$).
-- *Overfitting* Menengah hingga Berat: Tambahkan *Dropout* (misalnya $0.2 - 0.5$) pada *layer-layer* awal/tengah.
-- *Underfitting* (Model Gagal Mempelajari Pola): **Jangan tambahkan regularisasi.** Fokuskan pada peningkatan kapasitas model (menambah unit/layer) atau perbaiki rekayasa fitur (*feature engineering*).
+- **Data kecil, *overfit* ringan:** gunakan *early stopping* + L2 ringan ($\lambda \approx 10^{-4}$).
+- ***Overfit* menengah hingga berat:** tambahkan *dropout* (misalnya $0.2 - 0.5$) pada lapisan awal/tengah.
+- ***Underfit* (model gagal mempelajari pola):** **jangan tambahkan regularisasi.** Tingkatkan kapasitas model (tambah unit/lapisan) atau perbaiki fitur (*feature engineering*).
 
-**Aturan Penting:** Jangan pernah menambahkan regularisasi hanya karena model tampak berkinerja kurang baik tanpa menganalisis kurva pelatihan (*learning curves*). Menambahkan regularisasi pada model yang sedang mengalami *underfitting* justru akan memperburuk performanya.
+**Aturan penting:** jangan menambahkan regularisasi tanpa menganalisis kurva pelatihan. Regularisasi pada model yang *underfit* justru memperburuk performa.
 
 ### Bagaimana Regularisasi Bekerja secara Intuitif?
 
-Ketiga teknik utama ini menyerang akar masalah yang sama yaitu **fleksibilitas model yang terlalu bebas dalam menyesuaikan diri terhadap data latih**, namun dari sudut pandang mekanis yang berbeda:
+Ketiga teknik ini menyerang akar masalah yang sama, **model terlalu bebas menyesuaikan diri pada data latih**, tetapi lewat mekanisme berbeda:
 
-1. **L2 Regularization ("Menekan" Skala Bobot):**
-  Dengan penalti pada bobot yang besar (Persamaan 5.1), L2 mengecilkan bobot ke arah nol sehingga mencegah satu bobot mendominasi. Model tidak lagi bertumpu pada satu fitur tertentu, membuatnya lebih tahan terhadap derau (*noise*) data input.
-2. **Dropout ("Menciptakan Ansambel Sub-Jaringan"):**
-  Dengan mematikan neuron secara acak selama pelatihan, *Dropout* mencegah timbulnya *co-adaptation* (kebergantungan berlebih antar-neuron). Secara intuitif, *Dropout* melatih "ansambel efektif" dari ribuan sub-jaringan acak secara simultan, sehingga tidak ada satu pun neuron yang menjadi titik tunggal kegagalan (*single point of failure*). Konsep fundamental ini diperkenalkan oleh Srivastava et al. (2014) [5].
-3. **Early Stopping ("Membatasi Waktu Eksplorasi"):**
-  *Early stopping* membatasi durasi atau iterasi pelatihan (*epoch*). Teknik ini menghentikan model tepat sebelum ia mulai "menghafal" detail-detail kecil yang sebenarnya *noise* data latih.
+1. **L2 (menekan skala bobot):** penalti pada bobot besar (Persamaan 5.1) mengecilkannya ke arah nol, sehingga tidak ada satu bobot yang mendominasi. Model lebih tahan terhadap derau data masukan.
+2. ***Dropout* (menciptakan ansambel sub-jaringan):** dengan mematikan neuron acak selama pelatihan, *dropout* mencegah kebergantungan berlebih antar-neuron (*co-adaptation*). Jaringan seolah melatih banyak sub-jaringan acak sekaligus, sehingga tidak ada neuron yang menjadi titik tunggal kegagalan. Konsep ini diperkenalkan Srivastava et al. (2014) [5].
+3. ***Early stopping* (membatasi waktu eksplorasi):** menghentikan pelatihan tepat sebelum model mulai menghafal detail kecil yang sebenarnya derau.
 
 ### Contoh sederhana efek L2
 
-Bayangkan fitur kelembapan penting untuk hujan. Tanpa L2, model bisa memberi bobot besar pada kelembapan dan mengabaikan yang lain. Dengan L2, bobot besar "dikenai biaya" (penalti kuadrat) sehingga model mengecilkan bobot tersebut dan tidak bergantung berlebihan pada satu fitur. Efeknya, prediksi lebih stabil saat ada sedikit *noise* pada pengukuran kelembapan, yang relevan karena data lapangan selalu ber-*noise*.
+Misal kelembapan penting untuk hujan. Tanpa L2, model bisa memberi bobot besar pada kelembapan dan mengabaikan fitur lain. Dengan L2, bobot besar "dikenai biaya" (penalti kuadrat), sehingga model mengecilkannya dan tidak bergantung berlebihan pada satu fitur. Prediksi pun lebih stabil saat pengukuran kelembapan berderau, dan data lapangan memang selalu berderau.
 
 ### Memilih kekuatan regularisasi (lambda dan *dropout rate*)
 
@@ -207,7 +204,7 @@ Bagian ini adalah yang membedakan buku ini dengan buku ML umum: **metrik yang be
 - **RMSE (*Root Mean Squared Error*):** Menghitung akar dari rata-rata kuadrat galat, memberikan penalti lebih besar pada galat bernilai besar. Nilai RMSE selalu ≥ MAE. Selisih antara RMSE dan MAE mencerminkan seberapa dominan keberadaan galat ekstrem.
 - **R²** (*Coefficient of Determination*): Mengukur proporsi varians yang dapat dijelaskan oleh model, didefinisikan sebagai `1 − SSE/SST`. Nilai R² bernilai negatif menandakan performa model lebih buruk daripada sekadar memprediksi nilai rata-rata data target. Nilai R² negatif pada data uji merupakan indikasi gagal total (*catastrophic failure*). Di luar rentang data pelatihan, R² umumnya turun tajam karena model belum pernah mempelajari rentang nilai tersebut.
 - **Indeks Willmott (d):** Bernilai antara 0 hingga 1 dan lebih sesuai untuk data berskala (sering digunakan dalam hidrologi dan meteorologi). Versi asli merujuk pada Willmott (1981) [6], sedangkan versi modifikasinya dirumuskan oleh Willmott et al. (2012) [7]. Pastikan mencantumkan versi yang digunakan saat implementasi.
-- **KGE (*Kling-Gupta Efficiency*):** Metrik ini dirumuskan melalui tiga komponen: korelasi ($r$), rasio bias ($\beta$), dan rasio variabilitas ($\gamma$), dengan nilai 1 menandakan hasil sempurna. Untuk model yang selalu memprediksi rata-rata klimatologis, rasio biasnya $\beta = 1$ dan rasio variabilitasnya $\gamma = 0$. Korelasi $r$ sebenarnya tak terdefinisi karena varians prediksi nol, tetapi dengan konvensi $r = 0$ diperoleh nilai $\text{KGE} = 1 - \sqrt{2} \approx -0,41$, bukan $0$ seperti yang sering keliru dipahami. Nilai di bawah tolok ukur (baseline) tersebut menandakan performa model lebih buruk daripada sekadar menggunakan rata-rata. Pemahaman konteks ini menjadikan rekomendasi pemilihan metrik pada Tabel 5.2 logis dan aplikatif. Metrik ini sangat populer dalam domain hidrologi dan dijelaskan secara terperinci oleh Gupta et al. (2009) [8].
+- **KGE (*Kling-Gupta Efficiency*):** Dirumuskan dari tiga komponen: korelasi ($r$), rasio bias ($\beta$), dan rasio variabilitas ($\gamma$); nilai 1 berarti sempurna. Untuk model yang selalu memprediksi rata-rata klimatologis, $\beta = 1$ dan $\gamma = 0$. Korelasi $r$ tak terdefinisi karena varians prediksi nol, tetapi dengan konvensi $r = 0$ diperoleh $\text{KGE} = 1 - \sqrt{2} \approx -0,41$, bukan 0 seperti yang sering disalahpahami. Nilai di bawah *baseline* berarti model lebih buruk daripada sekadar memakai rata-rata. Metrik ini populer di hidrologi dan dijelaskan Gupta et al. (2009) [8].
 
 Sebagai referensi dasar evaluasi dan praktik model pada umumnya, lihat [3]. Untuk verifikasi prediksi yang lebih mendalam, lihat Jolliffe dan Stephenson [2].
 
@@ -244,11 +241,11 @@ Rangkuman metrik verifikasi operasional standar WMO ini disajikan pada Tabel 5.3
 
 Pedoman resmi: WMO *Guidelines on the Verification of Operational Forecasts* [1].
 
-Sebagaimana terlihat pada Tabel 5.3, *bias score* digunakan untuk mengukur kecenderungan frekuensi prediksi model. Nilai *bias score* > 1 menunjukkan kondisi *over-forecast*, yaitu model terlalu sering mengumumkan kejadian sehingga berisiko menghasilkan banyak peringatan kosong. Sebaliknya, nilai < 1 menunjukkan kondisi *under-forecast*, yaitu model terlalu jarang memprediksi kejadian sehingga berisiko melewatkan kejadian penting.
+Tabel 5.3 menunjukkan *bias score* mengukur kecenderungan frekuensi prediksi. Nilai > 1 berarti *over-forecast*: model terlalu sering mengumumkan kejadian, sehingga berisiko banyak peringatan kosong. Nilai < 1 berarti *under-forecast*: model terlalu jarang memprediksi kejadian, sehingga berisiko melewatkannya.
 
 Perlu diingat bahwa *bias score* hanya menghitung kecenderungan kuantitas, bukan ketepatan posisi kejadian dalam ruang atau waktu. Dua model dengan *bias score* yang identik bisa memiliki kualitas prediksi yang sangat berbeda. Oleh karena itu, *bias score* selalu dianalisis bersamaan dengan POD, FAR, dan CSI, bukan berdiri sendiri [1].
 
-Metrik-metrik ini sangat krusial karena data kejadian langka (seperti hujan lebat, gelombang tinggi, atau badai) membuat metrik akurasi (*accuracy*) menjadi menyesatkan (lihat Bab 3). Penggunaan CSI, POD, dan FAR memberikan gambaran yang jujur mengenai nilai operasional model, tidak sekadar mengukur persentase kebenaran secara umum.
+Metrik ini penting karena kejadian langka (hujan lebat, gelombang tinggi, badai) membuat akurasi menyesatkan (Bab 3). CSI, POD, dan FAR memberi gambaran jujur tentang nilai operasional model, bukan sekadar persentase kebenaran.
 
 ### Numerik Singkat: Beda Cerita Antar Metrik
 
@@ -269,16 +266,16 @@ Perbandingan detail kinerja dan metrik verifikasi kedua model tersebut disajikan
 | FAR (*False Alarm Ratio*)      | 0,20    | 0,00    | FP / (TP + FP)                                     |
 | CSI (*Critical Success Index*) | 0,67    | 0,30    | TP / (TP + FP + FN)                                |
 
-Tabel 5.4 memperlihatkan fenomena penting: nilai akurasi yang sangat tinggi (96% dan 93%) memberikan ilusi bahwa kedua model sama-sama sangat baik. Namun, metrik operasional menampilkan kondisi jauh berbeda.
+Tabel 5.4 menunjukkan ilusi akurasi: 96% dan 93% tampak sama-sama baik, padahal metrik operasionalnya jauh berbeda.
 
-Model A memiliki akurasi 96% dan POD 0,80, yang menunjukkan bahwa tingkat tangkapan kejadiannya cukup tinggi, meskipun terdapat 20% peringatan kosong (*false alarm* / FAR). Sebaliknya, Model B tidak pernah memberikan peringatan palsu sama sekali (FAR 0,00), tetapi melewatkan 7 dari 10 kejadian hujan deras (POD 0,30).
+Model A punya POD 0,80: tangkapan kejadiannya tinggi, meski 20% peringatannya kosong (FAR 0,20). Model B tidak pernah salah alarm (FAR 0,00), tetapi melewatkan 7 dari 10 kejadian (POD 0,30).
 
-Metrik CSI mengungkap performa riil kedua model: Model A jauh lebih unggul dalam menangkap ancaman secara keseluruhan (CSI 0,67 dibanding 0,30). Keputusan memilih model yang digunakan bergantung pada tujuan operasional [1]:
+CSI mengungkap performa sebenarnya: Model A jauh lebih baik (CSI 0,67 vs 0,30). Pilihannya bergantung pada tujuan operasional [1]:
 
-- **Fokus Peringatan Dini / Keselamatan Jiwa:** Model A lebih diterima karena mengutamakan minimnya kejadian yang terlewat (*miss*).
-- **Fokus Efisiensi Biaya (Biaya Evakuasi Tinggi):** Model B mungkin dipilih jika dampak ekonomi dari *false alarm* sangat merugikan.
+- **Fokus peringatan dini/keselamatan jiwa:** Model A lebih diterima karena meminimalkan kejadian yang terlewat (*miss*).
+- **Fokus efisiensi biaya (biaya evakuasi tinggi):** Model B mungkin dipilih jika *false alarm* sangat merugikan secara ekonomi.
 
-Kasus ini mempertegas alasan mengapa kita tidak boleh berhenti hanya pada metrik akurasi saat mengevaluasi model untuk kejadian langka [1].
+Kasus ini menegaskan: jangan berhenti pada akurasi untuk kejadian langka [1].
 
 ## 5.5 *Cross-Validation* untuk Deret Waktu: *Walk-Forward*
 
@@ -288,11 +285,13 @@ Ketergantungan antar-waktu ini disebut **autokorelasi**, yaitu korelasi antara s
 
 Solusinya: ***walk-forward* validation** (juga disebut *forward chaining*), yang mensimulasikan penggunaan operasional:
 
-1. Mulai dengan *windows* latih di awal deret.
-2. Prediksi *window* berikutnya (untuk validasi).
+1. Mulai dengan **jendela latih** (*training window*) di awal deret.
+2. Prediksi jendela berikutnya (untuk validasi).
 3. Geser batas latih maju, lalu ulangi.
 
-**Tabel 5.5**: Skema *walk-forward* (ilustrasi 5 fold, horizon = 20 langkah).
+Di sini **horizon** (`h`) berarti jumlah langkah ke depan yang diprediksi dari batas latih; istilah ini dipakai lagi di Bab 7-9.
+
+**Tabel 5.5**: Skema *walk-forward* (ilustrasi 5 fold, horizon `h` = 20 langkah).
 
 | Fold | Train   | Validate  |
 | ---- | ------- | --------- |
@@ -304,10 +303,10 @@ Solusinya: ***walk-forward* validation** (juga disebut *forward chaining*), yang
 
 Pada Tabel 5.5, latih selalu **hanya masa lalu**, sedangkan validasi selalu **di depan** batas latih. Ini mereplikasi kondisi nyata: saat model dipakai, ia hanya tahu data hingga hari ini.
 
-Tergantung bagaimana *window* latih bergerak, ada dua varian *walk-forward*:
+Tergantung bagaimana jendela latih bergerak, ada dua varian *walk-forward*:
 
-- ***Expanding window*** - *window* latih **tumbuh** tiap fold. Fold 1 melatih t1-t100, fold 2 t1-t120, fold 3 t1-t140, dan seterusnya. Batas kiri latih tetap di t1, hanya batas kanan yang bergeser maju. Tabel 5.5 memakai varian ini.
-- ***Sliding window*** - *window* latih **bergeser** dengan lebar tetap. Fold 1 melatih t1-t100, fold 2 t21-t120, fold 3 t41-t140, dan seterusnya. Batas kiri dan batas kanan sama-sama bergeser maju. Kode 5.3 memakai varian ini.
+- ***Expanding window* (jendela melebar)** - jendela latih **tumbuh** tiap fold. Fold 1 melatih t1-t100, fold 2 t1-t120, fold 3 t1-t140, dan seterusnya. Batas kiri latih tetap di t1, hanya batas kanan yang bergeser maju. Tabel 5.5 memakai varian ini.
+- ***Sliding window* (jendela bergeser)** - jendela latih **bergeser** dengan lebar tetap. Fold 1 melatih t1-t100, fold 2 t21-t120, fold 3 t41-t140, dan seterusnya. Batas kiri dan batas kanan sama-sama bergeser maju. Kode 5.3 memakai varian ini.
 
 *Expanding window* memakai semua data sejarah dan cocok untuk deret dengan tren jangka panjang, tetapi mulai berat saat deret sangat panjang. *Sliding window* lebih cocok ketika perilaku lama tidak lagi relevan karena distribusi berubah seiring waktu. Pilih sesuai karakter data Anda, dan sebutkan pilihan itu saat melaporkan hasil.
 
@@ -411,7 +410,7 @@ Kebiasaan ini, bukan sekadar angka akurasi yang tinggi, yang membuat laporan dap
 
 ### FAQ singkat
 
-**Kapan KGE lebih baik daripada R²?** KGE cocok bila Anda peduli pada bias dan skala, seperti pada hidrologi dan peramalan. KGE memisahkan tiga hal: korelasi, bias, dan variabilitas. R² (1 − SSE/SST) sebenarnya peka terhadap bias, sehingga model dengan bias besar justru ber-R² rendah. Metrik yang hanya mengukur pola dan kebal terhadap bias atau skala adalah r² (kuadrat korelasi Pearson). Karena itu R² dan r² perlu dibedakan.
+**Kapan KGE lebih baik daripada R²?** KGE cocok bila Anda peduli pada bias dan skala, misalnya di hidrologi. KGE memisahkan korelasi, bias, dan variabilitas. R² (1 − SSE/SST) sebenarnya peka terhadap bias, sehingga bias besar justru menurunkan R². Adapun r² (kuadrat korelasi Pearson) hanya mengukur pola dan kebal terhadap bias atau skala; karena itu R² dan r² perlu dibedakan.
 
 **Apakah *dropout* membuat model selalu lebih baik?** Tidak. *Dropout* menambah regularisasi, berguna untuk *overfit*, tetapi bisa memperburuk *underfit*. Terapkan sesuai diagnosis.
 

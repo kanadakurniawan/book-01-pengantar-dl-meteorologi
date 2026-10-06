@@ -28,13 +28,13 @@ Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 ## 6.1 Mengapa Data Menentukan Segalanya
 
-Bab 2-5 membangun model, sedangkan bab ini kembali ke fondasi: **data**. Di dunia meteorologi, ungkapan *garbage in, garbage out* terasa sangat nyata. Model dengan performa sangat baik pun tidak berguna jika masukannya salah. Urutan ini sengaja: menunda bab data sampai setelah pembaca mengenal konsep *leakage*, split berbasis waktu, dan metrik evaluasi (Bab 2 dan 5) membuat alasan mengapa data harus bersih menjadi konkret, bukan abstrak. Tiga kenyataan yang perlu dipahami sejak awal:
+Bab 2-5 membangun model, sedangkan bab ini kembali ke fondasi: **data**. Di meteorologi, ungkapan *garbage in, garbage out* terasa nyata: model terbaik pun tidak berguna jika masukannya salah. Bab data sengaja diletakkan setelah Bab 2 dan 5, agar alasan data harus bersih (konsep *leakage*, split waktu, metrik evaluasi) menjadi konkret. Tiga kenyataan yang perlu dipahami sejak awal:
 
 1. **Data meteorologi tidak selalu bersih.** Sensor rusak, nilai hilang, stasiun pindah lokasi, dan pencilan (ingat distribusi hujan yang berekor panjang di Bab 2 dan 5) adalah hal biasa.
 2. **Data adalah deret waktu.** Urutan waktu bermakna, karena itu kita tidak boleh mengacak, memotong sembarangan, atau membiarkan informasi masa depan "bocor" ke masa lalu (Bab 2 §2.7, Bab 5 §5.5).
 3. **Sumber data punya aturan.** Lisensi, batasan penggunaan, dan cara kutip berbeda antar lembaga. Memahami aturan ini adalah bagian dari etika riset (Kriteria Sitasi, bagian 3).
 
-Bab ini memberi peta sumber data + keterampilan teknis mengubahnya menjadi *dataset* yang siap dilatih, yang akan digunakan di Bab 7-9.
+Bab ini memberi peta sumber data dan keterampilan mengubahnya menjadi *dataset* siap dilatih untuk Bab 7-9.
 
 ### Alur pengolahan data
 
@@ -52,11 +52,11 @@ Bab ini disusun sebagai satu alur tujuh tahap, mulai dari memilih sumber data sa
 | 6. *Preprocessing*       | §6.7   | Normalisasi/standardisasi (skala latih), transformasi log1p, split kronologis            | X/y siap dilatih        | Kode 6.7-6.8         |
 | 7. Metadata              | §6.9   | Catat sumber, versi, transformasi, dan hash berkas                                       | Jejak data              | —                    |
 
-Jika suatu bagian terasa abstrak, loncat duluan ke "Studi mini" di §6.7 yang merangkai semuanya sekaligus.
+Jika suatu bagian terasa abstrak, langsung ke "Studi mini" di §6.7 yang merangkai semuanya.
 
 ## 6.2 Sumber Data Meteorologi Indonesia
 
-Bagian ini merangkum sumber data yang relevan untuk studi meteorologi Indonesia, dan semuanya dapat diakses terbuka (gratis, atau gratis dengan pendaftaran). Sumber dipilih bukan karena lengkap, melainkan karena praktis, terpelihara, dan cukup untuk membangun *dataset* di Bab 7-9. Perannya berbeda-beda: observasi dapat menjadi *target*, sedangkan *reanalysis* dan estimasi satelit umumnya menjadi fitur. Lisensi serta batas akses dicatat karena tiap penyedia punya aturan yang berbeda.
+Bagian ini merangkum sumber data untuk studi meteorologi Indonesia, semuanya dapat diakses terbuka (gratis, atau gratis dengan pendaftaran). Sumber dipilih karena praktis dan terpelihara, bukan karena lengkap. Perannya berbeda: observasi dapat menjadi *target*, sedangkan *reanalysis* dan estimasi satelit umumnya menjadi fitur. Lisensi dan batas akses dicatat karena tiap penyedia punya aturan berbeda.
 
 ### Jenis sumber
 
@@ -81,7 +81,7 @@ Setiap sumber di bawah ini diberi label jenisnya, agar terlihat mana yang berupa
 
 Untuk semua sumber: cantumkan nama produk, versi, dan tanggal unduh (lihat §6.9); sebagian penyedia (CDS, JAXA) mewajibkan kredit khusus untuk publikasi.
 
-**Catatan penting:** stasiun GHCN-Daily [1] (termasuk sejumlah stasiun Indonesia) adalah sumber "kebenaran lokal" yang terbuka, tetapi tidak merata secara spasial dan kadang memiliki gap. ERA5 [2][3] memberikan cakupan grid lengkap dan konsisten, tetapi merupakan *model* (taksiran), bukan observasi murni. Cara menggabungkan observasi dan *reanalysis* dibahas di §6.3-6.6, sedangkan peran satelit dijelaskan di bawah.
+**Catatan penting:** GHCN-Daily [1], termasuk sejumlah stasiun Indonesia, adalah sumber "kebenaran lokal" yang terbuka, tetapi tidak merata secara spasial dan kadang berlubang. ERA5 [2][3] memberi cakupan grid lengkap dan konsisten, tetapi berupa *model* (taksiran), bukan observasi murni. Cara menggabungkan keduanya dibahas di §6.3-6.6; peran satelit dijelaskan di bawah.
 
 ### Kapan memakai data satelit hujan?
 
@@ -89,11 +89,11 @@ Untuk wilayah yang minim stasiun (laut, pulau terpencil, Indonesia timur), penga
 
 Catatan penggunaan di buku ini:
 
-- **Kapan digunakan:** Manfaatkan data satelit sebagai fitur prediktor pelengkap untuk memperkaya informasi spasial model. Data ini juga berguna sebagai cadangan ketika data stasiun darat mengalami kekosongan (*missing data*).
-- **Kapan hati-hati**: Estimasi satelit rentan mengalami bias di wilayah pesisir dan pegunungan tinggi. Oleh karena itu, selalu lakukan verifikasi atau koreksi bias terhadap stasiun lokal jika datanya tersedia.
-- **Jangan dipakai sebagai target:** Jangan menjadikan data satelit sebagai variabel target jika data observasi stasiun darat tersedia. Penggunaan data stasiun riil sebagai target sangat penting untuk menjaga konsistensi evaluasi dan validitas performa model.
+- **Kapan digunakan:** manfaatkan data satelit sebagai fitur pelengkap untuk memperkaya informasi spasial model, sekaligus cadangan saat data stasiun berlubang (*missing data*).
+- **Kapan hati-hati:** estimasi satelit rentan bias di pesisir dan pegunungan tinggi, jadi verifikasi atau koreksi bias terhadap stasiun lokal bila datanya tersedia.
+- **Jangan dipakai sebagai target:** jangan jadikan data satelit sebagai variabel target bila observasi stasiun darat tersedia. Stasiun riil sebagai target menjaga konsistensi evaluasi dan validitas performa model.
 
-Bab 6 memperlakukan satelit sebagai "sumber bonus", bukan sumber utama.
+Bab ini memperlakukan satelit sebagai "sumber bonus", bukan sumber utama.
 
 ### Menggabungkan observasi dan *reanalysis* (praktik yang disarankan)
 
@@ -134,7 +134,7 @@ d = ds["t2m"]                     # variabel suhu 2 m
 print(d.shape, d.attrs.get("units"))
 ```
 
-Keunggulan `xarray` adalah kemampuannya mempertahankan label koordinat seperti waktu, lintang, dan bujur. Hal ini membuat proses pengirisan (*slicing*) data berdasarkan wilayah atau periode tertentu lebih praktis dan mudah dibaca dibanding *array* mentah NumPy. Sedangkan untuk data stasiun berformat CSV, langkah awal yang umum dilakukan adalah membaca berkas menggunakan `pandas.read_csv` lalu mengonversi kolom tanggal ke tipe data `datetime`.
+`xarray` mempertahankan label koordinat seperti waktu, lintang, dan bujur, sehingga pengirisan (*slicing*) data per wilayah atau periode lebih praktis dibanding *array* mentah NumPy. Untuk CSV stasiun, langkah awalnya membaca berkas dengan `pandas.read_csv`, lalu mengonversi kolom tanggal ke tipe `datetime`.
 
 Untuk format GRIB, terdapat dua jalur umum yang biasa digunakan, yaitu `xarray` dengan `cfgrib` untuk eksplorasi cepat seperti pada Kode 6.2, atau *command-line* `wgrib2` untuk ekstraksi presisi dalam skala besar.
 
@@ -184,13 +184,13 @@ Setelah data terbaca, langkah berikutnya adalah *quality control* (QC).
 
 ### Nilai hilang (*missing values*)
 
-Sensor mati, komunikasi terputus, atau galat logging menghasilkan celah. Langkah pertama bukan langsung mengisi, melainkan **memahami polanya** lebih dulu. Tiga pola yang umum dijumpai adalah sebagai berikut.
+Sensor mati, komunikasi terputus, atau galat pencatatan menghasilkan celah. Langkah pertama bukan mengisi, melainkan **memahami polanya**. Tiga pola yang umum:
 
 - Gap kecil dan acak biasanya cukup diatasi dengan imputasi sederhana.
 - Gap panjang yang berhari-hari perlu hati-hati, karena imputasi bisa menyesatkan. Pertimbangkan memotong periode tersebut atau memakai model terpisah.
 - Gap sistematis, misalnya stasiun yang hanya mencatat pada jam kerja, memerlukan penanganan khusus.
 
-Setelah pola dipahami, nilai yang hilang baru diisi. Proses mengisi nilai hilang disebut **imputasi**, dan cara yang dipilih bergantung pada sifat variabel serta panjang gap. Urutannya dapat dimulai dari cara yang paling sederhana.
+Setelah pola dipahami, nilai hilang baru diisi. Proses ini disebut **imputasi**, dan pilihannya bergantung pada sifat variabel serta panjang gap. Mulai dari cara paling sederhana.
 
 **Interpolasi linear.** Cara ini memakai dua nilai yang mengapit gap, lalu menarik garis lurus di antara keduanya. Interpolasi cocok untuk variabel yang mulus seperti suhu, tetapi **kurang pas** untuk hujan yang banyak nol dan sering melonjak.
 
@@ -219,7 +219,7 @@ df["kelembapan"] = df["kelembapan"].fillna(df["kelembapan"].mean())
 df["r_hujan"] = df["r_hujan"].ffill()
 ```
 
-**Imputasi pun bisa menyebabkan *leakage*.** Interpolasi linear (Kode 6.4) menarik nilai dari tetangga waktu, termasuk **masa depan**. Itu tidak masalah untuk analisis deskriptif, tetapi keliru untuk melatih model prediksi, karena model seolah melihat nilai yang belum tersedia saat prediksi. Untuk keperluan prediksi, gunakan imputasi **kausal**, yaitu mengisi hanya dari nilai sebelumnya (`ffill`) atau dari statistik yang dihitung pada data latih saja. Aturannya sama dengan normalisasi di §6.7, yaitu jangan memasukkan informasi dari masa depan ke masa lalu.
+**Imputasi pun bisa menyebabkan *leakage*.** Interpolasi linear (Kode 6.4) menarik nilai dari tetangga waktu, termasuk **masa depan**. Itu tidak masalah untuk analisis deskriptif, tetapi keliru untuk model prediksi: seolah model melihat nilai yang belum tersedia. Untuk prediksi, gunakan imputasi **kausal**, yaitu mengisi hanya dari nilai sebelumnya (`ffill`) atau dari statistik data latih saja. Aturannya sama dengan normalisasi di §6.7: jangan masukkan informasi masa depan ke masa lalu.
 
 ### Pencilan (*outlier*)
 
@@ -454,7 +454,7 @@ Menyimpan (Kode 6.8) memudahkan memuat ulang di notebook yang berbeda tanpa meng
 
 ## 6.9 Praktik Metadata dan Reproduksibilitas
 
-Setiap *dataset* yang dibangun harus dapat **direproduksi dan dijelaskan**. Hal ini dilakukan agar pihak lain dapat mengulang langkah yang sama dan memperoleh hasil yang serupa. Aturan Kriteria Sitasi bagian 3 juga menuntut identifikasi dataset, versi, dan cara aksesnya. Catat hal-hal berikut di berkas `README-data.md` atau di sel notebook.
+Setiap *dataset* harus dapat **direproduksi dan dijelaskan**, agar pihak lain dapat mengulang langkah yang sama. Kriteria Sitasi bagian 3 juga menuntut identifikasi dataset, versi, dan cara aksesnya. Catat hal berikut di `README-data.md` atau di sel notebook.
 
 1. **Sumber dan versi.** Sebutkan berkas stasiun mana yang dipakai (GHCN-Daily atau CHIRPS), produk ERA5 mana (ERA5 atau ERA5-Land), dan tanggal unduhnya.
 2. **Lisensi dan cara mengutip.** Tuliskan lisensi dari penyedia data beserta DOI atau rujukan papernya (misalnya [3][8]).

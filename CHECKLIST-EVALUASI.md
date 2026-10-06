@@ -76,6 +76,11 @@
       jelas; tidak ada kalimat terpotong, menggantung, atau bermakna ganda.
 - [ ] **Panjang kalimat wajar:** tidak ada kalimat bergulir panjang dengan banyak anak
       kalimat; kalimat panjang dipecah menjadi dua atau lebih.
+- [ ] **Ringkas bernas:** setiap kalimat padat isi, tanpa kata atau frasa yang tidak
+      menambah makna — pembuka basa-basi ("perlu diketahui bahwa", "pada dasarnya",
+      "sebenarnya"), penegasan berlebihan ("sangat", "benar-benar"), pengulangan gagasan,
+      dan sinonim bertumpuk. Rapatkan kalimat tanpa mengorbankan ketepatan teknis dan
+      kejelasan alur.
 - [ ] **Benar secara bahasa akademik:** tidak ada kalimat yang salah menurut ragam tulis
       ilmiah; tidak bertele-tele, tidak mengklaim lebih dari yang didukung data, dan tidak
       berlebihan (*overhype*).
@@ -135,7 +140,7 @@
 | 4 |   |   |   |   |   |                 |
 | 5 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Belum (D uji Colab; E build & DOI) |
 | 6 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Belum (D: uji notebook+data; E: build & DOI) |
-| 7 |   |   |   |   |   |                 |
+| 7 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | Belum (D: uji Colab; E: build & DOI) |
 | 8 |   |   |   |   |   |                 |
 | 9 |   |   |   |   |   |                 |
 | 10 |   |   |   |   |   |                 |
@@ -257,3 +262,85 @@
   Colab.
 - **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh Pandoc+LaTeX
   di mesin rilis); `bookDOI` masih placeholder `10.5281/zenodo.0000000`.
+
+### Catatan Evaluasi Bab 7 (5 Okt 2026 — setelah perbaikan)
+
+- **A (isi & keilmuan):** ✅ Ketiga cek otomatis bersih (bahasa-asing, terminologie,
+  dash-prosa; exit 0). Perbaikan terpasang: "*Standard*" → "Praktik standar" (§7.2);
+  istilah asing tak miring dirapikan (`*zero-inflated*`, `*gusty*`) dan "*autocorrelated*"
+  diselaraskan menjadi "*autokorelasi*" (istilah kanonik yang sudah dipakai bab ini);
+  kalimat rusak "bekerja di deret panjang yang deret cuaca punya" → "bekerja pada deret
+  panjang seperti deret cuaca" dan "untuk penulis memori kandidat" → "untuk menuliskan
+  memori kandidat" (§7.5); "state tersembunyi" menyesuaikan pola buku "lapisan tersembunyi
+  (*hidden layer*)" menjadi "keadaan tersembunyi (*hidden state*)" (dan "keadaan berulang",
+  "keadaan antar *batch*"); desimal diseragamkan ke koma ("0,30"; "0-0,2"); klaim sejarah
+  RNN diberi sitasi [1]. Angka contoh (input shape, `N-w-h+1 = 4`, periode pasang surut
+  semi-diurnal 12,42 jam/diurnal 24 jam/*tidal day* 24,84 jam) benar; disclaimer materi
+  pengenalan ada; framing *baseline*-dulu jujur. Koreksi akurasi §7.1: klaim "Bab 2-5
+  memperlakukan data sebagai deretan contoh yang saling bebas" diganti karena keliru —
+  Bab 2 §2.5/§2.7 sudah memakai *windowing* dan split menurut waktu, dan Bab 5 §5.5
+  menyatakan data deret waktu tidak independen serta memakai *walk-forward*; rumusan baru
+  membedakan arsitektur MLP berukuran tetap dari model sekuensial berkeadaan. Keterangan
+  dalam tanda kurung "(kondisi hari ini umumnya mirip dengan kemarin)" di §7.1 dihapus
+  karena definisi *autokorelasi* sudah ada di Bab 5 §5.5 (dan disebut di Bab 6 §6.6);
+  penulisan "autokorelasi" diseragamkan **tanpa miring** di Bab 7 (judul §7.1, §7.3,
+  tabel, Ringkasan), karena istilah ini sudah diserap. Perbaikan penyajian §7.2:
+  keterangan Tabel 7.1 yang terputus ("windowing deret ke contoh-*window*") dibetulkan,
+  dan penjelasan jumlah contoh `N - w - h + 1` ditulis ulang agar lebih mudah dipahami
+  (mengapa `w + h` hari disita dan mengapa muncul `+ 1`). Istilah non-kanonik di §7.2
+  dibetulkan: "prakiraan" → "prediksi" dan "horison" → "horizon" (temuan `cek-terminologie`),
+  dan pengantar deret yang ganda dirapikan menjadi satu kalimat.
+- **B (struktur & konsistensi):** ✅ Volume total 4.243 kata (prosa murni ±3.520 kata;
+  memenuhi rentang checklist 3.000–4.500). Tujuan Pembelajaran 4 butir selaras dengan 9
+  latihan; prasyarat Bab 2/5/6 benar; §7.11 "Menghubungkan ke Bab 8-9" berfungsi sebagai
+  penutup koneksi. Penomoran aset utuh: Gambar 7.1, Tabel 7.1–7.5, Persamaan 7.1–7.6, Kode
+  7.1–7.7; `REGISTER.md` diperbaiki (Kode 7.6 & 7.7 dirujuk di §7.9, bukan §7.7).
+  Notebook §6 dirapikan urutannya (6 → 6a → 6b). Ditambahkan subjudul
+  "### Bentuk Tensor Masukan" agar bagian Persamaan 7.1 (bentuk tensor masukan 3D) berdiri
+  sendiri sebagai subbagian penting, ditambah penjelasan contoh bentuk `(32, 7, 3)` dan
+  perbedaan masukan 2D (MLP) versus 3D (model sekuensial).
+- **C (sitasi):** ✅ `[1]`–`[7]` urut incremental pertama-muncul; `[n]` teks ≡ daftar
+  References ≡ `refs.bib`. Perbaikan: ISBN 978-0-262-03561-3 dan URL resminya
+  ("diakses: September 2026") ditambahkan ke [1] Goodfellow;
+  tanggal akses ("diakses: September 2026") ditambahkan ke URL [2], [6], [7] dan ke
+  preprint [5]; [5] Cho diselaraskan dengan daftar pustaka agregat (EMNLP 2014, pp.
+  1724–1734; preprint arXiv:1406.1078) di `master.md`, `refs.bib`, dan `REGISTER.md`. DOI
+  Elman (10.1207/s15516709cog1402_1) dan LSTM (10.1162/neco.1997.9.8.1735) diverifikasi
+  valid via `doi.org`/Crossref. Tidak ada self-citation berlebihan.
+- **D (kode & reproduksibilitas):** ⚠️ Notebook `ch-07-06_lstm_gru.ipynb` (18 sel) lengkap:
+  seed 42, versi TensorFlow dicetak, data sintetik pasang surut mandiri (tanpa unduhan),
+  fungsi `buat_window`, *baseline* persistence/klimatologi, LSTM vs GRU, multivariate,
+  plot aktual-prediksi, demo *direct* vs *recursive* h=24, *stacked* LSTM. Uji eksekusi
+  awal–akhir belum dapat dilakukan di mesin ini (kebijakan mesin memblokir TensorFlow;
+  lihat catatan Bab 5) — wajib diuji di Colab sebelum rilis. Catatan: `input_shape=` pada
+  layer Keras memicu *warning* deprecation (tidak berbahaya).
+- **E (build & output):** ⚠️ `node build/generate.mjs` belum dijalankan (butuh Pandoc+LaTeX
+  di mesin rilis); `bookDOI` masih placeholder `10.5281/zenodo.0000000`.
+
+### Catatan Lintas-Bab — Terminologi *window*/*horizon* (5 Okt 2026)
+
+- **Temuan pemunculan pertama:** "*window*/*windowing*" pertama di **Bab 2** (Tujuan
+  Pembelajaran baris 24; konsep di §2.5 baris 204–206; kata benda "*window*" baris 220).
+  "*horizon*" pertama di **Bab 5 §5.5** (keterangan Tabel 5.5 baris 295 dan Kode 5.3 baris
+  319) tanpa penjelasan, lalu baru dijelaskan di **Bab 7 §7.2** (baris 54 dan subbagian
+  baris 123).
+- **Perbaikan:** Bab 2 §2.5 melabeli istilah pada pemunculan pertama sebagai "**jendela
+  masukan** (*window*)"; Bab 5 §5.5 melabeli "**jendela latih** (*training window*)" untuk
+  konteks *walk-forward* dan menambahkan definisi singkat "*horizon*" (`h` = jumlah langkah
+  ke depan) pada pemunculan pertamanya, karena istilah ini dipakai lebih dulu di Bab 5
+  sebelum dijelaskan di Bab 7; Bab 7 §7.2 memakai "**jendela masukan** (*window*)" agar
+  seragam. Ini menyelesaikan ambiguitas dua makna "window" (jendela masukan vs jendela
+  latih) yang ditemukan saat penelusuran.
+- **Verifikasi:** `cek-kualitas.py --file` untuk Bab 2, Bab 5, dan Bab 7 semuanya `exit 0`
+  (bahasa-asing, terminologie, dash-prosa bersih).
+
+### Observasi gaya (keputusan pengarang, tidak diubah)
+
+- Dash " - " sebagai pemisah klausa di butir daftar (§7.3, butir AR(p)) diizinkan oleh
+  `cek-dash-prosa.py`; dibiarkan mengikuti gaya konversasional buku. Rapatkan bila
+  diinginkan pada penyuntingan akhir.
+- "**Stateful LSTM**" dan "*stateful* RNN" (§7.9) mencampur bentuk bold dan miring; istilah
+  teknisnya konsisten, hanya penekanannya berbeda. Diserahkan ke keputusan pengarang.
+- Penulisan "autokorelasi" kini tanpa miring di Bab 7, sedangkan Bab 5 memakai cetak tebal
+  saat mendefinisikan dan Bab 6 §6.6 memakai miring (`*autokorelasi*`). Perlu keputusan
+  apakah seluruh buku akan menyeragamkannya (usul: tanpa miring karena sudah diserap).

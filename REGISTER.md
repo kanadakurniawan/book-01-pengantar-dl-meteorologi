@@ -141,8 +141,8 @@
 | Kode | Kode 7.3 | LSTM univariate | — | §7.7 |
 | Kode | Kode 7.4 | LSTM multivariate | — | §7.7 |
 | Kode | Kode 7.5 | Plot prediksi dan aktual | — | §7.8 |
-| Kode | Kode 7.6 | LSTM bertumpuk (stacked) | — | §7.7 |
-| Kode | Kode 7.7 | Satu model per horizon (strategi direct) | — | §7.7 |
+| Kode | Kode 7.6 | LSTM bertumpuk (stacked) | — | §7.9 |
+| Kode | Kode 7.7 | Satu model per horizon (strategi direct) | — | §7.9 |
 
 ### Bab 8 — Studi Kasus: Pasang Surut Indonesia (Contoh Cilacap)
 
@@ -283,13 +283,13 @@
 
 | `[n]` | Key `refs.bib` | Jenis | DOI / ISBN / arXiv | Status |
 |---|---|---|---|---|
-| [1] | `goodfellow2016deep` | Buku | (MIT Press) | ✅ |
-| [2] | `hyndman2021fpp3` | Buku (open) | otexts.com/fpp3 | ✅ |
+| [1] | `goodfellow2016deep` | Buku | ISBN 978-0-262-03561-3 | ✅ |
+| [2] | `hyndman2021fpp3` | Buku (open) | otexts.com/fpp3, diakses Sep 2026 | ✅ |
 | [3] | `elman1990finding` | Artikel | 10.1207/s15516709cog1402_1 | ✅ |
 | [4] | `hochreiter1997lstm` | Artikel | 10.1162/neco.1997.9.8.1735 | ✅ |
-| [5] | `cho2014gru` | Artikel (arXiv) | arXiv:1406.1078 | ✅ |
-| [6] | `sutskever2014seq2seq` | Artikel (NeurIPS) | arXiv:1409.3215 | ✅ |
-| [7] | `abadi2016tensorflow` | Software/arXiv | arXiv:1603.04467 | ✅ |
+| [5] | `cho2014gru` | Prosiding (EMNLP) | EMNLP 2014, pp. 1724–1734; arXiv:1406.1078 | ✅ |
+| [6] | `sutskever2014seq2seq` | Artikel (NeurIPS) | arXiv:1409.3215, diakses Sep 2026 | ✅ |
+| [7] | `abadi2016tensorflow` | Software/arXiv | arXiv:1603.04467, diakses Sep 2026 | ✅ |
 
 ### Bab 8 — Studi Kasus Pasang Surut Indonesia (Contoh Cilacap)
 

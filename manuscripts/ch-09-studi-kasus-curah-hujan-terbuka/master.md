@@ -22,21 +22,21 @@ book: "Pengantar Deep Learning untuk Meteorologi"
 Setelah menyelesaikan bab ini, Anda diharapkan mampu:
 
 1. **Membangun** prediktor hujan harian titik grid terbuka (regresi jumlah hujan + klasifikasi intensitas) dengan fitur regional ERA5/ERA5-Land dan indeks iklim.
-2. **Menerapkan** verifikasi operasional dengan CSI/POD/FAR dan trade-off threshold.
+2. **Menerapkan** verifikasi operasional dengan CSI/POD/FAR dan *trade-off* *threshold*.
 3. **Membandingkan** *walk-forward* dengan baseline (persistence, klimatologi, ARIMA singkat).
 4. **Melakukan** interpretasi awal (*permutation importance*, sedangkan SHAP penuh di Bab 10) dan menyusun tabel verifikasi per kategori intensitas.
 
 ## 9.1 Konteks Pelayanan dan Kejujuran Framing
 
-CHIRPS adalah dataset curah hujan harian global (grid ±0,05° ≈ 5 km) yang digabungkan dari satelit dan stasiun, tersedia bebas untuk diunduh [1]. Studi kasus ini memakai data serupa yang sepenuhnya terbuka (CHIRPS, ERA5/ERA5-Land, indeks iklim) agar pembaca dapat mereproduksi tanpa akun atau izin khusus. Dampak prediksi curah hujan langsung menyentuh masyarakat, sehingga **kehati-hatian** dan **kejujuran** dalam klaim menjadi keharusan, bukan sekadar etika, tetapi juga pelindung kredibilitas.
+CHIRPS adalah dataset curah hujan harian global (grid ±0,05° ≈ 5 km) yang digabungkan dari satelit dan stasiun, tersedia bebas untuk diunduh [1]. Studi kasus ini memakai data yang sepenuhnya terbuka (CHIRPS, ERA5/ERA5-Land, indeks iklim) agar pembaca dapat mereproduksi tanpa akun atau izin khusus. Karena prediksi curah hujan berdampak langsung ke masyarakat, **kehati-hatian** dan **kejujuran** dalam klaim bukan sekadar etika, melainkan juga pelindung kredibilitas.
 
-Tiga hal yang harus ditegaskan sejak awal (sejalan dengan Risk Management umbrella):
+Tiga hal yang harus ditegaskan sejak awal:
 
 1. **Materi pengenalan, bukan hasil riset resmi.** Studi kasus ini adalah latihan end-to-end yang dapat diulang pembaca, bukan klaim sebagai sistem operasional institusi mana pun.
 2. **Hujan sulit diprediksi.** Nilai harian bersifat berisik dan banyak nol, sehingga ekspektasi harus realistis. Skill score (Bab 7 Persamaan 7.6) terhadap *baseline* adalah cara jujur untuk melaporkan.
 3. **Data yang digunakan harus disebutkan.** Jenis data (grid/pelengkap), rentang, lisensi, dan versi dicatat (Bab 6 §6.9) agar hasil dapat diperiksa ulang.
 
-Seperti Bab 8, framing "alat bantu yang dapat dijelaskan" lebih tepat daripada "menggantikan peramal". Nilai utama studi kasus: menunjukkan alur dan metrik yang benar, bukan meyakinkan bahwa deep learning selalu unggul.
+Seperti Bab 8, *framing* "alat bantu yang dapat dijelaskan" lebih tepat daripada "menggantikan peramal". Nilai utama studi kasus: menunjukkan alur dan metrik yang benar, bukan meyakinkan bahwa *deep learning* selalu unggul.
 
 ## 9.2 Data: Titik Grid CHIRPS + Fitur Regional
 
@@ -57,7 +57,7 @@ Untuk model hujan, strategi data (Bab 6) berbentuk:
 | Musiman | `mus_sin`, `mus_cos` | dihitung |
 | Indeks iklim | `rmm1`, `rmm2`, `nino34` | BoM/NOAA PSL [4][6] |
 
-Catatan ERA5: ERA5 adalah *reanalysis*, bukan prediksi operasional. Semua fitur ERA5 di-lag minimal 1 hari terhadap target (Tabel 9.1), karena data ERA5 hari D belum tersedia saat prediksi D+1 harus dibuat. ERA5 final punya latency beberapa bulan, sedangkan ERA5T (near-real-time) sekitar 5 hari. Studi kasus ini bersifat *historis*, tidak klaim sistem operasional real-time. Lag ini justru mencegah *leakage*: fitur ERA5 hari D hanya digunakan untuk prediksi hujan D+1.
+Catatan ERA5: ERA5 adalah *reanalysis*, bukan prediksi operasional. Semua fitur ERA5 di-lag minimal 1 hari terhadap target (Tabel 9.1), karena data ERA5 hari D belum tersedia saat prediksi D+1 harus dibuat. ERA5 final punya latensi beberapa bulan, sedangkan ERA5T (*near-real-time*) sekitar 5 hari. Studi kasus ini bersifat *historis*, bukan klaim sistem operasional *real-time*. Lag ini justru mencegah *leakage*: fitur ERA5 hari D hanya dipakai untuk prediksi hujan D+1.
 
 Satuan ERA5: `total_precipitation` (tp) dalam meter, akumulasi per jam. Konversi ke mm (`tp * 1000`), lalu agregasi harian sesuai definisi "hari" yang konsisten antara fitur dan target:
 
@@ -68,7 +68,7 @@ df["era5_tp_harian"] = df["era5_tp_mm"].resample("24h", offset="7h").sum()
 
 Lisensi data: semua sumber terbuka. CHIRPS (domain publik, kutip Funk et al. 2015 [1]), ERA5/ERA5-Land di bawah Copernicus Climate Data Store license [2][3], NOAA/BoM dengan attribution sesuai sumber (Bab 6 §6.9). Tidak ada data berizin/rahasia yang digunakan.
 
-Semua fitur dinormalisasi dengan statistik dari bagian latih saja (Bab 6 §6.7), sedangkan target regresi di-transform `log1p` bila digunakan (Bab 6 §6.7).
+Semua fitur dinormalisasi dengan statistik dari bagian latih saja, sedangkan target regresi ditransformasi dengan `log1p` bila digunakan (Bab 6 §6.7).
 
 ### Data multi-titik: barat dan timur Indonesia
 
@@ -87,11 +87,11 @@ Notebook menyediakan dua rangkaian data contoh (sintetik dengan pola berbeda) da
 
 ### Frekuensi dan resolusi data
 
-Data hujan harian (stasiun maupun grid CHIRPS) umumnya tersedia sebagai **kumulatif 24 jam**. Pastikan Anda konsisten dengan definisi "hari" pada target dan fitur. Untuk CHIRPS, raster harian adalah total 24 jam, sedangkan untuk stasiun, perhatikan jam pengamatan (misal 07.00-07.00 lokal). Bila data jam-an tersedia, Anda bisa agregasi ke harian (sum/resample) atau justru membangun prediksi sub-harian (di luar lingkup buku ini). Konsistensi definisi waktu mencegah *leakage* halus: jangan mencampur jam-an dan harian tanpa transformasi yang jelas.
+Data hujan harian (stasiun maupun grid CHIRPS) umumnya tersedia sebagai **kumulatif 24 jam**. Pastikan Anda konsisten dengan definisi "hari" pada target dan fitur. Untuk CHIRPS, raster harian adalah total 24 jam, sedangkan untuk stasiun, perhatikan jam pengamatan (misal 07.00-07.00 lokal). Bila data jam-an tersedia, Anda bisa mengagregasinya ke harian (sum/resample) atau justru membangun prediksi sub-harian (di luar lingkup buku ini). Konsistensi definisi waktu mencegah *leakage* halus: jangan mencampur jam-an dan harian tanpa transformasi yang jelas.
 
 ## 9.3 Dua Lintasan: Regresi dan Klasifikasi
 
-Bab 2-3 mengajarkan keduanya. Di sini kita terapkan pada masalah yang sama, karena kebutuhan operasionalnya keduanya ada.
+Bab 2-3 mengajarkan keduanya. Di sini kita terapkan keduanya pada masalah yang sama, karena kedua kebutuhan operasionalnya memang ada.
 
 - **Lintasan regresi**: prediksi **jumlah mm** hujan besok. Metrik: MAE, RMSE (Bab 5), dan transformasi `log1p` membantu (Bab 6).
 - **Lintasan klasifikasi**: prediksi **kategori intensitas** hujan harian. Mengikuti ambang umum intensitas hujan, ringkas menjadi 3 kelas (Tabel 9.2):
@@ -104,9 +104,9 @@ Bab 2-3 mengajarkan keduanya. Di sini kita terapkan pada masalah yang sama, kare
 | Sedang | 20 - <50 | 1 |
 | Lebat / sangat lebat | ≥ 50 | 2 |
 
-Catatan: Tabel 9.2 mengelompokkan ambang umum menjadi 3 kelas: kelas 0 mencampur tidak hujan (0 mm) dan hujan ringan (>0-<20 mm), sedangkan kelas 2 mencampur lebat dan sangat lebat (≥50 mm). Jika kebutuhan operasional meminta lebih rinci, skema yang lebih lengkap punya "tidak hujan" dan "sangat lebat" terpisah.
+Catatan: Tabel 9.2 mengelompokkan ambang umum menjadi 3 kelas: kelas 0 mencampur tidak hujan (0 mm) dan hujan ringan (>0-<20 mm), sedangkan kelas 2 mencampur lebat dan sangat lebat (≥50 mm). Jika kebutuhan operasional meminta lebih rinci, skema yang lebih lengkap memisahkan "tidak hujan" dan "sangat lebat".
 
-Untuk klasifikasi biner "hujan lebat atau tidak" (untuk peringatan dini), gunakan ambang `≥ 50` sebagai kelas positif (lebat atau sangat lebat). Evaluasi dengan metrik fenomena langka (Bab 5): **CSI, POD, FAR** dan trade-off threshold (Bab 3).
+Untuk klasifikasi biner "hujan lebat atau tidak" (untuk peringatan dini), gunakan ambang `≥ 50` sebagai kelas positif (lebat atau sangat lebat). Evaluasi dengan metrik fenomena langka (Bab 5): **CSI, POD, FAR** dan *trade-off threshold* (Bab 3).
 
 **Model yang digunakan:** GRU multivariate (Bab 7) sebagai pilihan utama, MLP + lag sebagai pembanding, dan LSTM bila perlu. Seluruh model dilatih dengan *window* `w` (misal 7-30 hari) tanpa *shuffle*, sehingga urutan *window* dipertahankan agar tiap blok *walk-forward* tetap kronologis dan perbandingan antar blok adil. (Bab 7 §7.9 mencatat bahwa `shuffle=True` umumnya aman untuk model *stateless*, tetapi di sini kita memilih tanpa *shuffle* demi keseragaman antar blok.)
 
@@ -117,7 +117,7 @@ Regresi dan klasifikasi menjawab pertanyaan operasional yang berbeda:
 - **Regresi** menjawab "berapa mm?" - berguna untuk pengelola lahan, drainase, studi hidrologi.
 - **Klasifikasi** menjawab "hujan lebat atau tidak?" - berguna untuk peringatan dini dan keselamatan.
 
-Mereka juga **berperilaku berbeda**: regresi sering "mendatar" pada nilai tengah (sulit memprediksi angka besar), sedangkan klasifikasi memberi kebebasan threshold (POD/FAR tunable). Mengerjakan keduanya sekaligus menunjukkan bahwa satu masalah operasional bisa dipotong menjadi beberapa masalah machine learning yang berbeda, keterampilan perancangan yang penting (Bab 1 §1.8 melatih ini).
+Keduanya juga **berperilaku berbeda**: regresi sering "mendatar" pada nilai tengah (sulit memprediksi angka besar), sedangkan klasifikasi memberi kebebasan *threshold* (POD/FAR dapat disetel). Mengerjakan keduanya sekaligus menunjukkan bahwa satu masalah operasional bisa dipotong menjadi beberapa masalah *machine learning*, keterampilan perancangan yang penting (Bab 1 §1.8 melatih ini).
 
 ### Menangani data tak seimbang pada klasifikasi hujan lebat
 
@@ -125,19 +125,19 @@ Hujan lebat (≥50 mm) hanya terjadi beberapa hari dalam setahun di sebagian bes
 
 1. Metrik yang tepat (CSI/POD/FAR, bukan akurasi).
 2. `class_weight` pada pelatihan (Kode 3.3) - penalti lebih besar untuk galat pada kelas lebat.
-3. Threshold digeser saat inferensi (Bab 9.4) - tuning "sisi keputusan" tanpa melatih ulang.
+3. *Threshold* digeser saat inferensi (§9.4) - *tuning* "sisi keputusan" tanpa melatih ulang.
 
 Catatan: `class_weight` mengubah distribusi yang "dilihat" model, sehingga angka POD/FAR harus dievaluasi dengan data asli (tidak seimbang). Jangan mengevaluasi pada data yang sudah di-resample.
 
 Peringatan khusus deret waktu: **hindari *oversampling* acak (mis. SMOTE)** pada data hujan harian. Menyalin atau mensintesis contoh secara acak merusak kontinuitas temporal (window "baru" bisa berisi hari yang sama dari masa depan) dan membuat evaluasi bocor. Untuk deret waktu, `class_weight` (Bab 3 §3.6) dan pergeseran *threshold* (Bab 9.4) jauh lebih aman daripada *resampling*.
 
-## 9.4 Verifikasi Operasional: CSI/POD/FAR dan Threshold
+## 9.4 Verifikasi Operasional: CSI/POD/FAR dan *Threshold*
 
-Inilah bagian yang membedakan bab ini dengan tutorial ML umum. Setelah probabilitas (dari sigmoid/softmax) didapat, kita tidak otomatis memakai threshold 0,5. Kita **menggesernya** sesuai prioritas operasional (Bab 3 §3.7).
+Inilah bagian yang membedakan bab ini dengan tutorial ML umum. Setelah probabilitas (dari sigmoid/softmax) didapat, kita tidak otomatis memakai *threshold* 0,5. Kita **menggesernya** sesuai prioritas operasional (Bab 3 §3.7).
 
-Catatan: threshold relevan untuk klasifikasi biner (sigmoid), sedangkan untuk multi-kelas softmax, keputusan diambil dengan `argmax`, bukan threshold 0,5. Geser threshold hanya pada biner atau one-vs-rest.
+Catatan: *threshold* relevan untuk klasifikasi biner (sigmoid), sedangkan untuk multi-kelas softmax, keputusan diambil dengan `argmax`, bukan *threshold* 0,5. Geser *threshold* hanya pada biner atau one-vs-rest.
 
-**Kode 9.1 - Verifikasi CSI/POD/FAR di banyak threshold.**
+**Kode 9.1 - Verifikasi CSI/POD/FAR di banyak *threshold*.**
 
 ```python
 def verifikasi(y_true, prob, thresholds):
@@ -154,21 +154,21 @@ def verifikasi(y_true, prob, thresholds):
     return baris
 ```
 
-### Memilih threshold secara sistematis
+### Memilih *threshold* secara sistematis
 
-Ada beberapa cara memiliki titik kerja yang bisa dijelaskan:
+Ada beberapa cara memilih titik kerja yang bisa dijelaskan:
 
-1. **Cost matrix** - tetapkan *harga* miss dan false alarm (misal 5:1 untuk peringatan dini), lalu pilih threshold yang meminimalkan total biaya pada *validasi*.
-2. **Target keberhasilan** - misal "POD ≥ 0,7 dengan FAR ≤ 0,5", lalu pilih threshold terkecil yang memenuhi keduanya.
+1. **Cost matrix** - tetapkan *harga* miss dan false alarm (misal 5:1 untuk peringatan dini), lalu pilih *threshold* yang meminimalkan total biaya pada *validasi*.
+2. **Target keberhasilan** - misal "POD ≥ 0,7 dengan FAR ≤ 0,5", lalu pilih *threshold* terkecil yang memenuhi keduanya.
 3. **Jawab pertanyaan pemangku** - tanyakan "lebih buruk mana: peringatan keliru atau kejadian terlewat?" dan biarkan jawaban menentukan titik kerja.
 
-Ketiga pendekatan lebih baik daripada "ambil CSI maksimal" karena mengikutsertakan konteks operasional, bukan hanya statistik. Laporkan threshold yang dipilih dan alasan pemilihannya di laporan.
+Ketiga pendekatan lebih baik daripada "ambil CSI maksimal" karena mengikutsertakan konteks operasional, bukan hanya statistik. Laporkan *threshold* yang dipilih dan alasan pemilihannya di laporan.
 
-### Kurva precision-recall untuk hujan lebat
+### Kurva *precision-recall* untuk hujan lebat
 
-Untuk data sangat tidak seimbang, ROC/AUC bisa "manis" namun menyesatkan (Bab 3 §3.9). Pilih **precision-recall curve**:
+Untuk data sangat tidak seimbang, ROC/AUC bisa "manis" namun menyesatkan (Bab 3 §3.9). Pilih *precision-recall curve*:
 
-- Sumbu x: recall (= POD), sedangkan sumbu y: precision (= 1 - FAR).
+- Sumbu x: recall (= POD); sumbu y: precision (= 1 - FAR).
 - Model ideal: kurva mendekati pojok kanan-atas (recall tinggi, precision tinggi).
 - Luas di bawah (AUPRC) lebih informatif daripada AUC untuk kelas langka.
 - **Baseline kurva PR bukan 0.5** (tidak seperti ROC/AUC): garis acak berada di proporsi kelas positif dalam data (mis. 5% hujan lebat). Model lebih baik daripada menebak jika kurvanya berada **di atas** garis baseline itu (Gambar 9.1).
@@ -177,9 +177,9 @@ Untuk data sangat tidak seimbang, ROC/AUC bisa "manis" namun menyesatkan (Bab 3 
 
 **Gambar 9.1**: *Precision-recall curve* hujan lebat (ilustratif).
 
-Visualisasi semacam Gambar 9.1 melengkapi Tabel 9.3 dan menjadi argumen visual mengapa threshold tertentu dipilih. Untuk data Anda sendiri, hitung kurva dengan `sklearn.metrics.precision_recall_curve`:
+Visualisasi semacam Gambar 9.1 melengkapi Tabel 9.3 dan menjadi argumen visual mengapa *threshold* tertentu dipilih. Untuk data Anda sendiri, hitung kurva dengan `sklearn.metrics.precision_recall_curve`:
 
-**Kode 9.4 - Menggambar kurva precision-recall dengan baseline acak.**
+**Kode 9.4 - Menggambar kurva *precision-recall* dengan baseline acak.**
 
 ```python
 from sklearn.metrics import precision_recall_curve
@@ -201,7 +201,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-Kode 9.4 memplot kurva precision-recall beserta garis baseline acaknya. Persamaan yang digunakan (dari Tabel 5.3 Bab 5, pedoman WMO [7]):
+Kode 9.4 memplot kurva *precision-recall* beserta garis baseline acaknya. Persamaan yang digunakan (dari Tabel 5.3 Bab 5, pedoman WMO [7]):
 
 $$ \text{POD} = \frac{TP}{TP+FN}, \quad \text{FAR} = \frac{FP}{TP+FP}, \quad \text{CSI} = \frac{TP}{TP+FP+FN} \tag{9.1} $$
 
@@ -209,13 +209,13 @@ Persamaan 9.1 memberi tiga sudut pandang yang saling melengkapi. Contoh membaca 
 
 **Tabel 9.3**: Contoh verifikasi *threshold*.
 
-| Threshold | POD | FAR | CSI |
+| *Threshold* | POD | FAR | CSI |
 |---|---|---|---|
 | 0,2 | 0.82 | 0.55 | 0.40 |
 | 0,5 | 0.58 | 0.34 | 0.43 |
 | 0,8 | 0.31 | 0.20 | 0.27 |
 
-Membaca Tabel 9.3: threshold rendah (0,2) menangkap banyak kejadian (POD 0,82) tetapi banyak alarm palsu (FAR 0,55), sedangkan threshold tinggi (0,8) sebaliknya. **Titik yang dipilih bukanlah "yang CSI tertinggi" semata**, melainkan yang sesuai konsekuensi: untuk peringatan dini, POD tinggi (dengan FAR wajar) sering dipilih, sedangkan untuk kebijakan evakuasi yang mahal, FAR rendah lebih penting.
+Membaca Tabel 9.3: *threshold* rendah (0,2) menangkap banyak kejadian (POD 0,82) tetapi banyak alarm palsu (FAR 0,55), sedangkan *threshold* tinggi (0,8) sebaliknya. **Titik yang dipilih bukanlah "yang CSI tertinggi" semata**, melainkan yang sesuai konsekuensi: untuk peringatan dini, POD tinggi (dengan FAR wajar) sering dipilih, sedangkan untuk kebijakan evakuasi yang mahal, FAR rendah lebih penting.
 
 ## 9.5 Baseline, Walk-Forward, dan Arsitektur
 
@@ -237,7 +237,7 @@ klim = df_train.groupby(df_train.index.dayofyear)["r_hujan"].mean()
 baseline = klim.reindex(df_test.index.dayofyear).values
 ```
 
-Jika model GRU Anda **tidak mengalahkan** climatology-smart ini pada metrik utama, perbaiki fitur atau ganti pendekatan. Jangan dibiarkan dan "dilaporkan sebagai selesai".
+Jika model GRU Anda **tidak mengalahkan** klimatologi cerdas ini pada metrik utama, perbaiki fitur atau ganti pendekatan. Jangan dibiarkan dan "dilaporkan sebagai selesai".
 
 ### Walk-forward
 
@@ -309,7 +309,7 @@ Melakukan interpretasi ini sejak tahap kajian (bukan setelah produksi) membantu 
 
 ## 9.7 Tabel Verifikasi per Kategori
 
-Bagian laporan yang berguna untuk praktisi: **contingency table** dirangkum menjadi tabel ringkas.
+Bagian laporan yang berguna untuk praktisi: *contingency table* dirangkum menjadi tabel ringkas.
 
 **Kode 9.3 - Tabel ringkas verifikasi per kategori intensitas.**
 
@@ -323,7 +323,7 @@ def tabel_kategori(y_true, y_pred):
 
 Kode 9.3 memakai `pd.crosstab` yang hanya memberi *counts*, sehingga untuk CSI/POD/FAR per kategori hitung secara *one-vs-rest* (kelas k positif, semua lain negatif), misal dengan mengulang fungsi `verifikasi` (Kode 9.1) untuk setiap k.
 
-Laporkan untuk masing-masing kategori (0, 1, 2) nilai CSI/POD/FAR secara terpisah, sedangkan perilaku model pada hujan lebat (langka) sering jauh lebih buruk daripada pada hari kering, dan ini penting diketahui pengguna (Bab 5). Contoh kerja penuh (termasuk threshold, probabilitas, dan crosstab) tersedia di notebook `ch-09-08_studi_kasus_curah_hujan_terbuka.ipynb`.
+Laporkan untuk masing-masing kategori (0, 1, 2) nilai CSI/POD/FAR secara terpisah, sedangkan perilaku model pada hujan lebat (langka) sering jauh lebih buruk daripada pada hari kering, dan ini penting diketahui pengguna (Bab 5). Contoh kerja penuh (termasuk *threshold*, probabilitas, dan crosstab) tersedia di notebook `ch-09-08_studi_kasus_curah_hujan_terbuka.ipynb`.
 
 **Tabel 9.5**: Contoh ringkas verifikasi per kategori (ilustratif).
 
@@ -345,8 +345,8 @@ Laporan studi kasus yang jujur biasanya berisi:
 
 1. **Konteks dan data** - lokasi/lintasan, rentang, sumber, lisensi, jumlah contoh.
 2. **Metode** - fitur, window, arsitektur, baseline, skema walk-forward.
-3. **Hasil** - MAE/RMSE (regresi), CSI/POD/FAR per threshold dan kategori, plus rentang antar blok.
-4. **Threshold yang dipilih dan alasannya** - konteks operasional.
+3. **Hasil** - MAE/RMSE (regresi), CSI/POD/FAR per *threshold* dan kategori, plus rentang antar blok.
+4. ***Threshold* yang dipilih dan alasannya** - konteks operasional.
 5. **Interpretasi** - fitur penting (dengan kewaspadaan), galat per musim.
 6. **Keterbatasan** - data contoh dan nyata, satu/dua titik lokasi, tanpa optimasi menyeluruh.
 
@@ -357,7 +357,7 @@ Yang **tidak** perlu dilaporkan: klaim "akurasi 99%" tanpa metrik langka, angka 
 **Soal konsep**
 
 1. Mengapa klimatologi sering menjadi *baseline* yang menantang untuk hujan harian? Bagaimana cara menaikkannya?
-2. Jelaskan trade-off POD-FAR: untuk mana Anda memilih threshold rendah pada konteks peringatan dini, dan untuk mana threshold tinggi pada konteks evakuasi mahal?
+2. Jelaskan *trade-off* POD-FAR: untuk mana Anda memilih *threshold* rendah pada konteks peringatan dini, dan untuk mana *threshold* tinggi pada konteks evakuasi mahal?
 3. Mengapa metrik per kategori (Tabel 9.5) lebih informatif daripada satu akurasi global?
 4. Apa risiko menafsirkan permutation importance pada fitur berkorelasi?
 5. Kapan Anda lebih memercayai klimatologi daripada model GRU yang CSI-nya sedikit lebih tinggi?
@@ -365,7 +365,7 @@ Yang **tidak** perlu dilaporkan: klaim "akurasi 99%" tanpa metrik langka, angka 
 ### Jawaban singkat yang diharapkan (untuk soal konsep)
 
 1. Hujan harian didominasi banyak nol dan variabel musim, sehingga klimatologi "cerdas" (per kalender) sudah menangkap musim - *baseline* yang sulit dikalahkan model yang hanya menebak persisten.
-2. Peringatan dini → threshold rendah (POD tinggi, toleransi false alarm), sedangkan evakuasi mahal → threshold tinggi (FAR rendah), meski banyak kejadian terlewat.
+2. Peringatan dini → *threshold* rendah (POD tinggi, toleransi false alarm), sedangkan evakuasi mahal → *threshold* tinggi (FAR rendah), meski banyak kejadian terlewat.
 3. Hari kering mendominasi. Akurasi global hampir 100% tanpa gagal menangkap lebat yang justru penting - metrik per kategori mengungkap distribusi kinerja.
 4. Fitur berkorelasi membagi "kredit" di antara mereka, sedangkan mengacak satu mengurangi konteks yang lain → angka menyesatkan.
 5. Tidak langsung. Cek rentang antar blok walk-forward dan konteks operasional sebelum memutuskan - model harus mengalahkan baseline secara konsisten, bukan sekali.
@@ -374,17 +374,17 @@ Yang **tidak** perlu dilaporkan: klaim "akurasi 99%" tanpa metrik langka, angka 
 
 1. Gunakan data contoh harian satu titik lokasi, lalu bangun fitur (Tabel 9.1).
 2. Regresi: latih GRU dengan transformasi `log1p`, hitung MAE/RMSE, dan bandingkan dengan persistence dan klimatologi pada *walk-forward* 3 blok.
-3. Klasifikasi biner lebat atau tidak: evaluasi threshold 0,2/0,5/0,8 (Tabel 9.3), lalu tetapkan threshold berdasarkan skenario (peringatan dini atau evakuasi) dan jelaskan.
+3. Klasifikasi biner lebat atau tidak: evaluasi *threshold* 0,2/0,5/0,8 (Tabel 9.3), lalu tetapkan *threshold* berdasarkan skenario (peringatan dini atau evakuasi) dan jelaskan.
 4. Klasifikasi multi-kelas intensitas: buat crosstab (Kode 9.3) dan hitung CSI/POD/FAR per kategori (Tabel 9.5).
 5. Tambahkan indeks MJO/ENSO, lalu bandingkan CSI lebat dengan dan tanpa fitur tersebut.
-6. (Proyek mini) Susun laporan satu halaman seperti Bab 8: konteks, data, metode, tabel hasil, threshold terpilih, interpretasi dan keterbatasan.
+6. (Proyek mini) Susun laporan satu halaman seperti Bab 8: konteks, data, metode, tabel hasil, *threshold* terpilih, interpretasi dan keterbatasan.
 
 ## Ringkasan
 
-- Prediksi hujan berdampak langsung pada masyarakat, sehingga kejujuran framing dan metrik wajib.
-- Data: titik grid CHIRPS (target + lag), ERA5/ERA5-Land (regional), ENSO/MJO (indeks iklim), sedangkan pola barat dan timur Indonesia berbeda dan perlu dilatih ulang per lokasi.
-- Dua lintasan: regresi (mm, `log1p`, MAE/RMSE) dan klasifikasi (kategori, CSI/POD/FAR), lalu menangani imbalance dengan class_weight dan threshold.
-- Threshold bukan 0,5 tetap - atur sesuai biaya galat, lalu gunakan precision-recall untuk data langka (Tabel 9.3).
+- Prediksi hujan berdampak langsung pada masyarakat, sehingga kejujuran *framing* dan metrik itu wajib.
+- Data: titik grid CHIRPS (target + lag), ERA5/ERA5-Land (regional), ENSO/MJO (indeks iklim); pola barat dan timur Indonesia berbeda sehingga perlu dilatih ulang per lokasi.
+- Dua lintasan: regresi (mm, `log1p`, MAE/RMSE) dan klasifikasi (kategori, CSI/POD/FAR), lalu menangani *imbalance* dengan `class_weight` dan *threshold*.
+- *Threshold* bukan selalu 0,5; atur sesuai biaya galat, lalu gunakan *precision-recall* untuk data langka (Tabel 9.3).
 - Baseline kuat: klimatologi "cerdas" per kalender (juga persistence dan ARIMA), sedangkan deep learning harus mengalahkannya secara konsisten (Tabel 9.4).
 - Walk-forward multi-blok, lalu laporkan rentang, bukan hanya rata-rata.
 - Interpretasi dimulai dari permutation importance (deskriptif, bukan kausal, dan SHAP di Bab 10).

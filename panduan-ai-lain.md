@@ -310,8 +310,8 @@ saya"), BUKAN sebagai fakta.
 ### Overhype → Realistis
 
 ❌ "Model LSTM ini akan merevolusi prakiraan cuaca di Indonesia!"  
-✅ "Model LSTM kami pada data pasang surut Kapuas mengalahkan *baseline*  
-*persistence* sebesar X% pada MAE 24-jam .  hasil yang cukup menjanjikan untuk  
+✅ "Model LSTM kami pada data pasang surut Cilacap mengalahkan *baseline*  
+*persistence* sebesar X% pada MAE 24-jam: Hasil yang cukup menjanjikan untuk  
 eksplorasi lebih lanjut, tapi masih kalah dari model harmonik untuk horizon  
 panjang."
 

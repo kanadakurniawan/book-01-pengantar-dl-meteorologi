@@ -41,14 +41,14 @@ Buku ini memilih **Cilacap** (pantai selatan Jawa Tengah, -7,75° LS, 109,02° B
 
 Pembaca yang bekerja di **stasiun lain** (mis. Ambon GLOSS #68, Bitung GLOSS #69, Sibolga, Benoa GLOSS #49) dapat mengikuti pipeline identik dengan mengganti kode stasiun pada skrip unduh (§8.3). Tabel 8.3 merangkum stasiun Indonesia yang datanya tersedia di sumber terbuka. Untuk lokasi tanpa stasiun terbuka, pilih stasiun proksi dengan karakter oceanografi mirip atau gunakan model laut global (FES2014, GOT4.10) pada koordinat tersebut.
 
-> **Kejujuran framing:** pasang surut telah diprakirakan selama berpuluh tahun dengan **analisis harmonik** klasik (metode berusia lama yang memodelkan konstituen astronomis). Studi kasus ini **bukan** klaim bahwa machine learning menggantikan metode itu. Yang dilakukan: machine learning digunakan sebagai **alternatif cepat** dan untuk **mengisi gap data**. Hasilnya dibandingkan jujur dengan *baseline* dan, bila memungkinkan, dengan analisis harmonik. Ini sejalan dengan prinsip buku (Bab 1 §1.10).
+> **Kejujuran *framing*:** pasang surut sudah diprediksi puluhan tahun dengan **analisis harmonik** klasik, metode lama yang memodelkan konstituen astronomis. Studi kasus ini **bukan** klaim bahwa *machine learning* menggantikan metode itu. Yang dilakukan: *machine learning* dipakai sebagai **alternatif cepat** dan untuk **mengisi gap data**. Hasilnya dibandingkan jujur dengan *baseline* dan, bila memungkinkan, dengan analisis harmonik. Ini sejalan dengan prinsip buku (Bab 1 §1.10).
 
 ### Mengapa studi kasus penting bagi pembaca
 
 Studi kasus adalah kesempatan mempraktikkan **seluruh rantai** yang sudah dipelajari, bukan sekadar "model lagi". Di sini pembaca akan mengalami:
 
 1. **Konteks sebelum angka**: memahami masalah (banjir rob) menentukan metrik dan tolok ukur yang digunakan.
-2. **Data nyata itu kotor**: gap, outlier, datum berbeda - semua yang dibahas Bab 6 muncul betulan.
+2. **Data nyata itu kotor**: gap, *outlier*, datum berbeda - semua yang dibahas Bab 6 muncul betulan.
 3. **Baseline sering menang**: persistence adalah lawan yang tangguh. Belajar menerima itu adalah pelajaran penting.
 4. **Interpretasi dan laporan**: angka MAE tidak cukup. Perlu plot, skill score, dan kalimat jujur tentang keterbatasan.
 5. **Pemilihan stasiun**: ketika lokasi Anda tidak punya stasiun terbuka, Anda belajar memilih proksi dan menjelaskan keterbatasannya - keterampilan yang sama pentingnya dengan membangun model.
@@ -85,7 +85,7 @@ Metode harmonik (tradisional) memodelkan `y(t)` sebagai jumlahan sinusoid dengan
 
 Analisis harmonik bekerja karena pasang surut didorong oleh gaya gravitasi benda langit yang periodik dan dapat diprediksi jauh ke depan. Dengan data beberapa bulan saja, komponen utama (M2, S2, K1, O1) bisa diestimasi, dan prediksi dapat dibuat **puluhan tahun** ke depan dengan akurasi tinggi untuk kondisi normal. Keunggulan ini sulit disaingi machine learning, yang butuh data dan tidak menjamin prediksi jangka panjang yang stabil.
 
-Namun harmonik juga punya kelemahan: ia mengasumsikan stasioneritas amplitudo/fase dalam jendela estimasi, dan gagal menangkap **variabilitas non-periodik**, misalnya kenaikan muka air saat badai, efek debit sungai Kapuas, atau perubahan lokal ([5] untuk catatan umum pengembangan). Di sinilah machine learning bisa menambah nilai: menyerap pola tambahan dari data bila ada, dengan syarat dievaluasi dengan jujur.
+Namun harmonik juga punya kelemahan: ia mengasumsikan stasioneritas amplitudo/fase dalam jendela estimasi, dan gagal menangkap **variabilitas non-periodik**, misalnya kenaikan muka air saat badai, efek debit sungai Serayu, atau perubahan lokal ([5] untuk catatan umum pengembangan). Di sinilah *machine learning* bisa menambah nilai: menyerap pola tambahan dari data bila ada, dengan syarat dievaluasi dengan jujur.
 
 ### Perbandingan ringkas harmonik dan deep learning
 
@@ -104,7 +104,7 @@ Membaca Tabel 8.2 membantu memilih: untuk prediksi rutin jangka panjang, harmoni
 
 ## 8.3 Dataset Pasang Surut: Sumber Terbuka dan Kualitas
 
-Untuk pembaca yang ingin mereproduksi studi kasus ini dengan data nyata, tiga sumber utama digunakan buku ini. Semuanya **terbuka dan gratis untuk riset/pendidikan** dengan atribusi (detail lisensi dan batasannya ada pada "Catatan lisensi dan penggunaan" di bawah).
+Untuk mereproduksi studi kasus ini dengan data nyata, buku ini memakai tiga sumber utama. Semuanya **terbuka dan gratis untuk riset/pendidikan** dengan atribusi (detail lisensi dan batasannya ada pada "Catatan lisensi dan penggunaan" di bawah).
 
 ### Sumber data
 
@@ -176,7 +176,7 @@ Setelah pemeriksaan itu, dataset Cilacap yang dipakai di sini dirangkum pada Tab
 | Nilai hilang | ≈1-3% (tergantung periode) |
 | Satuan | m (relatif terhadap stasiun benchmark) |
 | File nyata (di-commit) | `data/raw/cili_30d.csv` (observasi IOC), `data/raw/cili_1y_hourly_real.csv` (derivasi harmonik), `data/raw/cilacap_psmsl_rlr_monthly.rlrdata` (PSMSL) |
-| Sifat data | **Observasi nyata IOC** (+ derivasi harmonik klar dicantumkan), bukan sintetik |
+| Sifat data | **Observasi nyata IOC** (+ derivasi harmonik yang dicantumkan jelas), bukan sintetik |
 
 > **Catatan kejujuran:** sejak v2.0 notebook memakai **data nyata IOC** real-time (`scripts/download_ioc.py --source ioc --code cili --days 30`). IOC hanya menyediakan ≈30 hari terakhir, sehingga hasil di bab ini adalah contoh pendek (≈1 bulan), bukan validasi jangka panjang. `cili_1y_hourly_real.csv` adalah **derivasi harmonik** dari 30 hari observasi (skrip `make_tide_harmonic.py`), bukan pengukuran langsung. Tandai dengan jelas saat digunakan. Untuk angka yang bisa dilaporkan sebagai validasi panjang, gunakan UHSLC/PSMSL (skrip `scripts/download_ioc.py`) dengan beberapa tahun data.
 
@@ -262,7 +262,7 @@ seri = pd.read_csv(
     parse_dates=["time"],
 ).set_index("time")["tinggi"].astype(float)
 
-# Derivatif harmonik 1 tahun (untuk horizon lebih panjang; klar: bukan observasi)
+# Derivatif harmonik 1 tahun (untuk horizon lebih panjang; jelas: bukan observasi)
 # seri = pd.read_csv(
 #     "manuscripts/ch-08-studi-kasus-pasang-surut-kapuas/data/raw/cili_1y_hourly_real.csv",
 #     parse_dates=["time"],
@@ -332,7 +332,7 @@ Untuk pasang surut, target operasional sering dinyatakan sebagai toleransi tingg
 - **Skill score** terhadap persistence (Persamaan 7.6) - jika nilai negatif, model kalah dari "tebak nilai kemarin".
 - **Plot prediksi dan aktual** 1, 3, 7 hari.
 
-Tabel 8.6 merangkum pola hasil tipikal (angka ilustratif: ganti dengan hasil eksperimen Anda. Horizon `h` diukur dalam jam, Bagian 8.4):
+Tabel 8.6 merangkum pola hasil tipikal (angka ilustratif; ganti dengan hasil eksperimen Anda. Horizon `h` diukur dalam jam, Bagian 8.4):
 
 **Tabel 8.6**: Contoh hasil ringkas per horizon.
 
@@ -353,7 +353,7 @@ Satu angka MAE tidak cukup. Beri jarak dengan menghitung skill score per blok:
 - `SS = 1 - MAE_model / MAE_persistence`
 - Laporkan maksimum, minimum, dan rata-rata SS dari blok-blok walk-forward. Jika rentang mencakup nol (atau negatif), kesimpulan "LSTM menang" belum kuat.
 
-Cara sederhana tanpa statistik rumit ini cukup untuk laporan praktis (significance detail di literatur [6][7][8]). Ini juga mencegah klaim "0,001 lebih baik!" yang sebenarnya noise.
+Cara sederhana ini cukup untuk laporan praktis (detail signifikansi ada di literatur [6][7][8]). Ini juga mencegah klaim "0,001 lebih baik!" yang sebenarnya hanya derau.
 
 ### Contoh hasil numerik yang "sehat"
 
@@ -454,7 +454,7 @@ mae_gap = float(np.mean(np.abs(np.array(pred_gap) - nilai_asli)))
 print(f"MAE imputasi gap {h} jam: {mae_gap:.4f} m")
 ```
 
-Cara ini, memvalidasi imputasi dengan menyembunyikan data asli (Kode 8.4), adalah praktik yang jujur (Bab 5): kita tahu "kebenaran" yang disembunyikan dan bisa mengukur galat imputasi tentatif. Hasil imputasi tidak boleh dianggap sebagai observasi. Pertahankan penanda "gap diisi model". Seluruh eksperimen di bab ini berjalan di atas TensorFlow [10].
+Memvalidasi imputasi dengan menyembunyikan data asli (Kode 8.4) adalah praktik yang jujur (Bab 5): kita tahu "kebenaran" yang disembunyikan, sehingga galat imputasi bisa diukur. Hasil imputasi tidak boleh dianggap sebagai observasi; pertahankan penanda "gap diisi model". Seluruh eksperimen di bab ini berjalan di atas TensorFlow [10].
 
 ### Keterbatasan yang harus diakui
 
@@ -465,7 +465,7 @@ Sebagai penutup, empat keterbatasan yang wajar diakui:
 3. **Fokus satu stasiun** - pola Cilacap belum tentu sama dengan stasiun lain. Tipe pasang (Tabel 8.1) harus diperiksa dulu sebelum menggeneralisasi.
 4. **Bukan penelusuran menyeluruh** - *hyperparameter* tidak dioptimasi besar. Hasil menunjukkan *alur*, bukan pencarian yang menyeluruh. Untuk klaim kuat, perlu eksperimen luas (Bab 10).
 
-Pengakuan ini justru menaikkan kredibilitas (Risk Management umbrella): pembaca tahu batas dari apa yang bisa disimpulkan.
+Pengakuan ini justru menaikkan kredibilitas: pembaca tahu batas dari apa yang bisa disimpulkan.
 
 ## 8.7 Latihan
 
@@ -478,7 +478,7 @@ Pengakuan ini justru menaikkan kredibilitas (Risk Management umbrella): pembaca 
 
 **Latihan praktik (notebook `ch-08-07_studi_kasus_pasang_surut.ipynb`)**
 
-5. Setelah Anda telah mengganti stasiun (mis. Ambon/Bitung) dengan data nyata dari `scripts/download_ioc.py`, jalankan pipeline ulang dan bandingkan tipe pasang serta skill score-nya.
+5. Setelah mengganti stasiun (mis. Ambon/Bitung) dengan data nyata dari `scripts/download_ioc.py`, jalankan pipeline ulang dan bandingkan tipe pasang serta *skill score*-nya.
 6. Bandingkan `w ∈ {24, 72, 168}` untuk `h=24` jam. Buat tabel MAE.
 7. Bandingkan LSTM, GRU, MLP, dan persistence di *walk-forward* 4 blok. Hitung skill score tiap horizon.
 8. Simulasikan gap 1 × 24 jam dan 1 × 72 jam. Ukur MAE imputasi.
@@ -490,13 +490,13 @@ Pengakuan ini justru menaikkan kredibilitas (Risk Management umbrella): pembaca 
 - Banjir rob pesisir adalah masalah nyata di banyak kota pantai Indonesia. Prediksi tinggi air yang andal relevan untuk peringatan dini dan operasi pelabuhan.
 - **Cilacap** digunakan sebagai contoh studi kasus reproducible karena stasiun-nya aktif di GLOSS (#291) dan datanya terbuka via IOC/UHSLC/PSMSL. Untuk lokasi tanpa stasiun terbuka, gunakan proksi terdekat atau model global (FES2014/GOT4.10).
 - Pasang surut Indonesia: semi-diurnal, diurnal, campuran. Tipe menentukan pilihan model dan window (Tabel 8.1).
-- Harmonik dan machine learning: beda paham (fisis dan data), sedangkan harmonic unggul jangka panjang, ML unggul pada non-periodik dan isi gap (Tabel 8.2).
+- Harmonik dan *machine learning*: beda dasar (fisis dan data). Harmonik unggul jangka panjang, sedangkan *machine learning* unggul pada pola non-periodik dan pengisian gap (Tabel 8.2).
 - Data terbuka: IOC (real-time 30 hari), UHSLC (hourly/daily via ERDDAP), PSMSL (MSL bulanan jangka panjang), BMKG (prediksi pasut). Periksa kontinuitas, datum, unit, anomali (Tabel 8.3).
 - Pipeline: baseline persistence/klimatologi, MLP, dan LSTM/GRU dengan walk-forward berjujur (Tabel 8.5).
 - Evaluasi: MAE/RMSE per horizon + skill score (rentang blok) + plot fase-amplitudo. Berkaca ke toleransi operasional (Tabel 8.6).
 - Penggunaan praktis: isi gap data dengan validasi simulasi. Jangan lupa menandai hasil "diisi model".
 - Keterbatasan diakui: lokasi proksi ≠ target, panjang data 1 tahun cukup untuk demo tetapi tidak untuk klaim tren, terbatas pada satu stasiun, dan tanpa optimasi hiperparameter besar.
-- Framing: ML sebagai alat cepat dan isi gap, bukan klaim pengganti harmonik.
+- *Framing*: *machine learning* sebagai alat cepat dan pengisi gap, bukan klaim pengganti harmonik.
 
 ## References
 
